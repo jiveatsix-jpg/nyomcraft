@@ -120,10 +120,60 @@ const ICONS = {
 
   plato: { label: 'Plato', p: ['#c0c6d8', '#8a90a4', '#e6eaf5'], d: [
     '........', '.2....2.', '.21..12.', '.21..12.',
-    '.211112.', '..1111..', '...11...', '...11...'] }
+    '.211112.', '..1111..', '...11...', '...11...'] },
+
+  /* -- cristalería, para cócteles, zumos y demás líquidos --
+     mismo convenio que el resto: p[0] = líquido, p[1] = brillo/espuma,
+     p[2] = detalle de cristal (tallo, base, asa o hielo) en un gris-azulado
+     neutro compartido por las que llevan tallo, para que se lean como
+     "vidrio" y no como parte de la bebida.                                 */
+
+  'vaso-corto': { label: 'Vaso corto (rocas)', p: ['#c9812e', '#ffce8a', '#e8ecf5'], d: [
+    '........', '........', '.222222.', '.113311.',
+    '.111111.', '.111111.', '.111111.', '........'] },
+
+  'vaso-alto': { label: 'Vaso alto (tubo)', p: ['#5cae4e', '#b8eab0', '#e8ecf5'], d: [
+    '........', '..2222..', '..1111..', '..1111..',
+    '..1131..', '..1111..', '..1111..', '..1111..'] },
+
+  'copa-coctel': { label: 'Copa de cóctel', p: ['#d9c98a', '#f5efc8', '#aab2d4'], d: [
+    '........', '.222222.', '.111111.', '..1111..',
+    '...11...', '...33...', '...33...', '..3333..'] },
+
+  'copa-balon': { label: 'Copa balón (gin-tonic)', p: ['#8fd3e8', '#dff6fb', '#aab2d4'], d: [
+    '..2222..', '.111111.', '11111111', '.111111.',
+    '..1111..', '...33...', '...33...', '..3333..'] },
+
+  'copa-vino': { label: 'Copa de vino', p: ['#7a1f3a', '#c4507a', '#aab2d4'], d: [
+    '..2222..', '.111111.', '.111111.', '..1111..',
+    '...33...', '...33...', '...33...', '..3333..'] },
+
+  'copa-flauta': { label: 'Copa flauta (champán)', p: ['#e8c94a', '#fff2b0', '#aab2d4'], d: [
+    '...22...', '...11...', '...11...', '...11...',
+    '...11...', '...33...', '...33...', '..3333..'] },
+
+  chupito: { label: 'Vaso de chupito', p: ['#b9701e', '#f0b868', '#e8ecf5'], d: [
+    '........', '........', '........', '........',
+    '........', '..2222..', '..1111..', '..1111..'] },
+
+  jarra: { label: 'Jarra de cerveza', p: ['#e0a83c', '#fce8a0', '#aab2d4'], d: [
+    '........', '.22222..', '.11111..', '.111113.',
+    '.11111..', '.111113.', '.11111..', '.11111..'] },
+
+  'copa-margarita': { label: 'Copa margarita', p: ['#8ac93c', '#d8f588', '#aab2d4'], d: [
+    '.222222.', '11111111', '..1111..', '...11...',
+    '...33...', '...33...', '..3333..', '..3333..'] }
 };
 
 const ICON_KEYS = Object.keys(ICONS);
+
+/** Las claves de ICONS que son cristalería, en el orden en que se muestran
+    en el selector de vaso de una receta. El nombre para mostrar es siempre
+    ICONS[clave].label — un solo sitio con los nombres, no dos.             */
+const GLASSES = [
+  'vaso-corto', 'vaso-alto', 'copa-coctel', 'copa-balon', 'copa-vino',
+  'copa-flauta', 'chupito', 'jarra', 'copa-margarita'
+];
 
 /** Devuelve el SVG de un sprite. size = píxeles finales de lado.
     La rejilla puede ser 8x8 o 16x16: la marca ic.n (por defecto 8), así que

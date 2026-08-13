@@ -3,6 +3,14 @@
 Notas para quien (humano o IA) toque este repo después y se encuentre con
 decisiones que no son obvias mirando solo el código actual.
 
+## 2026-08-13 — Cristalería para bebidas (feature)
+
+Sin implicaciones para el empaquetado. Cambio de datos aditivo únicamente:
+las recetas ganan un campo `glass` (string|null) — compatible en las dos
+direcciones, a diferencia del cambio de formato de los pasos de más abajo.
+Un build anterior que abra un JSON exportado desde aquí simplemente ignora
+el campo `glass` que no conoce; no hay nada que romper.
+
 ## 2026-08-13 — Marcador de dudas: cambia el formato de los pasos
 
 Sin implicaciones para el empaquetado (no toca Vite, Tauri ni capabilities),

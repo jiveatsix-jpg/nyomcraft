@@ -257,6 +257,9 @@ h3.sub {
 .tag.red   { background: var(--red); }
 .tag.dim   { background: var(--panel2); color: var(--dim); }
 
+.tag.glass-tag { display: inline-flex; align-items: center; gap: 6px; }
+.tag.glass-tag svg { display: block; }
+
 /* ---------- ficha (vista) ---------- */
 
 .ficha { padding: 20px; }

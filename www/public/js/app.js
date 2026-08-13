@@ -226,6 +226,7 @@ function renderRecipe(id) {
             <span class="tag dim">${esc(deacc(r.diff))}</span>
             <span class="tag dim">${r.time} min</span>
             <span class="tag dim">${r.portions} raciones</span>
+            ${r.glass ? `<span class="tag dim glass-tag">${iconSVG(r.glass, 16)} ${esc(ICONS[r.glass].label)}</span>` : ''}
             ${dudas ? `<span class="tag yellow">${dudas} por confirmar</span>` : ''}
           </div>
         </div>
@@ -317,6 +318,14 @@ function renderEditor() {
           class="${k === d.icon ? 'on' : ''}">${iconSVG(k, 30)}</button>`).join('')}
       </div>
 
+      <label class="fld" style="margin-top:14px"><span>Vaso o copa de servicio (opcional)</span></label>
+      <div class="icon-pick" id="glass-pick">
+        <button type="button" data-glass="" title="Sin vaso específico"
+          class="${!d.glass ? 'on' : ''}">—</button>
+        ${GLASSES.map(k => `<button type="button" data-glass="${k}" title="${esc(ICONS[k].label)}"
+          class="${k === d.glass ? 'on' : ''}">${iconSVG(k, 30)}</button>`).join('')}
+      </div>
+
       <div class="hr"></div>
 
       <h3 class="sub">Ingredientes</h3>
@@ -385,6 +394,13 @@ function renderEditor() {
     if (!btn) return;
     d.icon = btn.dataset.icon;
     $$('#icon-pick button').forEach(b => b.classList.toggle('on', b === btn));
+  });
+
+  $('#glass-pick').addEventListener('click', e => {
+    const btn = e.target.closest('[data-glass]');
+    if (!btn) return;
+    d.glass = btn.dataset.glass || null;
+    $$('#glass-pick button').forEach(b => b.classList.toggle('on', b === btn));
   });
 
   $('#add-ing').addEventListener('click', () => {

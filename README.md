@@ -26,7 +26,11 @@ Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
 - **Despensa** — biblioteca de ingredientes. Cada uno tiene nombre, categoría, unidad por
   defecto y un sprite. El sprite se autocompleta a partir del nombre (`guessIcon` en
   `js/icons.js`) salvo que elijas otro a mano.
-- **Fichas de receta** — nombre, icono, categoría, dificultad, tiempo y raciones.
+- **Fichas de receta** — nombre, icono, categoría, dificultad, tiempo y raciones. Para
+  cócteles, zumos y demás líquidos (categoría «Bebida»), también un **vaso o copa de
+  servicio** opcional: 9 tipos de cristalería a 8×8 (vaso corto, tubo, cóctel, balón de
+  gin-tonic, vino, flauta, chupito, jarra, margarita), con su nombre y su icono en la
+  ficha, junto a la categoría y la dificultad.
 - **Ingredientes de la ficha** — se eligen de la despensa con un desplegable; al lado, la
   cantidad y otro desplegable con la unidad (`g`, `ml`, `ud`, `cda`, `diente`, `al gusto`...).
   Al elegir un ingrediente hereda su unidad por defecto. Con `al gusto` la cantidad se

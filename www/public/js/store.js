@@ -36,6 +36,7 @@ function normalizeRecipe(rec) {
   if (!Array.isArray(rec.items)) rec.items = [];
   rec.items.forEach(i => { if (i.q === undefined) i.q = null; });
   if (rec.q === undefined) rec.q = null;
+  if (rec.glass === undefined) rec.glass = null;
   return rec;
 }
 
@@ -120,7 +121,8 @@ const Store = {
   blankRecipe() {
     return {
       id: uid(), name: '', icon: 'plato', cat: 'Principal', diff: 'Fácil',
-      time: 30, portions: 2, items: [], steps: [{ t: '', q: null }], notes: '', q: null
+      time: 30, portions: 2, items: [], steps: [{ t: '', q: null }], notes: '', q: null,
+      glass: null
     };
   },
 
