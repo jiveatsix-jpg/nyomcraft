@@ -3,9 +3,9 @@
   "configurations": [
     {
       "name": "nomcraft",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "5173", "--directory", "www"],
-      "port": 5173
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3100
     }
   ]
 }
