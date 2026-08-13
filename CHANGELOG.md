@@ -64,3 +64,10 @@ diálogo de impresión nativo con vista previa correcta.
 **Nota**: `captain-log` (otro repo del mismo hub) tenía exactamente la
 misma duplicación raíz/`www/` y el mismo patrón de export roto — recibió
 el mismo tratamiento (Vite + comando Rust propio) el mismo día.
+
+**Limpieza adicional**: como `write_text_file` reemplaza por completo el
+único uso que tenía este repo del plugin `tauri-plugin-fs`, se removió
+la dependencia (`Cargo.toml`), su registro en `lib.rs` y el permiso
+`fs:default` de `capabilities/default.json` — ya no hace falta. Verificado
+que el export sigue funcionando después de la remoción (archivo
+actualizado en Descargas, proceso no crashea).
