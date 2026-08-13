@@ -1,6 +1,21 @@
-/* ñomcraft — sprites 8x8 dibujados a mano.
-   Cada icono: p = paleta [color1, color2, color3], d = 8 filas de 8 caracteres.
-   '.' = transparente, '1'|'2'|'3' = índice de paleta.                         */
+/* ñomcraft — sprites pixel dibujados a mano.
+   Cada icono: p = paleta de colores, d = filas de caracteres (una por fila de
+   la rejilla). '.' = transparente, '1'..'9' = índice de paleta (1 -> p[0]).
+
+   Rejilla por defecto 8x8. El renderizador (iconSVG, mas abajo) admite
+   tambien 16x16 sin ningun cambio de codigo: basta con que el icono declare
+   n: 16 y traiga 16 filas de 16 caracteres en vez de 8x8. Se probo con un
+   tomate de muestra: la mecanica funciona, pero encontrar un estilo a 16x16
+   que convenza cuesta mucho a mano, así que el catalogo se queda en 8x8
+   por ahora.
+
+   Para retomarlo mas adelante: sustituye la entrada de un icono por otra con
+   n: 16 y sus 16 filas, ej.
+     tomate: { label: 'Tomate', n: 16, p: [...6 colores...], d: [
+       '................', ...16 filas de 16 caracteres... ] },
+   y ya funciona en toda la app — nada fuera de este archivo sabe a que
+   tamaño de rejilla esta dibujado cada icono. Se puede migrar de uno en uno,
+   los 8x8 y los 16x16 conviven sin conflicto.                               */
 
 const ICONS = {
   zanahoria: { label: 'Zanahoria', p: ['#f08a2e', '#5fa83c', '#c2601a'], d: [
@@ -110,23 +125,26 @@ const ICONS = {
 
 const ICON_KEYS = Object.keys(ICONS);
 
-/** Devuelve el SVG de un sprite. size = píxeles finales de lado. */
+/** Devuelve el SVG de un sprite. size = píxeles finales de lado.
+    La rejilla puede ser 8x8 o 16x16: la marca ic.n (por defecto 8), así que
+    los dos tamaños conviven sin que el resto del código note la diferencia. */
 function iconSVG(key, size = 32) {
   const ic = ICONS[key] || ICONS.plato;
+  const n = ic.n || 8;
   let rects = '';
-  for (let y = 0; y < 8; y++) {
-    const row = ic.d[y];
+  for (let y = 0; y < n; y++) {
+    const row = ic.d[y] || '';
     let x = 0;
-    while (x < 8) {
+    while (x < n) {
       const c = row[x];
       if (c === '.' || c === undefined) { x++; continue; }
       let run = 1;
-      while (x + run < 8 && row[x + run] === c) run++;
+      while (x + run < n && row[x + run] === c) run++;
       rects += `<rect x="${x}" y="${y}" width="${run}" height="1" fill="${ic.p[+c - 1]}"/>`;
       x += run;
     }
   }
-  return `<svg class="sprite" width="${size}" height="${size}" viewBox="0 0 8 8" ` +
+  return `<svg class="sprite" width="${size}" height="${size}" viewBox="0 0 ${n} ${n}" ` +
          `shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${rects}</svg>`;
 }
 
