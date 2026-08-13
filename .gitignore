@@ -2,3 +2,6 @@
 Thumbs.db
 desktop.ini
 .DS_Store
+
+node_modules/
+src-tauri/target/
