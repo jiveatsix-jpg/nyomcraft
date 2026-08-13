@@ -26,6 +26,12 @@ Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
 - **Despensa** — biblioteca de ingredientes. Cada uno tiene nombre, categoría, unidad por
   defecto y un sprite. El sprite se autocompleta a partir del nombre (`guessIcon` en
   `js/icons.js`) salvo que elijas otro a mano.
+- **Recetario de ejemplo** — una instalación nueva arranca con 50 ingredientes y 16 recetas:
+  6 de cocina (tortilla de patatas, gazpacho, pollo al ajillo, guacamole, flan de huevo,
+  alioli...) y una bebida por cada uno de los 9 vasos del directorio de cristalería (mojito,
+  margarita, gin-tonic, daiquiri, sangría, mimosa, old fashioned, michelada, lemon drop). Es
+  contenido semilla: solo aparece en `localStorage` vacío, así que no toca instalaciones que
+  ya tengan datos.
 - **Fichas de receta** — nombre, icono, categoría, dificultad, tiempo y raciones. Para
   cócteles, zumos y demás líquidos (categoría «Bebida»), también un **vaso o copa de
   servicio** opcional: 9 tipos de cristalería a 8×8 (vaso corto, tubo, cóctel, balón de
