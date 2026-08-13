@@ -22,6 +22,14 @@
     <button class="tab" data-view="index">Indice</button>
     <button class="tab" data-view="pantry">Despensa</button>
   </nav>
+
+  <div class="data-actions">
+    <button class="btn small blue" id="export"
+            title="Descargar todo el recetario (recetas + ingredientes) en un archivo JSON">Exportar JSON</button>
+    <button class="btn small" id="import"
+            title="Cargar un recetario desde un archivo JSON">Importar</button>
+    <input type="file" id="import-file" accept="application/json,.json" hidden>
+  </div>
 </header>
 
 <main id="view" class="view"></main>

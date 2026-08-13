@@ -24,8 +24,12 @@ python -m http.server 5173
 - **Pasos de elaboración** — lista numerada, reordenable con `^` / `v`.
 - **Índice** — rejilla de fichas con buscador (por nombre de receta *o* de ingrediente) y
   filtro por categoría.
-- **Exportar / importar** — JSON, desde la pestaña Despensa. La importación fusiona por `id`.
-- Imprimir una ficha (`Imprimir`) usa una hoja de estilos aparte, en blanco y negro.
+- **Exportar / importar** — botones fijos en la cabecera, visibles desde cualquier vista.
+  `Exportar JSON` descarga el recetario entero (recetas *e* ingredientes) en
+  `nomcraft-recetario.json`; la importación fusiona por `id`, sin pisar lo que ya tienes.
+- **Exportar PDF** — en la ficha. Abre el diálogo de impresión del navegador, donde el destino
+  a elegir es «Guardar como PDF»; la hoja `@media print` reformatea la ficha en blanco y negro
+  y evita cortar pasos entre páginas. El nombre sugerido del archivo es el de la receta.
 
 ## Estructura
 

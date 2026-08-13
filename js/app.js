@@ -186,7 +186,7 @@ function renderRecipe(id) {
       <button class="btn ghost" id="back">&lt; Indice</button>
       <div class="grow"></div>
       <button class="btn blue" id="edit">Editar</button>
-      <button class="btn" id="print">Imprimir</button>
+      <button class="btn" id="pdf" title="Guardar esta ficha como PDF">Exportar PDF</button>
       <button class="btn red" id="del">Borrar</button>
     </div>
 
@@ -221,7 +221,17 @@ function renderRecipe(id) {
     </section>`;
 
   $('#back').addEventListener('click', () => go('index'));
-  $('#print').addEventListener('click', () => window.print());
+  // El navegador toma el título del documento como nombre sugerido del PDF.
+  $('#pdf').addEventListener('click', () => {
+    const prev = document.title;
+    document.title = r.name.replace(/[\\/:*?"<>|]/g, '-').trim() || 'receta';
+    const restore = () => {
+      document.title = prev;
+      window.removeEventListener('afterprint', restore);
+    };
+    window.addEventListener('afterprint', restore);
+    window.print();
+  });
   $('#edit').addEventListener('click', () => {
     draft = JSON.parse(JSON.stringify(r));
     if (!draft.steps.length) draft.steps = [''];
@@ -506,11 +516,8 @@ function renderPantry() {
       : '<div class="empty pbox">' + iconSVG('legumbre', 48) + '<p>La despensa está vacía.</p></div>'}
 
     <div class="hr"></div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn blue" id="p-export">Exportar datos</button>
-      <button class="btn" id="p-import">Importar datos</button>
-      <input type="file" id="p-file" accept="application/json,.json" hidden>
-    </div>`;
+    <p class="notes">Copia de seguridad: los botones <b>Exportar JSON</b> / <b>Importar</b> de la
+    cabecera guardan y recuperan el recetario entero — recetas e ingredientes.</p>`;
 
   // el icono se autocompleta mientras escribes, salvo que lo elijas a mano
   let manualIcon = false;
@@ -554,52 +561,56 @@ function renderPantry() {
     renderPantry();
   }));
 
-  $('#p-export').addEventListener('click', async () => {
-    const json = Store.exportJSON();
-    if (window.__TAURI__ && window.__TAURI__.dialog) {
-      try {
-        const { save } = window.__TAURI__.dialog;
-        const { writeTextFile } = window.__TAURI__.fs;
-        const path = await save({
-          filters: [{ name: 'Recetario JSON', extensions: ['json'] }],
-          defaultPath: 'nomcraft-recetario.json',
-        });
-        if (!path) return;
-        await writeTextFile(path, json);
-        toast(`Exportado en: ${path}`);
-      } catch (err) {
-        toast('Error al exportar', true);
-      }
-      return;
-    }
-    const blob = new Blob([json], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'nomcraft-recetario.json';
-    a.click();
-    URL.revokeObjectURL(a.href);
-    toast('Datos exportados');
-  });
-
-  $('#p-import').addEventListener('click', () => $('#p-file').click());
-  $('#p-file').addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const res = Store.importJSON(reader.result, 'merge');
-        toast(`Importado: ${res.ings} ingr. / ${res.recs} recetas`);
-        renderPantry();
-      } catch (err) {
-        toast('Archivo no válido', true);
-      }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
-  });
-
   status(`DESPENSA: ${list.length} INGREDIENTES`, `RECETAS: ${Store.data.recipes.length}`);
+}
+
+/* ---------------------------------------------------------------- datos (global) */
+
+const resumen = () =>
+  `${Store.data.recipes.length} recetas / ${Store.data.ingredients.length} ingr.`;
+
+async function exportAll() {
+  const json = Store.exportJSON();
+
+  // en la app de escritorio (Tauri) usamos el dialogo nativo de guardado
+  if (window.__TAURI__ && window.__TAURI__.dialog) {
+    try {
+      const { save } = window.__TAURI__.dialog;
+      const { writeTextFile } = window.__TAURI__.fs;
+      const path = await save({
+        filters: [{ name: 'Recetario JSON', extensions: ['json'] }],
+        defaultPath: 'nomcraft-recetario.json'
+      });
+      if (!path) return;
+      await writeTextFile(path, json);
+      toast(`Exportado en: ${path}`);
+    } catch (err) {
+      toast('Error al exportar', true);
+    }
+    return;
+  }
+
+  const blob = new Blob([json], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'nomcraft-recetario.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast(`Exportado: ${resumen()}`);
+}
+
+function importAll(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const res = Store.importJSON(reader.result, 'merge');
+      toast(`Importado: ${res.recs} recetas / ${res.ings} ingr.`);
+      render();
+    } catch (err) {
+      toast('Archivo no válido', true);
+    }
+  };
+  reader.readAsText(file);
 }
 
 /* ---------------------------------------------------------------- arranque */
@@ -613,6 +624,14 @@ document.addEventListener('keydown', e => {
 $('#tabs').addEventListener('click', e => {
   const btn = e.target.closest('.tab');
   if (btn) go(btn.dataset.view);
+});
+
+$('#export').addEventListener('click', exportAll);
+$('#import').addEventListener('click', () => $('#import-file').click());
+$('#import-file').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) importAll(file);
+  e.target.value = '';
 });
 
 Store.load();
