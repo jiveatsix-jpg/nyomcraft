@@ -3,6 +3,21 @@
 Notas para quien (humano o IA) toque este repo después y se encuentre con
 decisiones que no son obvias mirando solo el código actual.
 
+## 2026-08-13 — Directorio de masas (feature)
+
+Sin implicaciones para el empaquetado: no toca `vite.config.js`,
+`tauri.conf.json`, `Cargo.toml` ni las capabilities. Se anota solo por el
+punto que afecta al build:
+
+- **Se añadió un script global nuevo**, `masas.js` (catálogo de masas en
+  porcentaje de panadero). Siguiendo la nota de la entrada de abajo, va en
+  `www/public/js/`, no en `www/` directo — es un script clásico más, sin
+  `type="module"`, y desde `public/` se copia verbatim a `dist/`. El
+  `<script src="js/masas.js">` de `index.html` se cargó antes que `app.js`
+  porque este consume `MASAS`, `masaTotalPct()` y `masaHidratacion()`.
+- Verificado tras el cambio que los cuatro scripts siguen resolviéndose y
+  que la app arranca sin errores de consola.
+
 ## 2026-08-13 — Migración a Vite + fix del crash al exportar JSON
 
 **Contexto**: este repo se empaqueta como app de escritorio Tauri para el

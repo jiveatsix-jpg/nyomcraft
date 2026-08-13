@@ -1,20 +1,21 @@
 # ÑOMCRAFT
 
-Recetario con estética pixel. La app es HTML + CSS + JS a pelo, sin dependencias ni build.
-Los datos se guardan en el `localStorage` del navegador.
+Recetario con estética pixel. La app en sí es HTML + CSS + JS a pelo, sin ninguna dependencia
+de runtime; Vite y Tauri solo intervienen para servirla y empaquetarla. Los datos se guardan
+en el `localStorage`.
 
 Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
 
-- **En el navegador** — doble clic en `www/index.html`, o sirviéndolo en local:
+- **En el navegador**:
 
   ```bash
-  python -m http.server 5173 --directory www
+  npm install
+  npm run dev
   ```
 
 - **Como aplicación de escritorio** — envoltorio [Tauri](https://tauri.app):
 
   ```bash
-  npm install
   npm run tauri dev
   ```
 
@@ -33,6 +34,15 @@ Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
 - **Pasos de elaboración** — lista numerada, reordenable con `^` / `v`.
 - **Índice** — rejilla de fichas con buscador (por nombre de receta *o* de ingrediente) y
   filtro por categoría.
+- **Directorio de masas** — 21 masas clásicas (panes, pizza, hojaldradas, quebradas, frescas,
+  batidas y el cultivo de masa madre) escritas en **porcentaje de panadero**: la harina es el
+  100 % y el resto se expresa respecto a ella. Cada masa trae su calculador, que funciona en
+  dos sentidos:
+  - *Desde la harina* — fijas los gramos de harina y salen las demás cantidades.
+  - *Desde las piezas* — dices «4 bolas de 250 g» y despeja al revés cuánta harina hace falta.
+
+  El botón **Guardar como ficha** vuelca las cantidades ya calculadas al recetario como una
+  receta normal, dando de alta en la despensa los ingredientes que falten.
 - **Exportar / importar** — botones fijos en la cabecera, visibles desde cualquier vista.
   `Exportar JSON` descarga el recetario entero (recetas *e* ingredientes) en
   `nomcraft-recetario.json`; la importación fusiona por `id`, sin pisar lo que ya tienes.
@@ -46,20 +56,27 @@ Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
 www/                 la app — fuente unica, la comparten navegador y escritorio
   index.html         maquetación base y contenedores
   css/style.css      tema pixel: paleta, bordes de 4 px, botones con relieve, scanlines
-  js/icons.js        sprites 8x8 dibujados a mano + renderizador a SVG + guessIcon()
-  js/store.js        modelo de datos y persistencia en localStorage (clave nomcraft.v1)
-  js/app.js          vistas (índice / ficha / editor / despensa) y eventos
-src-tauri/           envoltorio de escritorio; frontendDist apunta a ../www
-package.json         solo la CLI de Tauri — la app en sí no tiene dependencias
+  public/js/icons.js   sprites 8x8 dibujados a mano + renderizador a SVG + guessIcon()
+  public/js/store.js   modelo de datos y persistencia en localStorage (clave nomcraft.v1)
+  public/js/masas.js   catálogo de masas en porcentaje de panadero (datos, sin lógica de UI)
+  public/js/app.js     vistas (índice / ficha / editor / masas / despensa) y eventos
+vite.config.js       root: www, build a dist/
+src-tauri/           envoltorio de escritorio; frontendDist apunta a ../dist
+package.json         Vite y la CLI de Tauri — la app en sí no tiene dependencias
 ```
 
-No hay copias duplicadas: `www/` es el único sitio donde se toca la app. Tauri la empaqueta
-desde ahí y el navegador la abre desde ahí.
+No hay copias duplicadas: `www/` es el único sitio donde se toca la app. Vite construye
+`dist/` y Tauri empaqueta eso.
+
+**Los scripts van en `www/public/js/`**, no en `www/js/`. Son scripts clásicos —comparten
+scope global y el orden de carga importa—, y Vite solo copia verbatim lo que vive en
+`public/`. Un script global colocado fuera de `public/` desaparece del build sin error.
+Está explicado a fondo en [CHANGELOG.md](CHANGELOG.md).
 
 ## Añadir un sprite
 
-En `www/js/icons.js`, una entrada más en `ICONS`: una paleta de tres colores y ocho filas de
-ocho caracteres, donde `.` es transparente y `1`/`2`/`3` son índices de la paleta.
+En `www/public/js/icons.js`, una entrada más en `ICONS`: una paleta de tres colores y ocho
+filas de ocho caracteres, donde `.` es transparente y `1`/`2`/`3` son índices de la paleta.
 
 ```js
 kiwi: { label: 'Kiwi', p: ['#7ab648', '#ffffff', '#3d2b1f'], d: [
@@ -69,6 +86,27 @@ kiwi: { label: 'Kiwi', p: ['#7ab648', '#ffffff', '#3d2b1f'], d: [
 
 Aparece solo en los dos selectores de icono. Para que `guessIcon` lo elija automáticamente,
 añade su patrón a la lista `map` de esa misma función.
+
+## Añadir una masa
+
+En `www/public/js/masas.js`, una entrada más en `MASAS`. Los porcentajes son **sobre la
+harina**, que va siempre primera y al 100 %; por eso la suma pasa de 100. Marca con
+`liq: true` lo que cuente como hidratación y el calculador hace el resto.
+
+```js
+{
+  id: 'pan-de-espelta', name: 'Pan de espelta', icon: 'pan', fam: 'Pan',
+  hint: 'Absorbe menos agua que el trigo.',
+  ing: [
+    { n: 'Harina de espelta', p: 100 },
+    { n: 'Agua', p: 60, liq: true },
+    { n: 'Sal', p: 2 },
+    { n: 'Levadura fresca', p: 1, nota: 'o 1/3 de seca' }
+  ],
+  steps: ['...'],
+  notes: '...'
+}
+```
 
 ## Notas
 

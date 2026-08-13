@@ -362,6 +362,52 @@ ol.steps li::before {
 }
 .sticky-actions .spacer { flex: 1; }
 
+/* ---------- calculador de masas ---------- */
+
+.calc-modes { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+
+.calc-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  max-width: 420px;
+}
+.calc-fields[hidden] { display: none; }
+
+.calc-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg2);
+  border: var(--px) solid var(--ink);
+}
+.calc-table th, .calc-table td {
+  padding: 9px 11px;
+  text-align: left;
+  border-bottom: 2px dashed var(--line);
+}
+.calc-table thead th, .calc-table tfoot th {
+  font-family: var(--pixel); font-size: 8px; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--dim);
+}
+.calc-table thead th { background: var(--panel); }
+.calc-table tfoot th { background: var(--panel); color: var(--text); border-bottom: 0; }
+.calc-table .num { text-align: right; white-space: nowrap; }
+.calc-table .qty { font-family: var(--pixel); font-size: 9px; color: var(--yellow); }
+.calc-table tfoot .num { font-family: var(--pixel); font-size: 9px; color: var(--green); }
+
+/* la harina es la referencia: el 100 % del que cuelga todo lo demas */
+.calc-table tr.base td { background: rgba(255, 205, 77, .10); }
+.calc-table tr.base td:first-child { box-shadow: inset 4px 0 0 var(--yellow); }
+
+.calc-table .nota {
+  display: block; color: var(--dim); font-size: 16px;
+}
+
+@media (max-width: 520px) {
+  .calc-table th, .calc-table td { padding: 7px 8px; }
+  .calc-table .nota { font-size: 15px; }
+}
+
 /* ---------- despensa ---------- */
 
 .pantry-grid {

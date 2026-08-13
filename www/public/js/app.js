@@ -54,10 +54,17 @@ function fmtQty(item) {
 
 /* ---------------------------------------------------------------- navegación */
 
+// que pestaña queda encendida en cada vista
+const TAB_OF = {
+  index: 'index', recipe: 'index', edit: 'index',
+  masas: 'masas', masa: 'masas',
+  pantry: 'pantry'
+};
+
 function go(tab, opts = {}) {
   ui.tab = tab;
   Object.assign(ui, opts);
-  $$('#tabs .tab').forEach(b => b.classList.toggle('on', b.dataset.view === (tab === 'pantry' ? 'pantry' : 'index')));
+  $$('#tabs .tab').forEach(b => b.classList.toggle('on', b.dataset.view === (TAB_OF[tab] || 'index')));
   window.scrollTo(0, 0);
   render();
 }
@@ -66,6 +73,8 @@ function render() {
   if (ui.tab === 'pantry') return renderPantry();
   if (ui.tab === 'recipe') return renderRecipe(ui.id);
   if (ui.tab === 'edit') return renderEditor();
+  if (ui.tab === 'masas') return renderMasas();
+  if (ui.tab === 'masa') return renderMasa(ui.masaId);
   return renderIndex();
 }
 
@@ -564,6 +573,258 @@ function renderPantry() {
   status(`DESPENSA: ${list.length} INGREDIENTES`, `RECETAS: ${Store.data.recipes.length}`);
 }
 
+/* ---------------------------------------------------------------- MASAS */
+
+const FAM_COLOR = {
+  Pan: 'yellow', Pizza: 'red', Enriquecida: 'pink', Hojaldrada: 'blue',
+  Quebrada: 'dim', Fresca: 'green', Batida: 'blue', Cultivo: 'dim'
+};
+
+/** Redondeo util en cocina: los gramos gordos enteros, las pizcas con decimal. */
+function fmtG(n) {
+  if (!isFinite(n) || n <= 0) return '0 g';
+  if (n < 1) return `${n.toFixed(2)} g`;
+  if (n < 10) return `${n.toFixed(1)} g`;
+  return `${Math.round(n)} g`;
+}
+
+function renderMasas() {
+  const q = (ui.masaSearch || '').trim().toLowerCase();
+  const fam = ui.masaFam || '';
+
+  let list = MASAS;
+  if (fam) list = list.filter(m => m.fam === fam);
+  if (q) list = list.filter(m =>
+    m.name.toLowerCase().includes(q) ||
+    m.fam.toLowerCase().includes(q) ||
+    m.ing.some(i => i.n.toLowerCase().includes(q)));
+
+  const cards = list.map(m => `
+    <article class="card pbox" data-masa="${m.id}" role="button" tabindex="0"
+             aria-label="Abrir masa ${esc(m.name)}">
+      <div class="card-top">
+        ${iconSVG(m.icon, 40)}
+        <div class="card-title">${esc(m.name)}</div>
+      </div>
+      <div class="ficha-tags">
+        <span class="tag ${FAM_COLOR[m.fam] || 'dim'}">${esc(deacc(m.fam))}</span>
+        <span class="tag dim">${masaHidratacion(m)} % hidr.</span>
+      </div>
+      <div class="card-meta"><span>${esc(m.hint)}</span></div>
+    </article>`).join('');
+
+  view.innerHTML = `
+    <div class="toolbar">
+      <div class="grow">
+        <input type="search" id="mq" placeholder="Buscar masa o ingrediente..." value="${esc(ui.masaSearch || '')}">
+      </div>
+      <select id="mfam" style="width:auto">
+        <option value="">Todas las familias</option>
+        ${options(MASA_FAMS, fam)}
+      </select>
+    </div>
+
+    <h2 class="sec">Masas — ${list.length} de ${MASAS.length}</h2>
+    <p class="notes" style="margin:-6px 0 18px">
+      Recetas en porcentaje de panadero. Abre cualquiera y fija los gramos de harina:
+      el resto de cantidades se calculan solas.</p>
+
+    <div class="grid">${cards || '<p class="notes">Ninguna masa coincide.</p>'}</div>`;
+
+  const search = $('#mq');
+  search.addEventListener('input', e => {
+    ui.masaSearch = e.target.value;
+    const pos = e.target.selectionStart;
+    renderMasas();
+    const s2 = $('#mq');
+    s2.focus();
+    s2.setSelectionRange(pos, pos);
+  });
+  $('#mfam').addEventListener('change', e => { ui.masaFam = e.target.value; renderMasas(); });
+
+  $$('[data-masa]').forEach(el => {
+    const open = () => go('masa', { masaId: el.dataset.masa });
+    el.addEventListener('click', open);
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+    });
+  });
+
+  status(`MASAS: ${MASAS.length}`, 'PORCENTAJE DE PANADERO');
+}
+
+function renderMasa(id) {
+  const m = MASAS.find(x => x.id === id);
+  if (!m) { toast('Masa no encontrada', true); return go('masas'); }
+
+  const totalPct = masaTotalPct(m);
+  if (ui.masaFlour == null) ui.masaFlour = 500;
+  if (ui.masaPieces == null) ui.masaPieces = 4;
+  if (ui.masaPieceW == null) ui.masaPieceW = 250;
+  ui.masaMode = ui.masaMode || 'harina';
+
+  const steps = m.steps.map(s => `<li><span>${esc(s)}</span></li>`).join('');
+
+  view.innerHTML = `
+    <div class="toolbar">
+      <button class="btn ghost" id="back">&lt; Masas</button>
+      <div class="grow"></div>
+      <button class="btn green" id="to-ficha" title="Crear una receta en el índice con estas cantidades">Guardar como ficha</button>
+    </div>
+
+    <section class="ficha pbox">
+      <div class="ficha-head">
+        ${iconSVG(m.icon, 64)}
+        <div style="flex:1;min-width:200px">
+          <h2>${esc(m.name)}</h2>
+          <div class="ficha-tags">
+            <span class="tag ${FAM_COLOR[m.fam] || 'dim'}">${esc(deacc(m.fam))}</span>
+            <span class="tag dim">${masaHidratacion(m)} % hidratacion</span>
+            <span class="tag dim">${m.ing.length} ingredientes</span>
+          </div>
+          <p class="notes" style="margin:10px 0 0">${esc(m.hint)}</p>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <h3 class="sub">Calculador</h3>
+      <div class="calc-modes">
+        <button class="btn small ${ui.masaMode === 'harina' ? 'green' : 'ghost'}" data-mode="harina">Desde la harina</button>
+        <button class="btn small ${ui.masaMode === 'piezas' ? 'green' : 'ghost'}" data-mode="piezas">Desde las piezas</button>
+      </div>
+
+      <div class="calc-fields" id="f-harina" ${ui.masaMode === 'harina' ? '' : 'hidden'}>
+        <label class="fld"><span>Gramos de harina</span>
+          <input type="number" id="c-flour" min="1" step="10" value="${ui.masaFlour}"></label>
+      </div>
+
+      <div class="calc-fields" id="f-piezas" ${ui.masaMode === 'piezas' ? '' : 'hidden'}>
+        <label class="fld"><span>Nº de piezas</span>
+          <input type="number" id="c-pieces" min="1" step="1" value="${ui.masaPieces}"></label>
+        <label class="fld"><span>Peso por pieza (g)</span>
+          <input type="number" id="c-piecew" min="1" step="10" value="${ui.masaPieceW}"></label>
+      </div>
+
+      <div class="ficha-tags" id="calc-chips" style="margin:14px 0"></div>
+
+      <table class="calc-table">
+        <thead><tr><th>Ingrediente</th><th class="num">%</th><th class="num">Cantidad</th></tr></thead>
+        <tbody id="calc-rows"></tbody>
+        <tfoot><tr><th>Masa total</th><th class="num">${totalPct.toFixed(1)}</th>
+          <th class="num" id="calc-total"></th></tr></tfoot>
+      </table>
+
+      <div class="hr"></div>
+
+      <h3 class="sub">Elaboracion</h3>
+      <ol class="steps">${steps}</ol>
+
+      <div class="hr"></div>
+      <h3 class="sub">Notas</h3>
+      <p class="notes">${esc(m.notes)}</p>
+    </section>`;
+
+  $('#back').addEventListener('click', () => go('masas'));
+
+  $$('[data-mode]').forEach(b => b.addEventListener('click', () => {
+    ui.masaMode = b.dataset.mode;
+    renderMasa(id);
+  }));
+
+  $('#c-flour').addEventListener('input', e => {
+    ui.masaFlour = Math.max(0, +e.target.value || 0);
+    drawCalc(m);
+  });
+  $('#c-pieces').addEventListener('input', e => {
+    ui.masaPieces = Math.max(0, +e.target.value || 0);
+    drawCalc(m);
+  });
+  $('#c-piecew').addEventListener('input', e => {
+    ui.masaPieceW = Math.max(0, +e.target.value || 0);
+    drawCalc(m);
+  });
+
+  $('#to-ficha').addEventListener('click', () => masaToFicha(m));
+
+  drawCalc(m);
+  status(`MASA: ${caps(m.name)}`, `${masaHidratacion(m)}% HIDRATACION`);
+}
+
+/** Gramos de harina segun el modo activo. En modo piezas se despeja al reves:
+    si 100 g de harina dan `totalPct` g de masa, para X g de masa hacen falta
+    X * 100 / totalPct g de harina. */
+function flourFor(masa) {
+  if (ui.masaMode === 'piezas') {
+    const total = (ui.masaPieces || 0) * (ui.masaPieceW || 0);
+    return total * 100 / masaTotalPct(masa);
+  }
+  return ui.masaFlour || 0;
+}
+
+function drawCalc(masa) {
+  const flour = flourFor(masa);
+  const total = flour * masaTotalPct(masa) / 100;
+
+  const rows = $('#calc-rows');
+  if (!rows) return;
+
+  // la harina es la referencia; en la masa madre el agua tambien va al 100 %,
+  // asi que se marca solo la primera coincidencia, no todas
+  const baseIdx = masa.ing.findIndex(i => i.p === 100);
+
+  rows.innerHTML = masa.ing.map((i, n) => `
+    <tr${n === baseIdx ? ' class="base"' : ''}>
+      <td>${esc(i.n)}${i.nota ? `<span class="nota">${esc(i.nota)}</span>` : ''}</td>
+      <td class="num">${i.p}</td>
+      <td class="num qty">${fmtG(i.p * flour / 100)}</td>
+    </tr>`).join('');
+
+  $('#calc-total').textContent = fmtG(total);
+
+  const chips = [`<span class="tag yellow">Harina: ${fmtG(flour)}</span>`,
+                 `<span class="tag dim">Masa total: ${fmtG(total)}</span>`];
+  if (ui.masaMode === 'piezas') {
+    chips.push(`<span class="tag dim">${ui.masaPieces} x ${ui.masaPieceW} g</span>`);
+  } else {
+    const piezas = ui.masaPieceW ? total / ui.masaPieceW : 0;
+    chips.push(`<span class="tag dim">≈ ${piezas.toFixed(1)} piezas de ${ui.masaPieceW} g</span>`);
+  }
+  $('#calc-chips').innerHTML = chips.join('');
+}
+
+/** Vuelca la masa calculada al recetario como una ficha normal, dando de alta
+    en la despensa los ingredientes que falten. */
+function masaToFicha(masa) {
+  const flour = flourFor(masa);
+  if (flour <= 0) return toast('Pon una cantidad primero', true);
+
+  const items = masa.ing.map(i => {
+    const name = i.n;
+    let ing = Store.data.ingredients.find(x => x.name.toLowerCase() === name.toLowerCase());
+    if (!ing) {
+      const res = Store.addIngredient({ name, cat: 'Otro', unit: 'g' });
+      ing = res && (res.ing || res.dupe);
+    }
+    return ing ? { ing: ing.id, qty: Math.round(i.p * flour / 100 * 10) / 10, unit: 'g' } : null;
+  }).filter(Boolean);
+
+  const rec = Store.blankRecipe();
+  rec.name = `${masa.name} (${Math.round(flour)} g de harina)`;
+  rec.icon = masa.icon;
+  rec.cat = 'Otro';
+  rec.diff = 'Media';
+  rec.time = 120;
+  rec.portions = ui.masaMode === 'piezas' ? (ui.masaPieces || 1) : 1;
+  rec.items = items;
+  rec.steps = masa.steps.slice();
+  rec.notes = `${masa.notes}\n\nCalculado desde el directorio de masas: ${masaTotalPct(masa).toFixed(1)} % sobre la harina.`;
+
+  Store.saveRecipe(rec);
+  toast('Ficha creada en el índice');
+  go('recipe', { id: rec.id });
+}
+
 /* ---------------------------------------------------------------- datos (global) */
 
 const resumen = () =>
@@ -620,6 +881,7 @@ document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
   if (ui.tab === 'edit') { ui.isNew ? go('index') : go('recipe', { id: draft.id }); }
   else if (ui.tab === 'recipe') go('index');
+  else if (ui.tab === 'masa') go('masas');
 });
 
 $('#tabs').addEventListener('click', e => {
