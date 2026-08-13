@@ -576,13 +576,14 @@ async function exportAll() {
   if (window.__TAURI__ && window.__TAURI__.dialog) {
     try {
       const { save } = window.__TAURI__.dialog;
-      const { writeTextFile } = window.__TAURI__.fs;
       const path = await save({
         filters: [{ name: 'Recetario JSON', extensions: ['json'] }],
         defaultPath: 'nomcraft-recetario.json'
       });
       if (!path) return;
-      await writeTextFile(path, json);
+      // comando propio (std::fs::write en Rust): evita el sistema de scopes
+      // del plugin fs, que por defecto no cubre rutas fuera de la app.
+      await window.__TAURI__.core.invoke('write_text_file', { path, contents: json });
       toast(`Exportado en: ${path}`);
     } catch (err) {
       toast('Error al exportar', true);

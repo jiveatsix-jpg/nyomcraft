@@ -4,7 +4,10 @@
   "version": "1.0.0",
   "identifier": "com.jiveatsix.nyomcraft",
   "build": {
-    "frontendDist": "../www"
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:3100",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build"
   },
   "app": {
     "withGlobalTauri": true,
