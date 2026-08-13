@@ -3,6 +3,28 @@
 Notas para quien (humano o IA) toque este repo después y se encuentre con
 decisiones que no son obvias mirando solo el código actual.
 
+## 2026-08-13 — Marcador de dudas: cambia el formato de los pasos
+
+Sin implicaciones para el empaquetado (no toca Vite, Tauri ni capabilities),
+pero **sí cambia el formato de los datos guardados**, que es lo que importa
+si alguien tiene una versión instalada:
+
+- Los pasos de una receta eran `string[]` y ahora son `[{ t, q }]`, donde `t`
+  es el texto y `q` la duda (`null` = sin duda, `''` = marcada sin nota,
+  `'texto'` = marcada con nota). Los ingredientes ganan el mismo campo `q`, y
+  la receta uno propio para la duda general.
+- **La migración es automática y en un solo sitio**: `normalizeRecipe()` en
+  `store.js`, llamada desde `load()`, `importJSON()`, `saveRecipe()` y
+  `seed()`. Convierte los pasos antiguos en cuanto se leen, así que una
+  instalación existente se actualiza sola al abrirla y ningún otro punto del
+  código tiene que preguntarse de qué versión vienen los datos. Verificado
+  sembrando localStorage con el formato viejo: el texto sobrevive intacto.
+- **Compatibilidad hacia atrás, no hacia delante**: un JSON exportado por una
+  versión anterior se importa sin problema (se normaliza al entrar). Al revés
+  no: un JSON exportado a partir de aquí, abierto en un build anterior,
+  mostraría los pasos vacíos, porque el código viejo espera strings y se
+  encontraría objetos. Relevante solo si conviven dos versiones instaladas.
+
 ## 2026-08-13 — Directorio de masas (feature)
 
 Sin implicaciones para el empaquetado: no toca `vite.config.js`,

@@ -52,6 +52,14 @@ function fmtQty(item) {
   return `${q} ${item.unit}`;
 }
 
+/** Marca de duda para la vista de lectura: el "?" amarillo y su nota si la tiene. */
+function marcaDuda(o) {
+  if (!tieneDuda(o)) return '';
+  const txt = (o.q || '').trim();
+  return `<span class="duda" title="${txt ? esc(txt) : 'Por confirmar'}">?</span>` +
+         (txt ? `<span class="duda-txt">${esc(txt)}</span>` : '');
+}
+
 /* ---------------------------------------------------------------- navegación */
 
 // que pestaña queda encendida en cada vista
@@ -85,6 +93,7 @@ function renderIndex() {
   let recipes = Store.data.recipes;
 
   if (ui.filter) recipes = recipes.filter(r => r.cat === ui.filter);
+  if (ui.soloDudas) recipes = recipes.filter(r => contarDudas(r) > 0);
   if (q) {
     recipes = recipes.filter(r => {
       if (r.name.toLowerCase().includes(q)) return true;
@@ -97,11 +106,13 @@ function renderIndex() {
 
   const cards = recipes.map(r => {
     const color = CAT_COLOR[r.cat] || 'dim';
+    const dudas = contarDudas(r);
     return `<article class="card pbox" data-open="${r.id}" role="button" tabindex="0"
-             aria-label="Abrir ficha ${esc(r.name)}">
+             aria-label="Abrir ficha ${esc(r.name)}${dudas ? `, ${dudas} por confirmar` : ''}">
       <div class="card-top">
         ${iconSVG(r.icon, 40)}
         <div class="card-title">${esc(r.name || 'Sin nombre')}</div>
+        ${dudas ? `<span class="duda" title="${dudas} cosa(s) por confirmar">?${dudas > 1 ? dudas : ''}</span>` : ''}
       </div>
       <div class="ficha-tags">
         <span class="tag ${color}">${esc(deacc(r.cat))}</span>
@@ -109,7 +120,7 @@ function renderIndex() {
       </div>
       <div class="card-meta">
         <span>${r.items.length} ingr.</span>
-        <span>${r.steps.filter(s => s.trim()).length} pasos</span>
+        <span>${r.steps.filter(s => s.t.trim()).length} pasos</span>
         <span>${r.time} min</span>
       </div>
     </article>`;
@@ -124,12 +135,14 @@ function renderIndex() {
         <option value="">Todas las categorías</option>
         ${options(REC_CATS, ui.filter)}
       </select>
+      <button class="btn ${ui.soloDudas ? 'yellow-on' : 'ghost'}" id="only-q"
+              title="Ver solo las recetas con algo por confirmar">? Por confirmar</button>
       <button class="btn green" id="new">+ Nueva receta</button>
     </div>
 
     <h2 class="sec">Indice — ${recipes.length} receta${recipes.length === 1 ? '' : 's'}</h2>
 
-    ${recipes.length || q || ui.filter ? '' : `
+    ${recipes.length || q || ui.filter || ui.soloDudas ? '' : `
       <div class="empty pbox">
         ${iconSVG('olla', 64)}
         <p>El recetario está vacío.<br>Crea tu primera ficha.</p>
@@ -153,6 +166,7 @@ function renderIndex() {
     s2.setSelectionRange(pos, pos);
   });
   $('#filter').addEventListener('change', e => { ui.filter = e.target.value; renderIndex(); });
+  $('#only-q').addEventListener('click', () => { ui.soloDudas = !ui.soloDudas; renderIndex(); });
   $('#new').addEventListener('click', newRecipe);
   $('#new-card').addEventListener('click', newRecipe);
   $$('[data-open]').forEach(el => {
@@ -180,15 +194,18 @@ function renderRecipe(id) {
 
   const ings = r.items.map(it => {
     const ing = Store.ingredient(it.ing);
-    return `<li>
+    return `<li${tieneDuda(it) ? ' class="con-duda"' : ''}>
       ${iconSVG(ing ? ing.icon : 'plato', 24)}
-      <span class="ing-name">${esc(ing ? ing.name : '(ingrediente borrado)')}</span>
+      <span class="ing-name">${esc(ing ? ing.name : '(ingrediente borrado)')}${marcaDuda(it)}</span>
       <span class="ing-qty">${esc(fmtQty(it))}</span>
     </li>`;
   }).join('') || '<li class="notes">Sin ingredientes.</li>';
 
-  const steps = r.steps.filter(s => s.trim()).map(s => `<li><span>${esc(s)}</span></li>`).join('')
-    || '<li class="notes">Sin pasos de elaboración.</li>';
+  const steps = r.steps.filter(s => s.t.trim())
+    .map(s => `<li${tieneDuda(s) ? ' class="con-duda"' : ''}><span>${esc(s.t)}${marcaDuda(s)}</span></li>`)
+    .join('') || '<li class="notes">Sin pasos de elaboración.</li>';
+
+  const dudas = contarDudas(r);
 
   view.innerHTML = `
     <div class="toolbar">
@@ -209,9 +226,15 @@ function renderRecipe(id) {
             <span class="tag dim">${esc(deacc(r.diff))}</span>
             <span class="tag dim">${r.time} min</span>
             <span class="tag dim">${r.portions} raciones</span>
+            ${dudas ? `<span class="tag yellow">${dudas} por confirmar</span>` : ''}
           </div>
         </div>
       </div>
+
+      ${tieneDuda(r) ? `<div class="duda-banner">
+        <span class="duda">?</span>
+        <span>${r.q.trim() ? esc(r.q) : 'Esta receta está pendiente de confirmar.'}</span>
+      </div>` : ''}
 
       <div class="hr"></div>
 
@@ -243,7 +266,7 @@ function renderRecipe(id) {
   });
   $('#edit').addEventListener('click', () => {
     draft = JSON.parse(JSON.stringify(r));
-    if (!draft.steps.length) draft.steps = [''];
+    if (!draft.steps.length) draft.steps = [{ t: '', q: null }];
     ui.isNew = false;
     go('edit');
   });
@@ -254,7 +277,9 @@ function renderRecipe(id) {
     go('index');
   });
 
-  status(`FICHA: ${caps(r.name)}`, `${r.items.length} INGR. / ${r.steps.filter(s => s.trim()).length} PASOS`);
+  status(`FICHA: ${caps(r.name)}`,
+    `${r.items.length} INGR. / ${r.steps.filter(s => s.t.trim()).length} PASOS` +
+    (dudas ? ` / ${dudas} POR CONFIRMAR` : ''));
 }
 
 /* ---------------------------------------------------------------- EDITOR */
@@ -311,6 +336,18 @@ function renderEditor() {
 
       <label class="fld"><span>Notas (opcional)</span>
         <textarea id="f-notes" placeholder="Conservación, trucos, variantes...">${esc(d.notes)}</textarea></label>
+
+      <div class="hr"></div>
+
+      <h3 class="sub">Duda general</h3>
+      <div class="duda-general">
+        <button class="btn small ${tieneDuda(d) ? 'yellow-on' : 'ghost'}" id="f-q"
+                title="Marcar la receta entera como pendiente de confirmar">?</button>
+        <span class="notes">Marca la receta entera si hay algo que confirmar antes de fiarte de ella.</span>
+      </div>
+      <div id="f-qbox">${tieneDuda(d) ? `
+        <input type="text" id="f-qtxt" value="${esc(d.q)}" maxlength="160"
+               placeholder="¿Qué hay que confirmar? (opcional)">` : ''}</div>
     </section>
 
     <div class="sticky-actions">
@@ -327,6 +364,22 @@ function renderEditor() {
   $('#f-port').addEventListener('input', e => { d.portions = +e.target.value || 1; });
   $('#f-notes').addEventListener('input', e => { d.notes = e.target.value; });
 
+  // la duda general se redibuja sola para no repintar todo el editor
+  $('#f-q').addEventListener('click', () => {
+    d.q = tieneDuda(d) ? null : '';
+    $('#f-q').className = `btn small ${tieneDuda(d) ? 'yellow-on' : 'ghost'}`;
+    $('#f-qbox').innerHTML = tieneDuda(d)
+      ? `<input type="text" id="f-qtxt" value="" maxlength="160"
+                placeholder="¿Qué hay que confirmar? (opcional)">` : '';
+    bindQtxt();
+    if ($('#f-qtxt')) $('#f-qtxt').focus();
+  });
+  function bindQtxt() {
+    const el = $('#f-qtxt');
+    if (el) el.addEventListener('input', e => { d.q = e.target.value; });
+  }
+  bindQtxt();
+
   $('#icon-pick').addEventListener('click', e => {
     const btn = e.target.closest('[data-icon]');
     if (!btn) return;
@@ -341,7 +394,7 @@ function renderEditor() {
   });
   $('#quick-ing').addEventListener('click', quickAddIngredient);
   $('#add-step').addEventListener('click', () => {
-    d.steps.push('');
+    d.steps.push({ t: '', q: null });
     drawStepRows();
     const areas = $$('#step-rows textarea');
     if (areas.length) areas[areas.length - 1].focus();
@@ -393,7 +446,15 @@ function drawIngRows() {
                placeholder="cant." ${free ? 'disabled' : ''}>
       </span>
       <span class="unit"><select data-f="unit">${options(UNITS, it.unit)}</select></span>
-      <span class="del"><button class="btn small red" data-f="del" title="Quitar">X</button></span>
+      <span class="del">
+        <button class="btn small ${tieneDuda(it) ? 'yellow-on' : 'ghost'}" data-f="q"
+                title="Marcar como pendiente de confirmar">?</button>
+        <button class="btn small red" data-f="del" title="Quitar">X</button>
+      </span>
+      ${tieneDuda(it) ? `<span class="qnote">
+        <input type="text" data-f="qtxt" value="${esc(it.q)}" maxlength="120"
+               placeholder="¿Qué hay que confirmar? (opcional)">
+      </span>` : ''}
     </div>`;
   }).join('');
 
@@ -417,6 +478,14 @@ function drawIngRows() {
       d.items.splice(i, 1);
       drawIngRows();
     });
+    row.querySelector('[data-f=q]').addEventListener('click', () => {
+      d.items[i].q = tieneDuda(d.items[i]) ? null : '';
+      drawIngRows();
+      const inp = box.querySelector(`.row-ing[data-i="${i}"] [data-f=qtxt]`);
+      if (inp) inp.focus();
+    });
+    const qtxt = row.querySelector('[data-f=qtxt]');
+    if (qtxt) qtxt.addEventListener('input', e => { d.items[i].q = e.target.value; });
   });
 }
 
@@ -430,17 +499,23 @@ function drawStepRows() {
   box.innerHTML = d.steps.map((s, i) => `
     <div class="row-step" data-i="${i}">
       <div class="num">${String(i + 1).padStart(2, '0')}</div>
-      <textarea data-f="text" placeholder="Describe el paso ${i + 1}...">${esc(s)}</textarea>
+      <textarea data-f="text" placeholder="Describe el paso ${i + 1}...">${esc(s.t)}</textarea>
       <div class="ctl">
         <button class="btn small ghost" data-f="up"   title="Subir"  ${i === 0 ? 'disabled' : ''}>^</button>
         <button class="btn small ghost" data-f="down" title="Bajar"  ${i === d.steps.length - 1 ? 'disabled' : ''}>v</button>
+        <button class="btn small ${tieneDuda(s) ? 'yellow-on' : 'ghost'}" data-f="q"
+                title="Marcar como pendiente de confirmar">?</button>
         <button class="btn small red"   data-f="del"  title="Quitar">X</button>
       </div>
+      ${tieneDuda(s) ? `<div class="qnote">
+        <input type="text" data-f="qtxt" value="${esc(s.q)}" maxlength="120"
+               placeholder="¿Qué hay que confirmar de este paso? (opcional)">
+      </div>` : ''}
     </div>`).join('');
 
   box.querySelectorAll('.row-step').forEach(row => {
     const i = +row.dataset.i;
-    row.querySelector('[data-f=text]').addEventListener('input', e => { d.steps[i] = e.target.value; });
+    row.querySelector('[data-f=text]').addEventListener('input', e => { d.steps[i].t = e.target.value; });
     row.querySelector('[data-f=up]').addEventListener('click', () => {
       if (i === 0) return;
       [d.steps[i - 1], d.steps[i]] = [d.steps[i], d.steps[i - 1]];
@@ -453,9 +528,17 @@ function drawStepRows() {
     });
     row.querySelector('[data-f=del]').addEventListener('click', () => {
       d.steps.splice(i, 1);
-      if (!d.steps.length) d.steps = [''];
+      if (!d.steps.length) d.steps = [{ t: '', q: null }];
       drawStepRows();
     });
+    row.querySelector('[data-f=q]').addEventListener('click', () => {
+      d.steps[i].q = tieneDuda(d.steps[i]) ? null : '';
+      drawStepRows();
+      const inp = box.querySelector(`.row-step[data-i="${i}"] [data-f=qtxt]`);
+      if (inp) inp.focus();
+    });
+    const qtxt = row.querySelector('[data-f=qtxt]');
+    if (qtxt) qtxt.addEventListener('input', e => { d.steps[i].q = e.target.value; });
   });
 }
 
@@ -479,8 +562,10 @@ function saveDraft() {
   const d = draft;
   d.name = d.name.trim();
   if (!d.name) return toast('La receta necesita un nombre', true);
-  d.steps = d.steps.map(s => s.trim()).filter(Boolean);
-  if (!d.steps.length) d.steps = [''];
+  // un paso vacío se descarta, salvo que lleve una duda colgada: eso es
+  // justamente "aquí falta algo por confirmar" y hay que conservarlo
+  d.steps = d.steps.map(s => ({ ...s, t: s.t.trim() })).filter(s => s.t || tieneDuda(s));
+  if (!d.steps.length) d.steps = [{ t: '', q: null }];
   Store.saveRecipe(d);
   toast('Ficha guardada');
   go('recipe', { id: d.id });
@@ -817,7 +902,7 @@ function masaToFicha(masa) {
   rec.time = 120;
   rec.portions = ui.masaMode === 'piezas' ? (ui.masaPieces || 1) : 1;
   rec.items = items;
-  rec.steps = masa.steps.slice();
+  rec.steps = masa.steps.map(t => ({ t, q: null }));
   rec.notes = `${masa.notes}\n\nCalculado desde el directorio de masas: ${masaTotalPct(masa).toFixed(1)} % sobre la harina.`;
 
   Store.saveRecipe(rec);

@@ -34,6 +34,11 @@ Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
 - **Pasos de elaboración** — lista numerada, reordenable con `^` / `v`.
 - **Índice** — rejilla de fichas con buscador (por nombre de receta *o* de ingrediente) y
   filtro por categoría.
+- **Dudas** — un `?` amarillo que marca «esto hay que confirmarlo». Se cuelga de un
+  ingrediente, de un paso o de la receta entera, y admite una nota opcional
+  («¿3 tomates o 3 kg?»). Las fichas con dudas se señalan en el índice con el número de
+  cosas pendientes, y el botón **? Por confirmar** deja ver solo esas. Se imprimen con la
+  ficha: son justo lo que hay que revisar.
 - **Directorio de masas** — 21 masas clásicas (panes, pizza, hojaldradas, quebradas, frescas,
   batidas y el cultivo de masa madre) escritas en **porcentaje de panadero**: la harina es el
   100 % y el resto se expresa respecto a ella. Cada masa trae su calculador, que funciona en

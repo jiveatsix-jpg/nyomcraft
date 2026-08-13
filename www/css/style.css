@@ -310,14 +310,16 @@ ol.steps li::before {
 
 .row-ing {
   display: grid;
-  grid-template-columns: 40px minmax(120px, 2fr) 88px minmax(96px, 1fr) 44px;
+  grid-template-columns: 40px minmax(120px, 2fr) 88px minmax(96px, 1fr) 96px;
   gap: 8px; align-items: center;
   padding: 8px; margin-bottom: 8px;
   background: var(--bg2);
   border: 2px solid var(--ink);
 }
+.row-ing > .del { display: flex; gap: 6px; justify-content: flex-end; }
+
 @media (max-width: 620px) {
-  .row-ing { grid-template-columns: 40px 1fr 44px; grid-template-areas: 'i s x' 'q q q' 'u u u'; }
+  .row-ing { grid-template-columns: 40px 1fr 96px; grid-template-areas: 'i s x' 'q q q' 'u u u'; }
   .row-ing > .ic { grid-area: i; } .row-ing > .sel { grid-area: s; }
   .row-ing > .qty { grid-area: q; } .row-ing > .unit { grid-area: u; }
   .row-ing > .del { grid-area: x; }
@@ -361,6 +363,59 @@ ol.steps li::before {
   z-index: 700;
 }
 .sticky-actions .spacer { flex: 1; }
+
+/* ---------- dudas: lo que esta pendiente de confirmar ---------- */
+
+/* el bloque de interrogacion: cuadrado amarillo con relieve, como los de plataformas */
+.duda {
+  display: inline-grid; place-items: center;
+  min-width: 22px; height: 22px;
+  margin-left: 8px; padding: 0 4px;
+  vertical-align: middle;
+  font-family: var(--pixel); font-size: 10px; line-height: 1;
+  color: var(--ink); background: var(--yellow);
+  border: 2px solid var(--ink);
+  box-shadow: inset 2px 2px 0 rgba(255,255,255,.55), inset -2px -2px 0 rgba(0,0,0,.25);
+  cursor: help;
+}
+
+.duda-txt {
+  display: block;
+  margin-top: 3px;
+  color: var(--yellow);
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.con-duda { background: rgba(255, 205, 77, .08); }
+ul.ing-list li.con-duda, ol.steps li.con-duda { box-shadow: inset 4px 0 0 var(--yellow); }
+ul.ing-list li.con-duda { padding-left: 14px; }
+ol.steps li.con-duda { padding-left: 10px; }
+
+.duda-banner {
+  display: flex; align-items: flex-start; gap: 4px;
+  margin-top: 16px; padding: 12px 14px;
+  background: rgba(255, 205, 77, .12);
+  border: 2px solid var(--yellow);
+}
+.duda-banner .duda { margin: 0 8px 0 0; flex: none; }
+
+/* boton de marcar/desmarcar en el editor */
+.btn.yellow-on {
+  background: var(--yellow);
+  color: var(--ink);
+  box-shadow:
+    inset var(--px) var(--px) 0 rgba(255,255,255,.5),
+    inset calc(var(--px) * -1) calc(var(--px) * -1) 0 rgba(0,0,0,.22),
+    0 var(--px) 0 rgba(0,0,0,.6);
+}
+
+.qnote { grid-column: 1 / -1; margin-top: 6px; }
+.qnote input { border-color: var(--yellow); }
+
+.duda-general { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.duda-general .notes { flex: 1; min-width: 0; }
+#f-qbox:not(:empty) { margin-top: 4px; }
 
 /* ---------- calculador de masas ---------- */
 
@@ -468,6 +523,16 @@ ol.steps li::before {
   .tag { background: #eee; color: #000; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   ol.steps li::before { background: #ddd; color: #000; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   .hr { background: #000; height: 1px; }
+
+  /* las dudas se imprimen: son justo lo que hay que revisar sobre el papel */
+  .duda {
+    background: #ffe680; color: #000; border-color: #000;
+    box-shadow: none;
+    print-color-adjust: exact; -webkit-print-color-adjust: exact;
+  }
+  .duda-txt { color: #7a5c00; }
+  .con-duda { background: #fffbe8; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .duda-banner { background: #fffbe8; border-color: #000; }
 
   /* nada de pasos ni ingredientes partidos entre dos páginas */
   ol.steps li, ul.ing-list li { break-inside: avoid; page-break-inside: avoid; }

@@ -8,6 +8,37 @@ const DIFFS = ['Fácil', 'Media', 'Difícil'];
 
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 
+/* ---- dudas ----
+   Una duda es una marca de "esto hay que confirmarlo". Se puede colgar de un
+   ingrediente, de un paso o de la receta entera, y lleva un texto opcional.
+   Convenio: q === null -> sin duda; q === '' -> marcado sin texto; q === 'algo'
+   -> marcado con nota. Se usa null y no false para poder guardar el texto en el
+   mismo campo sin un segundo booleano.                                        */
+
+const tieneDuda = o => !!o && o.q !== null && o.q !== undefined;
+
+/** Cuenta todas las dudas de una receta: general + ingredientes + pasos. */
+function contarDudas(rec) {
+  if (!rec) return 0;
+  return (tieneDuda(rec) ? 1 : 0)
+    + rec.items.filter(tieneDuda).length
+    + rec.steps.filter(tieneDuda).length;
+}
+
+/** Pone al día una receta venida de localStorage o de un JSON importado.
+    Los pasos eran strings sueltos y ahora son { t, q }; se convierten aquí para
+    que el resto del código no tenga que preguntarse de qué versión vienen. */
+function normalizeRecipe(rec) {
+  if (!rec) return rec;
+  if (!Array.isArray(rec.steps)) rec.steps = [];
+  rec.steps = rec.steps.map(s =>
+    typeof s === 'string' ? { t: s, q: null } : { t: s.t || '', q: s.q ?? null });
+  if (!Array.isArray(rec.items)) rec.items = [];
+  rec.items.forEach(i => { if (i.q === undefined) i.q = null; });
+  if (rec.q === undefined) rec.q = null;
+  return rec;
+}
+
 const Store = {
   KEY: 'nomcraft.v1',
   data: { ingredients: [], recipes: [] },
@@ -19,6 +50,7 @@ const Store = {
         const parsed = JSON.parse(raw);
         this.data.ingredients = Array.isArray(parsed.ingredients) ? parsed.ingredients : [];
         this.data.recipes = Array.isArray(parsed.recipes) ? parsed.recipes : [];
+        this.data.recipes.forEach(normalizeRecipe);
       }
     } catch (e) {
       console.warn('Datos corruptos, empiezo de cero.', e);
@@ -73,6 +105,7 @@ const Store = {
   recipe(id) { return this.data.recipes.find(r => r.id === id) || null; },
 
   saveRecipe(rec) {
+    normalizeRecipe(rec);
     const i = this.data.recipes.findIndex(r => r.id === rec.id);
     if (i >= 0) this.data.recipes[i] = rec; else this.data.recipes.unshift(rec);
     this.save();
@@ -87,7 +120,7 @@ const Store = {
   blankRecipe() {
     return {
       id: uid(), name: '', icon: 'plato', cat: 'Principal', diff: 'Fácil',
-      time: 30, portions: 2, items: [], steps: [''], notes: ''
+      time: 30, portions: 2, items: [], steps: [{ t: '', q: null }], notes: '', q: null
     };
   },
 
@@ -109,6 +142,7 @@ const Store = {
       const knownR = new Set(this.data.recipes.map(r => r.id));
       recs.forEach(r => { if (!knownR.has(r.id)) this.data.recipes.push(r); });
     }
+    this.data.recipes.forEach(normalizeRecipe);
     this.sortIngredients();
     this.save();
     return { ings: ings.length, recs: recs.length };
@@ -152,6 +186,7 @@ const Store = {
       ],
       notes: 'Aguantan 3 días en la nevera y mejoran al día siguiente.'
     }];
+    this.data.recipes.forEach(normalizeRecipe);
     this.save();
   }
 };
