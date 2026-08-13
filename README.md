@@ -1,15 +1,24 @@
 # ÑOMCRAFT
 
-Recetario con estética pixel. Sin dependencias, sin build, sin servidor: HTML + CSS + JS a pelo.
+Recetario con estética pixel. La app es HTML + CSS + JS a pelo, sin dependencias ni build.
 Los datos se guardan en el `localStorage` del navegador.
 
-## Abrir
+Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
 
-Doble clic en `index.html`, o sirviéndolo en local:
+- **En el navegador** — doble clic en `www/index.html`, o sirviéndolo en local:
 
-```bash
-python -m http.server 5173
-```
+  ```bash
+  python -m http.server 5173 --directory www
+  ```
+
+- **Como aplicación de escritorio** — envoltorio [Tauri](https://tauri.app):
+
+  ```bash
+  npm install
+  npm run tauri dev
+  ```
+
+  Para generar el instalable: `npm run tauri build`.
 
 ## Qué hace
 
@@ -34,16 +43,22 @@ python -m http.server 5173
 ## Estructura
 
 ```
-index.html          maquetación base y contenedores
-css/style.css       tema pixel: paleta, bordes de 4 px, botones con relieve, scanlines
-js/icons.js         sprites 8x8 dibujados a mano + renderizador a SVG + guessIcon()
-js/store.js         modelo de datos y persistencia en localStorage (clave nomcraft.v1)
-js/app.js           vistas (índice / ficha / editor / despensa) y eventos
+www/                 la app — fuente unica, la comparten navegador y escritorio
+  index.html         maquetación base y contenedores
+  css/style.css      tema pixel: paleta, bordes de 4 px, botones con relieve, scanlines
+  js/icons.js        sprites 8x8 dibujados a mano + renderizador a SVG + guessIcon()
+  js/store.js        modelo de datos y persistencia en localStorage (clave nomcraft.v1)
+  js/app.js          vistas (índice / ficha / editor / despensa) y eventos
+src-tauri/           envoltorio de escritorio; frontendDist apunta a ../www
+package.json         solo la CLI de Tauri — la app en sí no tiene dependencias
 ```
+
+No hay copias duplicadas: `www/` es el único sitio donde se toca la app. Tauri la empaqueta
+desde ahí y el navegador la abre desde ahí.
 
 ## Añadir un sprite
 
-En `js/icons.js`, una entrada más en `ICONS`: una paleta de tres colores y ocho filas de
+En `www/js/icons.js`, una entrada más en `ICONS`: una paleta de tres colores y ocho filas de
 ocho caracteres, donde `.` es transparente y `1`/`2`/`3` son índices de la paleta.
 
 ```js
