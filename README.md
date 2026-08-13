@@ -58,6 +58,16 @@ Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
 
   El botón **Guardar como ficha** vuelca las cantidades ya calculadas al recetario como una
   receta normal, dando de alta en la despensa los ingredientes que falten.
+
+  Las masas del catálogo son **editables** («Editar» en la ficha): nombre, familia, icono,
+  ingredientes con su porcentaje, pasos y notas. Una masa editada muestra una etiqueta
+  «Personalizada» y se puede devolver a su versión original con «Restablecer original». Los
+  cambios se guardan aparte del catálogo (no lo tocan) y viajan con **Exportar/Importar JSON**.
+
+  Cuando un ingrediente es en realidad otra masa de este mismo directorio — la «Masa madre
+  activa» de un pan de masa madre, por ejemplo — su nombre es un enlace: lleva directamente a
+  la receta de esa masa (la del cultivo, con sus días de refrescos) en vez de dejarte con un
+  ingrediente que no sabes de dónde sale.
 - **Exportar / importar** — botones fijos en la cabecera, visibles desde cualquier vista.
   `Exportar JSON` descarga el recetario entero (recetas *e* ingredientes) en
   `nomcraft-recetario.json`; la importación fusiona por `id`, sin pisar lo que ya tienes.

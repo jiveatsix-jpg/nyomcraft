@@ -42,7 +42,7 @@ function normalizeRecipe(rec) {
 
 const Store = {
   KEY: 'nomcraft.v1',
-  data: { ingredients: [], recipes: [] },
+  data: { ingredients: [], recipes: [], masaOverrides: {} },
 
   load() {
     try {
@@ -52,6 +52,8 @@ const Store = {
         this.data.ingredients = Array.isArray(parsed.ingredients) ? parsed.ingredients : [];
         this.data.recipes = Array.isArray(parsed.recipes) ? parsed.recipes : [];
         this.data.recipes.forEach(normalizeRecipe);
+        this.data.masaOverrides = (parsed.masaOverrides && typeof parsed.masaOverrides === 'object')
+          ? parsed.masaOverrides : {};
       }
     } catch (e) {
       console.warn('Datos corruptos, empiezo de cero.', e);
@@ -102,6 +104,36 @@ const Store = {
     return this.data.recipes.filter(r => r.items.some(it => it.ing === id)).length;
   },
 
+  /* ---- masas (el catalogo MASAS vive en masas.js; aquí solo la personalización) ---- */
+
+  /** La masa del catálogo tal cual, o con la personalización del usuario encima si
+      existe. La personalización sustituye por completo name/icon/fam/hint/ing/steps/
+      notes — nunca los mezcla campo a campo — porque siempre se guarda desde un
+      editor que ya partió del estado completo de la masa.                         */
+  getMasa(id) {
+    const base = MASAS.find(m => m.id === id);
+    if (!base) return null;
+    const ov = this.data.masaOverrides[id];
+    return ov ? { ...base, ...ov } : base;
+  },
+
+  /** Todo el catálogo, ya con las personalizaciones aplicadas — para listar/filtrar. */
+  allMasas() {
+    return MASAS.map(m => this.getMasa(m.id));
+  },
+
+  masaIsCustom(id) { return !!this.data.masaOverrides[id]; },
+
+  setMasaOverride(id, patch) {
+    this.data.masaOverrides[id] = patch;
+    this.save();
+  },
+
+  resetMasa(id) {
+    delete this.data.masaOverrides[id];
+    this.save();
+  },
+
   /* ---- recetas ---- */
   recipe(id) { return this.data.recipes.find(r => r.id === id) || null; },
 
@@ -135,14 +167,18 @@ const Store = {
     const parsed = JSON.parse(text);
     const ings = Array.isArray(parsed.ingredients) ? parsed.ingredients : [];
     const recs = Array.isArray(parsed.recipes) ? parsed.recipes : [];
+    const masaOv = (parsed.masaOverrides && typeof parsed.masaOverrides === 'object')
+      ? parsed.masaOverrides : {};
     if (mode === 'replace') {
       this.data.ingredients = ings;
       this.data.recipes = recs;
+      this.data.masaOverrides = masaOv;
     } else {
       const known = new Set(this.data.ingredients.map(i => i.id));
       ings.forEach(i => { if (!known.has(i.id)) this.data.ingredients.push(i); });
       const knownR = new Set(this.data.recipes.map(r => r.id));
       recs.forEach(r => { if (!knownR.has(r.id)) this.data.recipes.push(r); });
+      Object.assign(this.data.masaOverrides, masaOv);
     }
     this.data.recipes.forEach(normalizeRecipe);
     this.sortIngredients();

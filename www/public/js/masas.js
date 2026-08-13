@@ -34,7 +34,7 @@ const MASAS = [
     ing: [
       { n: 'Harina panificable', p: 100 },
       { n: 'Agua', p: 72, liq: true },
-      { n: 'Masa madre activa', p: 20, nota: 'al 100 % de hidratación' },
+      { n: 'Masa madre activa', p: 20, nota: 'al 100 % de hidratación', ref: 'masa-madre' },
       { n: 'Sal', p: 2 }
     ],
     steps: [
@@ -45,7 +45,8 @@ const MASAS = [
       'Forma y fermenta en frío (4 °C) entre 12 y 18 h.',
       'Hornea directo de la nevera: 250 °C con vapor 20 min, luego 210 °C otros 25 min.'
     ],
-    notes: 'La masa madre aporta harina y agua a partes iguales; ya está contada en los porcentajes.'
+    notes: 'La masa madre aporta harina y agua a partes iguales; ya está contada en los porcentajes. ' +
+      'Si todavía no tienes una activa, haz clic en el ingrediente para ir a "Masa madre (cultivo)": tarda unos 5 días en estar lista.'
   },
   {
     id: 'baguette', name: 'Baguette', icon: 'pan', fam: 'Pan',
@@ -111,7 +112,7 @@ const MASAS = [
     ing: [
       { n: 'Harina de centeno integral', p: 100 },
       { n: 'Agua', p: 78, liq: true },
-      { n: 'Masa madre de centeno', p: 25 },
+      { n: 'Masa madre de centeno', p: 25, nota: 'tu masa madre habitual', ref: 'masa-madre' },
       { n: 'Sal', p: 2 }
     ],
     steps: [
@@ -121,7 +122,9 @@ const MASAS = [
       'Horno a 240 °C 15 min, luego 180 °C durante 50 min más.',
       'Espera 24 h antes de cortarlo. No es negociable.'
     ],
-    notes: 'Cortarlo caliente lo deja gomoso. La miga necesita un día para asentar.'
+    notes: 'Cortarlo caliente lo deja gomoso. La miga necesita un día para asentar. ' +
+      'No hace falta una masa madre exclusiva de centeno: tu masa madre de trigo habitual (haz clic en el ' +
+      'ingrediente para ir a su receta) funciona bien; si quieres, aliméntala un par de veces con centeno antes.'
   },
   {
     id: 'focaccia', name: 'Focaccia', icon: 'pan', fam: 'Pan',

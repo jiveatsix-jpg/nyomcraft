@@ -328,6 +328,30 @@ ol.steps li::before {
   .row-ing > .del { grid-area: x; }
 }
 
+/* fila de ingrediente en el editor de masas: nombre, %, si es liquido, nota */
+.row-masa-ing {
+  display: grid;
+  grid-template-columns: minmax(120px, 2fr) 70px 90px minmax(120px, 1.4fr) 40px;
+  gap: 8px; align-items: center;
+  padding: 8px; margin-bottom: 8px;
+  background: var(--bg2);
+  border: 2px solid var(--ink);
+}
+.row-masa-ing .chk {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 15px; color: var(--dim); white-space: nowrap;
+}
+.row-masa-ing .chk input { width: auto; }
+
+@media (max-width: 700px) {
+  .row-masa-ing { grid-template-columns: 1fr 60px 40px; grid-template-areas: 'n n x' 'p c c' 'o o o'; }
+  .row-masa-ing input[data-f="n"] { grid-area: n; }
+  .row-masa-ing input[data-f="p"] { grid-area: p; }
+  .row-masa-ing .chk { grid-area: c; }
+  .row-masa-ing input[data-f="nota"] { grid-area: o; }
+  .row-masa-ing button[data-f="del"] { grid-area: x; }
+}
+
 .row-step {
   display: grid;
   grid-template-columns: 34px 1fr 40px;
@@ -460,6 +484,17 @@ ol.steps li.con-duda { padding-left: 10px; }
 .calc-table .nota {
   display: block; color: var(--dim); font-size: 16px;
 }
+
+/* ingrediente que en realidad es otra masa del directorio (p. ej. la masa
+   madre activa): se ve como un enlace, para no dejar al usuario sin saber
+   de donde sale */
+.ing-ref {
+  font: inherit; color: var(--yellow); background: none; border: none;
+  padding: 0; cursor: pointer; text-decoration: underline dashed;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.ing-ref:hover { color: var(--text); }
+.ing-ref .ref-arrow { text-decoration: none; }
 
 @media (max-width: 520px) {
   .calc-table th, .calc-table td { padding: 7px 8px; }

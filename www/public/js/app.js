@@ -23,6 +23,7 @@ const CAT_COLOR = {
 const view = $('#view');
 let ui = { tab: 'index', search: '', filter: '' };  // pestaña visible y filtros del índice
 let draft = null;                                    // receta en edición
+let masaDraft = null;                                // masa en edición
 
 /* ---------------------------------------------------------------- utilidades */
 
@@ -65,7 +66,7 @@ function marcaDuda(o) {
 // que pestaña queda encendida en cada vista
 const TAB_OF = {
   index: 'index', recipe: 'index', edit: 'index',
-  masas: 'masas', masa: 'masas',
+  masas: 'masas', masa: 'masas', 'masa-edit': 'masas',
   pantry: 'pantry'
 };
 
@@ -83,6 +84,7 @@ function render() {
   if (ui.tab === 'edit') return renderEditor();
   if (ui.tab === 'masas') return renderMasas();
   if (ui.tab === 'masa') return renderMasa(ui.masaId);
+  if (ui.tab === 'masa-edit') return renderMasaEdit(ui.masaId);
   return renderIndex();
 }
 
@@ -693,7 +695,7 @@ function renderMasas() {
   const q = (ui.masaSearch || '').trim().toLowerCase();
   const fam = ui.masaFam || '';
 
-  let list = MASAS;
+  let list = Store.allMasas();
   if (fam) list = list.filter(m => m.fam === fam);
   if (q) list = list.filter(m =>
     m.name.toLowerCase().includes(q) ||
@@ -710,6 +712,7 @@ function renderMasas() {
       <div class="ficha-tags">
         <span class="tag ${FAM_COLOR[m.fam] || 'dim'}">${esc(deacc(m.fam))}</span>
         <span class="tag dim">${masaHidratacion(m)} % hidr.</span>
+        ${Store.masaIsCustom(m.id) ? '<span class="tag yellow">Editada</span>' : ''}
       </div>
       <div class="card-meta"><span>${esc(m.hint)}</span></div>
     </article>`).join('');
@@ -755,8 +758,9 @@ function renderMasas() {
 }
 
 function renderMasa(id) {
-  const m = MASAS.find(x => x.id === id);
+  const m = Store.getMasa(id);
   if (!m) { toast('Masa no encontrada', true); return go('masas'); }
+  const isCustom = Store.masaIsCustom(id);
 
   const totalPct = masaTotalPct(m);
   if (ui.masaFlour == null) ui.masaFlour = 500;
@@ -770,6 +774,7 @@ function renderMasa(id) {
     <div class="toolbar">
       <button class="btn ghost" id="back">&lt; Masas</button>
       <div class="grow"></div>
+      <button class="btn blue" id="masa-edit-btn">Editar</button>
       <button class="btn green" id="to-ficha" title="Crear una receta en el índice con estas cantidades">Guardar como ficha</button>
     </div>
 
@@ -782,6 +787,7 @@ function renderMasa(id) {
             <span class="tag ${FAM_COLOR[m.fam] || 'dim'}">${esc(deacc(m.fam))}</span>
             <span class="tag dim">${masaHidratacion(m)} % hidratacion</span>
             <span class="tag dim">${m.ing.length} ingredientes</span>
+            ${isCustom ? '<span class="tag yellow">Personalizada</span>' : ''}
           </div>
           <p class="notes" style="margin:10px 0 0">${esc(m.hint)}</p>
         </div>
@@ -827,6 +833,7 @@ function renderMasa(id) {
     </section>`;
 
   $('#back').addEventListener('click', () => go('masas'));
+  $('#masa-edit-btn').addEventListener('click', () => go('masa-edit', { masaId: id }));
 
   $$('[data-mode]').forEach(b => b.addEventListener('click', () => {
     ui.masaMode = b.dataset.mode;
@@ -874,12 +881,22 @@ function drawCalc(masa) {
   // asi que se marca solo la primera coincidencia, no todas
   const baseIdx = masa.ing.findIndex(i => i.p === 100);
 
+  // un ingrediente puede llevar ref: el id de otra masa de este mismo directorio
+  // que lo produce (p. ej. "Masa madre activa" -> la receta del cultivo). Se
+  // muestra como un enlace en vez de solo texto, para no dejar al usuario
+  // atascado sin saber de dónde sale ese ingrediente.
+  const nombreCelda = i => i.ref
+    ? `<button type="button" class="ing-ref" data-ref="${esc(i.ref)}">${esc(i.n)}<span class="ref-arrow">→</span></button>`
+    : esc(i.n);
+
   rows.innerHTML = masa.ing.map((i, n) => `
     <tr${n === baseIdx ? ' class="base"' : ''}>
-      <td>${esc(i.n)}${i.nota ? `<span class="nota">${esc(i.nota)}</span>` : ''}</td>
+      <td>${nombreCelda(i)}${i.nota ? `<span class="nota">${esc(i.nota)}</span>` : ''}</td>
       <td class="num">${i.p}</td>
       <td class="num qty">${fmtG(i.p * flour / 100)}</td>
     </tr>`).join('');
+
+  $$('.ing-ref').forEach(b => b.addEventListener('click', () => go('masa', { masaId: b.dataset.ref })));
 
   $('#calc-total').textContent = fmtG(total);
 
@@ -924,6 +941,196 @@ function masaToFicha(masa) {
   Store.saveRecipe(rec);
   toast('Ficha creada en el índice');
   go('recipe', { id: rec.id });
+}
+
+/* ---------------------------------------------------------------- EDITOR DE MASAS */
+
+function renderMasaEdit(id) {
+  if (!masaDraft || masaDraft.id !== id) {
+    const base = Store.getMasa(id);
+    if (!base) { toast('Masa no encontrada', true); return go('masas'); }
+    masaDraft = JSON.parse(JSON.stringify(base));
+  }
+  const d = masaDraft;
+  const isCustom = Store.masaIsCustom(id);
+
+  view.innerHTML = `
+    <div class="toolbar">
+      <button class="btn ghost" id="m-cancel">&lt; Cancelar</button>
+      <div class="grow"></div>
+      <span class="tag ${isCustom ? 'yellow' : 'dim'}">${isCustom ? 'Personalizada' : 'Editando el original'}</span>
+    </div>
+
+    <section class="ficha pbox">
+      <div class="form-grid" style="margin-bottom:16px">
+        <label class="fld" style="grid-column:1/-1"><span>Nombre</span>
+          <input type="text" id="m-name" value="${esc(d.name)}" maxlength="60"></label>
+        <label class="fld"><span>Familia</span>
+          <select id="m-fam">${options(MASA_FAMS, d.fam)}</select></label>
+      </div>
+
+      <label class="fld"><span>Icono</span></label>
+      <div class="icon-pick" id="m-icon-pick">
+        ${ICON_KEYS.map(k => `<button type="button" data-icon="${k}" title="${esc(ICONS[k].label)}"
+          class="${k === d.icon ? 'on' : ''}">${iconSVG(k, 30)}</button>`).join('')}
+      </div>
+
+      <label class="fld" style="margin-top:14px"><span>Pista (se ve en la tarjeta del índice)</span>
+        <input type="text" id="m-hint" value="${esc(d.hint)}" maxlength="90"></label>
+
+      <div class="hr"></div>
+
+      <h3 class="sub">Ingredientes (% sobre la harina)</h3>
+      <div id="m-ing-rows"></div>
+      <button class="btn small green" id="m-add-ing" style="margin-top:6px">+ Añadir ingrediente</button>
+
+      <div class="hr"></div>
+
+      <h3 class="sub">Pasos de elaboración</h3>
+      <div id="m-step-rows"></div>
+      <button class="btn small green" id="m-add-step" style="margin-top:6px">+ Añadir paso</button>
+
+      <div class="hr"></div>
+
+      <label class="fld"><span>Notas</span>
+        <textarea id="m-notes" placeholder="Trucos, variantes...">${esc(d.notes)}</textarea></label>
+    </section>
+
+    <div class="sticky-actions">
+      <button class="btn green" id="m-save">Guardar cambios</button>
+      <div class="spacer"></div>
+      ${isCustom ? '<button class="btn red" id="m-reset">Restablecer original</button>' : ''}
+    </div>`;
+
+  $('#m-name').addEventListener('input', e => { d.name = e.target.value; });
+  $('#m-fam').addEventListener('change', e => { d.fam = e.target.value; });
+  $('#m-hint').addEventListener('input', e => { d.hint = e.target.value; });
+  $('#m-notes').addEventListener('input', e => { d.notes = e.target.value; });
+
+  $('#m-icon-pick').addEventListener('click', e => {
+    const btn = e.target.closest('[data-icon]');
+    if (!btn) return;
+    d.icon = btn.dataset.icon;
+    $$('#m-icon-pick button').forEach(b => b.classList.toggle('on', b === btn));
+  });
+
+  $('#m-add-ing').addEventListener('click', () => {
+    d.ing.push({ n: '', p: 0 });
+    drawMasaIngRows();
+  });
+  $('#m-add-step').addEventListener('click', () => {
+    d.steps.push('');
+    drawMasaStepRows();
+    const areas = $$('#m-step-rows textarea');
+    if (areas.length) areas[areas.length - 1].focus();
+  });
+
+  $('#m-cancel').addEventListener('click', () => { masaDraft = null; go('masa', { masaId: id }); });
+  $('#m-save').addEventListener('click', () => saveMasaDraft(id));
+
+  const resetBtn = $('#m-reset');
+  if (resetBtn) resetBtn.addEventListener('click', () => {
+    if (!confirm('¿Restablecer esta masa a su versión original? Se perderán tus cambios.')) return;
+    Store.resetMasa(id);
+    masaDraft = null;
+    toast('Masa restablecida');
+    go('masa', { masaId: id });
+  });
+
+  drawMasaIngRows();
+  drawMasaStepRows();
+  status(`EDITANDO MASA: ${caps(d.name)}`, 'ESC = CANCELAR');
+}
+
+function drawMasaIngRows() {
+  const box = $('#m-ing-rows');
+  if (!box) return;
+  const d = masaDraft;
+
+  box.innerHTML = d.ing.map((it, i) => `
+    <div class="row-masa-ing" data-i="${i}">
+      <input type="text" data-f="n" value="${esc(it.n)}" placeholder="Ingrediente">
+      <input type="number" data-f="p" min="0" step="0.1" value="${it.p}" placeholder="%">
+      <label class="chk"><input type="checkbox" data-f="liq" ${it.liq ? 'checked' : ''}> líquido</label>
+      <input type="text" data-f="nota" value="${esc(it.nota || '')}" placeholder="nota (opcional)">
+      <button class="btn small red" data-f="del" title="Quitar">X</button>
+    </div>`).join('');
+
+  box.querySelectorAll('.row-masa-ing').forEach(row => {
+    const i = +row.dataset.i;
+    row.querySelector('[data-f=n]').addEventListener('input', e => { d.ing[i].n = e.target.value; });
+    row.querySelector('[data-f=p]').addEventListener('input', e => { d.ing[i].p = +e.target.value || 0; });
+    row.querySelector('[data-f=liq]').addEventListener('change', e => {
+      if (e.target.checked) d.ing[i].liq = true; else delete d.ing[i].liq;
+    });
+    row.querySelector('[data-f=nota]').addEventListener('input', e => {
+      const v = e.target.value.trim();
+      if (v) d.ing[i].nota = v; else delete d.ing[i].nota;
+    });
+    row.querySelector('[data-f=del]').addEventListener('click', () => {
+      d.ing.splice(i, 1);
+      drawMasaIngRows();
+    });
+  });
+}
+
+function drawMasaStepRows() {
+  const box = $('#m-step-rows');
+  if (!box) return;
+  const d = masaDraft;
+
+  box.innerHTML = d.steps.map((s, i) => `
+    <div class="row-step" data-i="${i}">
+      <div class="num">${String(i + 1).padStart(2, '0')}</div>
+      <textarea data-f="text" placeholder="Describe el paso ${i + 1}...">${esc(s)}</textarea>
+      <div class="ctl">
+        <button class="btn small ghost" data-f="up"   title="Subir"  ${i === 0 ? 'disabled' : ''}>^</button>
+        <button class="btn small ghost" data-f="down" title="Bajar"  ${i === d.steps.length - 1 ? 'disabled' : ''}>v</button>
+        <button class="btn small red"   data-f="del"  title="Quitar">X</button>
+      </div>
+    </div>`).join('');
+
+  box.querySelectorAll('.row-step').forEach(row => {
+    const i = +row.dataset.i;
+    row.querySelector('[data-f=text]').addEventListener('input', e => { d.steps[i] = e.target.value; });
+    row.querySelector('[data-f=up]').addEventListener('click', () => {
+      if (i === 0) return;
+      [d.steps[i - 1], d.steps[i]] = [d.steps[i], d.steps[i - 1]];
+      drawMasaStepRows();
+    });
+    row.querySelector('[data-f=down]').addEventListener('click', () => {
+      if (i === d.steps.length - 1) return;
+      [d.steps[i + 1], d.steps[i]] = [d.steps[i], d.steps[i + 1]];
+      drawMasaStepRows();
+    });
+    row.querySelector('[data-f=del]').addEventListener('click', () => {
+      d.steps.splice(i, 1);
+      if (!d.steps.length) d.steps = [''];
+      drawMasaStepRows();
+    });
+  });
+}
+
+function saveMasaDraft(id) {
+  const d = masaDraft;
+  d.name = d.name.trim();
+  if (!d.name) return toast('La masa necesita un nombre', true);
+
+  // un ingrediente sin nombre o sin porcentaje no significa nada aquí
+  d.ing = d.ing.map(i => ({ ...i, n: i.n.trim() })).filter(i => i.n && i.p > 0);
+  if (!d.ing.length) return toast('Añade al menos un ingrediente', true);
+
+  d.steps = d.steps.map(s => s.trim()).filter(Boolean);
+  if (!d.steps.length) return toast('Añade al menos un paso', true);
+
+  // solo se guardan los campos editables: el id es fijo y viene del catálogo
+  Store.setMasaOverride(id, {
+    name: d.name, icon: d.icon, fam: d.fam, hint: d.hint,
+    ing: d.ing, steps: d.steps, notes: d.notes
+  });
+  masaDraft = null;
+  toast('Masa actualizada');
+  go('masa', { masaId: id });
 }
 
 /* ---------------------------------------------------------------- datos (global) */
@@ -983,6 +1190,7 @@ document.addEventListener('keydown', e => {
   if (ui.tab === 'edit') { ui.isNew ? go('index') : go('recipe', { id: draft.id }); }
   else if (ui.tab === 'recipe') go('index');
   else if (ui.tab === 'masa') go('masas');
+  else if (ui.tab === 'masa-edit') { masaDraft = null; go('masa', { masaId: ui.masaId }); }
 });
 
 $('#tabs').addEventListener('click', e => {
