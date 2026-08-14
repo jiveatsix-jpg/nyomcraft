@@ -231,14 +231,20 @@ const Store = {
       ['Almendras', 'Fruta', 'g', 579, 21, 22, 50],
       ['Angostura', 'Especia', 'al gusto', 250, 0, 25, 0],
       ['Arroz', 'Cereal', 'g', 365, 7.1, 80, 0.7],
+      ['Azafrán', 'Especia', 'al gusto', 310, 11, 65, 6],
       ['Azúcar', 'Otro', 'g', 387, 0, 100, 0],
+      ['Berenjena', 'Verdura', 'ud', 25, 1, 6, 0.2],
       ['Brandy', 'Otro', 'ml', 231, 0, 0.5, 0],
+      ['Calabacín', 'Verdura', 'ud', 17, 1.2, 3.1, 0.3],
+      ['Caldo', 'Otro', 'ml', 5, 0.5, 0.5, 0.2],
       ['Canela', 'Especia', 'rama', 247, 4, 81, 1.2],
       ['Carne picada', 'Carne', 'g', 215, 18, 0, 15],
       ['Cava', 'Otro', 'ml', 80, 0.1, 1.5, 0],
       ['Cebolla', 'Verdura', 'ud', 40, 1.1, 9.3, 0.1],
       ['Cerveza', 'Otro', 'ml', 43, 0.5, 3.6, 0],
+      ['Champiñones', 'Verdura', 'g', 22, 3.1, 3.3, 0.3],
       ['Chocolate en polvo', 'Otro', 'g', 228, 20, 58, 14],
+      ['Chocolate negro', 'Otro', 'g', 598, 7.8, 46, 43],
       ['Cilantro', 'Especia', 'hoja', 23, 2.1, 3.7, 0.5],
       ['Espaguetis', 'Cereal', 'g', 371, 13, 75, 1.5],
       ['Espinaca', 'Verdura', 'g', 23, 2.9, 3.6, 0.4],
@@ -251,6 +257,7 @@ const Store = {
       ['Hielo', 'Otro', 'al gusto', 0, 0, 0, 0],
       ['Huevo', 'Otro', 'ud', 155, 13, 1.1, 11],
       ['Jamón', 'Carne', 'g', 241, 30, 0, 13],
+      ['Judía verde', 'Legumbre', 'g', 31, 1.8, 7, 0.2],
       ['Leche', 'Lácteo', 'ml', 61, 3.2, 4.8, 3.3],
       ['Lechuga', 'Verdura', 'ud', 15, 1.4, 2.9, 0.2],
       ['Lentejas', 'Legumbre', 'g', 353, 25, 60, 1],
@@ -260,6 +267,7 @@ const Store = {
       ['Mantequilla', 'Lácteo', 'g', 717, 0.9, 0.1, 81],
       ['Manzana', 'Fruta', 'ud', 52, 0.3, 14, 0.2],
       ['Menta', 'Especia', 'hoja', 70, 3.8, 15, 0.9],
+      ['Merluza', 'Pescado', 'g', 86, 17, 0, 1.3],
       ['Mostaza', 'Salsa', 'cdta', 66, 4.4, 5.8, 4],
       ['Naranja', 'Fruta', 'ud', 47, 0.9, 12, 0.1],
       ['Nata', 'Lácteo', 'ml', 340, 2, 3, 35],
@@ -283,8 +291,8 @@ const Store = {
       ['Salsa picante', 'Salsa', 'al gusto', 12, 0.5, 2, 0.2],
       ['Tequila', 'Otro', 'ml', 231, 0, 0, 0],
       ['Tomate', 'Verdura', 'ud', 18, 0.9, 3.9, 0.2],
-      ['Triple seco', 'Otro', 'ml', 260, 0, 28, 0],
       ['Tónica', 'Otro', 'ml', 34, 0, 8.8, 0],
+      ['Triple seco', 'Otro', 'ml', 260, 0, 28, 0],
       ['Vinagre', 'Salsa', 'ml', 18, 0, 0.4, 0],
       ['Vino blanco', 'Otro', 'ml', 82, 0.1, 2.6, 0],
       ['Vino tinto', 'Otro', 'ml', 85, 0.1, 2.6, 0],
@@ -576,6 +584,99 @@ const Store = {
         notes: 'Salar desde el principio endurece la piel de la legumbre y tarda más en cocerse.'
       },
       {
+        id: uid(), name: 'Albóndigas en salsa', icon: 'carne', cat: 'Principal',
+        diff: 'Media', time: 50, portions: 4,
+        items: [
+          { ing: find('Carne picada'), qty: 500, unit: 'g' },
+          { ing: find('Huevo'), qty: 1, unit: 'ud' },
+          { ing: find('Pan rallado'), qty: 50, unit: 'g' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Perejil'), qty: null, unit: 'al gusto' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Tomate'), qty: 400, unit: 'g' },
+          { ing: find('Vino blanco'), qty: 100, unit: 'ml' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Mezcla la carne picada con el huevo, el pan rallado, un diente de ajo picado, perejil y sal. Amasa bien.',
+          'Forma las albóndigas del tamaño de una nuez y enharínalas ligeramente.',
+          'Dóralas en aceite por todos los lados y resérvalas.',
+          'En el mismo aceite, sofríe la cebolla y el ajo restante hasta que estén tiernos.',
+          'Añade el tomate triturado y el vino blanco, y cocina 10 minutos.',
+          'Incorpora las albóndigas a la salsa y cuece 20 minutos más a fuego bajo.'
+        ],
+        notes: 'Enharinarlas antes de dorarlas ayuda a que la salsa espese sola, sin necesidad de más harina.'
+      },
+      {
+        id: uid(), name: 'Huevos rotos con jamón', icon: 'huevo', cat: 'Principal',
+        diff: 'Fácil', time: 25, portions: 2,
+        items: [
+          { ing: find('Patata'), qty: 500, unit: 'g' },
+          { ing: find('Huevo'), qty: 4, unit: 'ud' },
+          { ing: find('Jamón'), qty: 100, unit: 'g' },
+          { ing: find('Aceite de oliva'), qty: 300, unit: 'ml' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pela las patatas y córtalas en bastones finos, como para patatas fritas.',
+          'Fríelas en abundante aceite a fuego medio hasta que estén doradas y tiernas.',
+          'Escúrrelas bien y colócalas de base en el plato.',
+          'Fríe los huevos con la clara bien cuajada y la yema líquida, y ponlos encima de las patatas.',
+          'Reparte el jamón en tiras por encima y rompe las yemas justo al servir, para que se mezclen con todo.'
+        ],
+        notes: 'Cuanto más caliente el plato, más aguanta la temperatura de las patatas mientras fríes los huevos.'
+      },
+      {
+        id: uid(), name: 'Merluza en salsa verde', icon: 'pescado', cat: 'Principal',
+        diff: 'Media', time: 30, portions: 4,
+        items: [
+          { ing: find('Merluza'), qty: 4, unit: 'ud' },
+          { ing: find('Ajo'), qty: 3, unit: 'diente' },
+          { ing: find('Perejil'), qty: null, unit: 'al gusto' },
+          { ing: find('Harina'), qty: 1, unit: 'cda' },
+          { ing: find('Aceite de oliva'), qty: 4, unit: 'cda' },
+          { ing: find('Vino blanco'), qty: 100, unit: 'ml' },
+          { ing: find('Caldo'), qty: 200, unit: 'ml' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Sala los lomos de merluza y enharínalos ligeramente.',
+          'Dora el ajo laminado en el aceite, sin que llegue a quemarse.',
+          'Añade la harina sobrante y remueve un momento para que se cocine.',
+          'Vierte el vino blanco y el caldo, y deja que reduzca un poco.',
+          'Incorpora la merluza y cocina a fuego bajo 8-10 minutos, moviendo la cazuela en círculos para que la salsa ligue.',
+          'Espolvorea con perejil picado antes de servir.'
+        ],
+        notes: 'La salsa liga sola moviendo la cazuela con un gesto de muñeca, sin remover con cuchara: es la gelatina de la propia merluza la que la espesa.'
+      },
+      {
+        id: uid(), name: 'Paella de pollo y verduras', icon: 'arroz', cat: 'Principal',
+        diff: 'Media', time: 50, portions: 4,
+        items: [
+          { ing: find('Arroz'), qty: 350, unit: 'g' },
+          { ing: find('Pollo'), qty: 500, unit: 'g' },
+          { ing: find('Pimiento'), qty: 1, unit: 'ud' },
+          { ing: find('Judía verde'), qty: 150, unit: 'g' },
+          { ing: find('Tomate'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Azafrán'), qty: null, unit: 'al gusto' },
+          { ing: find('Caldo'), qty: 800, unit: 'ml' },
+          { ing: find('Aceite de oliva'), qty: 4, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Sala el pollo troceado y dóralo en el aceite en la paellera hasta que esté dorado.',
+          'Añade el pimiento, la judía verde y el ajo, y sofríe unos minutos.',
+          'Incorpora el tomate rallado y cocina hasta que se evapore el agua.',
+          'Añade el arroz y remueve un minuto para que se impregne del sofrito.',
+          'Vierte el caldo caliente con el azafrán disuelto, y reparte bien los ingredientes sin volver a remover.',
+          'Cuece a fuego fuerte 10 minutos y luego a fuego medio-bajo otros 8-10, hasta que el caldo se absorba.',
+          'Deja reposar 5 minutos tapada con un paño antes de servir.'
+        ],
+        notes: 'No remover el arroz una vez añadido el caldo es la regla de oro: es lo que permite que se forme el socarrat en el fondo.'
+      },
+      {
         id: uid(), name: 'Patatas bravas', icon: 'plato', cat: 'Guarnición',
         diff: 'Fácil', time: 30, portions: 4,
         items: [
@@ -634,6 +735,64 @@ const Store = {
         notes: 'Un arroz blanco suelto siempre es un buen comodín para acompañar guisos con mucha salsa.'
       },
       {
+        id: uid(), name: 'Ensalada de tomate y cebolla', icon: 'tomate', cat: 'Guarnición',
+        diff: 'Fácil', time: 10, portions: 4,
+        items: [
+          { ing: find('Tomate'), qty: 4, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Vinagre'), qty: 1, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Corta los tomates en rodajas o gajos, y la cebolla en juliana fina.',
+          'Colócalos en una fuente alternando capas.',
+          'Riega con el aceite y el vinagre, y sala.',
+          'Deja reposar 10 minutos antes de servir para que se mezclen los sabores.'
+        ],
+        notes: 'Si la cebolla pica demasiado, déjala 10 minutos en agua fría antes de usarla: suaviza mucho el sabor.'
+      },
+      {
+        id: uid(), name: 'Champiñones al ajillo', icon: 'seta', cat: 'Guarnición',
+        diff: 'Fácil', time: 15, portions: 4,
+        items: [
+          { ing: find('Champiñones'), qty: 400, unit: 'g' },
+          { ing: find('Ajo'), qty: 3, unit: 'diente' },
+          { ing: find('Aceite de oliva'), qty: 4, unit: 'cda' },
+          { ing: find('Guindilla'), qty: null, unit: 'al gusto' },
+          { ing: find('Perejil'), qty: null, unit: 'al gusto' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Limpia los champiñones y córtalos en láminas o en cuartos.',
+          'Calienta el aceite y dora el ajo laminado con la guindilla.',
+          'Sube el fuego, añade los champiñones y saltea hasta que suelten el agua y se evapore.',
+          'Sala y espolvorea con perejil picado antes de servir.'
+        ],
+        notes: 'No los amontones en la sartén: si van muy apretados, se cuecen en su propio jugo en vez de dorarse.'
+      },
+      {
+        id: uid(), name: 'Pisto', icon: 'tomate', cat: 'Guarnición',
+        diff: 'Fácil', time: 40, portions: 4,
+        items: [
+          { ing: find('Calabacín'), qty: 2, unit: 'ud' },
+          { ing: find('Pimiento'), qty: 1, unit: 'ud' },
+          { ing: find('Berenjena'), qty: 1, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Tomate'), qty: 400, unit: 'g' },
+          { ing: find('Aceite de oliva'), qty: 4, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Corta todas las verduras en dados pequeños y uniformes.',
+          'Sofríe la cebolla y el pimiento en el aceite hasta que estén tiernos.',
+          'Añade la berenjena y el calabacín, y cocina removiendo de vez en cuando.',
+          'Incorpora el tomate triturado y cocina a fuego bajo 25-30 minutos, hasta que espese y las verduras estén melosas.',
+          'Sala al gusto.'
+        ],
+        notes: 'Cuanto más tiempo y más bajo el fuego, más se concentran los sabores — el pisto mejora de un día para otro.'
+      },
+      {
         id: uid(), name: 'Tarta de queso', icon: 'pastel', cat: 'Postre',
         diff: 'Media', time: 70, portions: 8,
         items: [
@@ -672,6 +831,67 @@ const Store = {
           'Retira la piel de limón y la canela, y sirve templado o frío, con canela molida por encima.'
         ],
         notes: 'Remover a menudo es lo que suelta el almidón y hace que quede cremoso sin necesidad de nata.'
+      },
+      {
+        id: uid(), name: 'Natillas', icon: 'huevo', cat: 'Postre',
+        diff: 'Fácil', time: 25, portions: 4,
+        items: [
+          { ing: find('Leche'), qty: 500, unit: 'ml' },
+          { ing: find('Huevo'), qty: 3, unit: 'ud' },
+          { ing: find('Azúcar'), qty: 80, unit: 'g' },
+          { ing: find('Canela'), qty: 1, unit: 'rama' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' }
+        ],
+        steps: [
+          'Calienta la leche con la piel del limón y la rama de canela, sin que llegue a hervir.',
+          'Bate los huevos con el azúcar hasta que blanqueen.',
+          'Vierte la leche caliente colada sobre los huevos, poco a poco y sin dejar de remover.',
+          'Vuelve todo al fuego bajo y cocina removiendo sin parar hasta que espese, sin que llegue a hervir.',
+          'Reparte en cuencos y enfría en la nevera un mínimo de 2 horas.'
+        ],
+        notes: 'Si hierve, se corta: en cuanto veas que nape la cuchara (que la cubra como una capa fina), retírala del fuego.'
+      },
+      {
+        id: uid(), name: 'Torrijas', icon: 'pan', cat: 'Postre',
+        diff: 'Fácil', time: 40, portions: 6,
+        items: [
+          { ing: find('Pan'), qty: 1, unit: 'ud' },
+          { ing: find('Leche'), qty: 500, unit: 'ml' },
+          { ing: find('Huevo'), qty: 2, unit: 'ud' },
+          { ing: find('Azúcar'), qty: 100, unit: 'g' },
+          { ing: find('Canela'), qty: 1, unit: 'rama' },
+          { ing: find('Aceite de oliva'), qty: 300, unit: 'ml' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' }
+        ],
+        steps: [
+          'Corta el pan en rebanadas gruesas.',
+          'Calienta la leche con la piel del limón, la canela y una parte del azúcar, sin que hierva. Deja templar.',
+          'Remoja las rebanadas en la leche hasta que se empapen bien, sin que se deshagan.',
+          'Pasa cada rebanada por huevo batido.',
+          'Fríe en aceite bien caliente hasta que doren por ambos lados.',
+          'Escurre sobre papel absorbente y reboza en azúcar con canela molida.'
+        ],
+        notes: 'Cuanto más duro esté el pan, mejor absorbe la leche sin deshacerse — por eso se hacían tradicionalmente con el pan sobrante.'
+      },
+      {
+        id: uid(), name: 'Brownie de chocolate', icon: 'pastel', cat: 'Postre',
+        diff: 'Media', time: 45, portions: 8,
+        items: [
+          { ing: find('Chocolate negro'), qty: 200, unit: 'g' },
+          { ing: find('Mantequilla'), qty: 150, unit: 'g' },
+          { ing: find('Huevo'), qty: 3, unit: 'ud' },
+          { ing: find('Azúcar'), qty: 200, unit: 'g' },
+          { ing: find('Harina'), qty: 100, unit: 'g' }
+        ],
+        steps: [
+          'Funde el chocolate con la mantequilla al baño maría o en el microondas, en tandas cortas.',
+          'Bate los huevos con el azúcar hasta que espumen un poco.',
+          'Incorpora el chocolate fundido a los huevos, mezclando con movimientos envolventes.',
+          'Añade la harina tamizada y mezcla justo hasta que desaparezca, sin batir de más.',
+          'Vierte en un molde forrado y hornea a 180 °C unos 20-25 minutos.',
+          'Debe quedar húmedo en el centro: un palillo debe salir con algunas migas pegadas, no limpio.'
+        ],
+        notes: 'Un brownie perfecto se hornea de menos, no de más — si el palillo sale limpio, ya se ha pasado.'
       },
 
       /* ---- salsas (además del alioli, arriba) ---- */

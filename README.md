@@ -37,12 +37,13 @@ Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
   **Salsas**, más **Todas**) filtran de un vistazo, cada una con su recuento. Se combinan con
   la búsqueda y con el filtro de categoría fino que ya había, así que puedes buscar «lima»
   dentro de Bebidas y quedarte solo con los cócteles que la llevan.
-- **Recetario de ejemplo** — una instalación nueva arranca con 70 ingredientes y 37 recetas:
-  17 de cocina (tortilla de patatas, gazpacho, ajoblanco, pollo al ajillo, croquetas de
-  jamón, salmón al horno, lentejas guisadas, patatas bravas, tarta de queso...), 6 salsas
-  (alioli, mahonesa, salsa de tomate, vinagreta, bechamel, chimichurri) y 14 bebidas — una
-  por cada uno de los 9 vasos del directorio de cristalería, más limonada, horchata y tres
-  batidos para cubrir también los zumos y batidos sin alcohol. Es contenido semilla: solo
+- **Recetario de ejemplo** — una instalación nueva arranca con 78 ingredientes y 47 recetas:
+  27 de cocina, repartidas de forma pareja entre entrantes, principales, postres y
+  guarniciones (tortilla de patatas, paella de pollo y verduras, merluza en salsa verde,
+  albóndigas, torrijas, natillas, brownie, pisto...), 6 salsas (alioli, mahonesa, salsa de
+  tomate, vinagreta, bechamel, chimichurri) y 14 bebidas — una por cada uno de los 9 vasos
+  del directorio de cristalería, más limonada, horchata y tres batidos para cubrir también
+  los zumos y batidos sin alcohol. Es contenido semilla: solo
   aparece en `localStorage` vacío, así que no toca instalaciones que ya tengan datos.
 - **Sello** — un «✓» que marcas en una receta cuando la has hecho y te ha salido perfecta,
   distinto de la duda (que marca lo que falta por confirmar). Se pone y se quita con un botón
