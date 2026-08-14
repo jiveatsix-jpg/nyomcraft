@@ -189,31 +189,39 @@ const Store = {
   /* ---- semilla inicial ---- */
   seed() {
     const base = [
-      ['Aceite de oliva', 'Salsa', 'cda'], ['Agua con gas', 'Otro', 'ml'],
-      ['Aguacate', 'Fruta', 'ud'], ['Ajo', 'Verdura', 'diente'],
-      ['Albahaca', 'Especia', 'hoja'], ['Angostura', 'Especia', 'al gusto'],
-      ['Arroz', 'Cereal', 'g'], ['Azúcar', 'Otro', 'g'],
-      ['Brandy', 'Otro', 'ml'], ['Canela', 'Especia', 'rama'],
+      ['Aceite de oliva', 'Salsa', 'cda'], ['Agua', 'Otro', 'ml'],
+      ['Agua con gas', 'Otro', 'ml'], ['Aguacate', 'Fruta', 'ud'],
+      ['Ajo', 'Verdura', 'diente'], ['Albahaca', 'Especia', 'hoja'],
+      ['Angostura', 'Especia', 'al gusto'], ['Arroz', 'Cereal', 'g'],
+      ['Azúcar', 'Otro', 'g'], ['Brandy', 'Otro', 'ml'],
+      ['Canela', 'Especia', 'rama'], ['Carne picada', 'Carne', 'g'],
       ['Cava', 'Otro', 'ml'], ['Cebolla', 'Verdura', 'ud'],
       ['Cerveza', 'Otro', 'ml'], ['Cilantro', 'Especia', 'hoja'],
+      ['Espaguetis', 'Cereal', 'g'], ['Galletas', 'Otro', 'g'],
       ['Garbanzos', 'Legumbre', 'g'], ['Ginebra', 'Otro', 'ml'],
       ['Guindilla', 'Especia', 'ud'], ['Harina', 'Cereal', 'g'],
       ['Hielo', 'Otro', 'al gusto'], ['Huevo', 'Otro', 'ud'],
-      ['Leche', 'Lácteo', 'ml'], ['Licor de limón', 'Otro', 'ml'],
-      ['Lima', 'Fruta', 'ud'], ['Limón', 'Fruta', 'ud'],
-      ['Mantequilla', 'Lácteo', 'g'], ['Manzana', 'Fruta', 'ud'],
-      ['Menta', 'Especia', 'hoja'], ['Naranja', 'Fruta', 'ud'],
+      ['Jamón', 'Carne', 'g'], ['Leche', 'Lácteo', 'ml'],
+      ['Lechuga', 'Verdura', 'ud'], ['Lentejas', 'Legumbre', 'g'],
+      ['Licor de limón', 'Otro', 'ml'], ['Lima', 'Fruta', 'ud'],
+      ['Limón', 'Fruta', 'ud'], ['Mantequilla', 'Lácteo', 'g'],
+      ['Manzana', 'Fruta', 'ud'], ['Menta', 'Especia', 'hoja'],
+      ['Mostaza', 'Salsa', 'cdta'], ['Naranja', 'Fruta', 'ud'],
+      ['Nata', 'Lácteo', 'ml'], ['Nuez moscada', 'Especia', 'pizca'],
+      ['Pan', 'Cereal', 'ud'], ['Pan rallado', 'Cereal', 'g'],
       ['Patata', 'Verdura', 'ud'], ['Pepino', 'Verdura', 'ud'],
-      ['Perejil', 'Especia', 'hoja'], ['Pimienta negra', 'Especia', 'pizca'],
-      ['Pimiento', 'Verdura', 'ud'], ['Pollo', 'Carne', 'g'],
+      ['Perejil', 'Especia', 'hoja'], ['Pimentón', 'Especia', 'cdta'],
+      ['Pimienta negra', 'Especia', 'pizca'], ['Pimiento', 'Verdura', 'ud'],
+      ['Pollo', 'Carne', 'g'], ['Queso crema', 'Lácteo', 'g'],
       ['Queso parmesano', 'Lácteo', 'g'], ['Ron blanco', 'Otro', 'ml'],
-      ['Sal', 'Especia', 'pizca'], ['Salsa inglesa', 'Salsa', 'cdta'],
-      ['Salsa picante', 'Salsa', 'al gusto'], ['Tequila', 'Otro', 'ml'],
-      ['Tomate', 'Verdura', 'ud'], ['Triple seco', 'Otro', 'ml'],
-      ['Tónica', 'Otro', 'ml'], ['Vinagre', 'Salsa', 'ml'],
-      ['Vino blanco', 'Otro', 'ml'], ['Vino tinto', 'Otro', 'ml'],
-      ['Vodka', 'Otro', 'ml'], ['Whisky', 'Otro', 'ml'],
-      ['Zanahoria', 'Verdura', 'ud'], ['Zumo de naranja', 'Otro', 'ml']
+      ['Sal', 'Especia', 'pizca'], ['Salmón', 'Pescado', 'g'],
+      ['Salsa inglesa', 'Salsa', 'cdta'], ['Salsa picante', 'Salsa', 'al gusto'],
+      ['Tequila', 'Otro', 'ml'], ['Tomate', 'Verdura', 'ud'],
+      ['Triple seco', 'Otro', 'ml'], ['Tónica', 'Otro', 'ml'],
+      ['Vinagre', 'Salsa', 'ml'], ['Vino blanco', 'Otro', 'ml'],
+      ['Vino tinto', 'Otro', 'ml'], ['Vodka', 'Otro', 'ml'],
+      ['Whisky', 'Otro', 'ml'], ['Zanahoria', 'Verdura', 'ud'],
+      ['Zumo de naranja', 'Otro', 'ml']
     ];
     this.data.ingredients = base.map(([name, cat, unit]) => ({
       id: uid(), name, cat, unit, icon: guessIcon(name)
@@ -363,6 +371,312 @@ const Store = {
           'Ajusta de sal y unas gotas de limón al final.'
         ],
         notes: 'Con huevo es más estable y perdona mejor los fallos que el alioli tradicional solo con ajo y aceite.'
+      },
+
+      {
+        id: uid(), name: 'Ensalada César', icon: 'hierba', cat: 'Entrante',
+        diff: 'Fácil', time: 20, portions: 4,
+        items: [
+          { ing: find('Pollo'), qty: 300, unit: 'g' },
+          { ing: find('Lechuga'), qty: 1, unit: 'ud' },
+          { ing: find('Pan'), qty: 2, unit: 'ud' },
+          { ing: find('Queso parmesano'), qty: 40, unit: 'g' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Ajo'), qty: 1, unit: 'diente' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Corta el pan en dados y tuéstalo en una sartén con un chorrito de aceite y el ajo machacado, hasta que esté dorado y crujiente.',
+          'Cocina el pollo a la plancha, salpimentado, y córtalo en tiras cuando esté hecho.',
+          'Lava y trocea la lechuga en un bol grande.',
+          'Añade el pollo, los picatostes y el queso parmesano en lascas.',
+          'Aliña con aceite de oliva y un chorro de limón justo antes de servir.'
+        ],
+        notes: 'La versión clásica lleva anchoas y una salsa con huevo; esta es la versión rápida de cada día.'
+      },
+      {
+        id: uid(), name: 'Croquetas de jamón', icon: 'carne', cat: 'Entrante',
+        diff: 'Media', time: 60, portions: 4,
+        items: [
+          { ing: find('Jamón'), qty: 150, unit: 'g' },
+          { ing: find('Harina'), qty: 60, unit: 'g' },
+          { ing: find('Leche'), qty: 500, unit: 'ml' },
+          { ing: find('Mantequilla'), qty: 50, unit: 'g' },
+          { ing: find('Huevo'), qty: 2, unit: 'ud' },
+          { ing: find('Pan rallado'), qty: 150, unit: 'g' },
+          { ing: find('Aceite de oliva'), qty: 500, unit: 'ml' },
+          { ing: find('Nuez moscada'), qty: null, unit: 'pizca' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Derrite la mantequilla y añade la harina, removiendo 2 minutos para que pierda el sabor a crudo.',
+          'Vierte la leche poco a poco, sin dejar de remover, hasta conseguir una bechamel espesa y sin grumos.',
+          'Añade el jamón picado muy fino, la nuez moscada y la sal, y cuece 5 minutos más.',
+          'Extiende la masa en una bandeja, cúbrela con film pegado a la superficie y enfría en la nevera un mínimo de 4 horas.',
+          'Forma las croquetas, pásalas por huevo batido y pan rallado.',
+          'Fríe en abundante aceite caliente hasta que estén doradas por fuera.'
+        ],
+        notes: 'Cuanto más fría y reposada esté la masa, más fácil es formar las croquetas sin que se rompan.'
+      },
+      {
+        id: uid(), name: 'Espaguetis a la boloñesa', icon: 'olla', cat: 'Principal',
+        diff: 'Media', time: 60, portions: 4,
+        items: [
+          { ing: find('Espaguetis'), qty: 400, unit: 'g' },
+          { ing: find('Carne picada'), qty: 400, unit: 'g' },
+          { ing: find('Tomate'), qty: 800, unit: 'g' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Zanahoria'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Vino tinto'), qty: 100, unit: 'ml' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pica muy fino la cebolla, la zanahoria y el ajo, y sofríelos en el aceite hasta que estén tiernos.',
+          'Sube el fuego, añade la carne picada y dórala bien, deshaciendo los grumos.',
+          'Vierte el vino tinto y deja que reduzca un par de minutos.',
+          'Añade el tomate triturado, sala y cocina a fuego bajo 30-40 minutos, removiendo de vez en cuando.',
+          'Cuece los espaguetis en agua con sal según el paquete, y mézclalos con la salsa antes de servir.'
+        ],
+        notes: 'Cuanto más lento y largo el sofrito, más profunda sabe la salsa — no tengas prisa con la cebolla y la zanahoria.'
+      },
+      {
+        id: uid(), name: 'Salmón al horno', icon: 'pescado', cat: 'Principal',
+        diff: 'Fácil', time: 25, portions: 4,
+        items: [
+          { ing: find('Salmón'), qty: 4, unit: 'ud' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Perejil'), qty: null, unit: 'al gusto' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Precalienta el horno a 200 °C.',
+          'Coloca los lomos de salmón en una bandeja, sala y riega con el aceite.',
+          'Reparte el ajo laminado y unas rodajas de limón por encima.',
+          'Hornea 12-15 minutos, según el grosor, hasta que se separe fácilmente en lascas.',
+          'Espolvorea con perejil picado antes de servir.'
+        ],
+        notes: 'Se pasa enseguida: en cuanto pierde el rosa intenso del centro, sácalo.'
+      },
+      {
+        id: uid(), name: 'Lentejas guisadas', icon: 'legumbre', cat: 'Principal',
+        diff: 'Fácil', time: 50, portions: 4,
+        items: [
+          { ing: find('Lentejas'), qty: 300, unit: 'g' },
+          { ing: find('Zanahoria'), qty: 2, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Pimentón'), qty: 1, unit: 'cdta' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pica la cebolla, la zanahoria y el ajo, y sofríelos en el aceite hasta que estén tiernos.',
+          'Añade el pimentón fuera del fuego un segundo, removiendo, y vuelve a poner al fuego enseguida.',
+          'Incorpora las lentejas y cubre con agua unos tres dedos por encima.',
+          'Cuece a fuego bajo 35-40 minutos, hasta que estén tiernas, añadiendo agua si hace falta.',
+          'Sala al final de la cocción, nunca al principio.'
+        ],
+        notes: 'Salar desde el principio endurece la piel de la legumbre y tarda más en cocerse.'
+      },
+      {
+        id: uid(), name: 'Patatas bravas', icon: 'plato', cat: 'Guarnición',
+        diff: 'Fácil', time: 30, portions: 4,
+        items: [
+          { ing: find('Patata'), qty: 800, unit: 'g' },
+          { ing: find('Aceite de oliva'), qty: 200, unit: 'ml' },
+          { ing: find('Tomate'), qty: 2, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Pimentón'), qty: 1, unit: 'cdta' },
+          { ing: find('Guindilla'), qty: null, unit: 'al gusto' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pela las patatas y córtalas en dados grandes e irregulares.',
+          'Fríelas en abundante aceite a fuego medio hasta que estén doradas y tiernas por dentro.',
+          'Para la salsa: sofríe el ajo picado, añade el tomate triturado y cocina 10 minutos.',
+          'Añade el pimentón y la guindilla al gusto, y sala.',
+          'Sirve las patatas recién fritas con la salsa brava por encima.'
+        ],
+        notes: 'El pimentón se añade fuera del fuego o con el fuego muy bajo: se quema y amarga enseguida.'
+      },
+      {
+        id: uid(), name: 'Puré de patatas', icon: 'plato', cat: 'Guarnición',
+        diff: 'Fácil', time: 30, portions: 4,
+        items: [
+          { ing: find('Patata'), qty: 800, unit: 'g' },
+          { ing: find('Leche'), qty: 150, unit: 'ml' },
+          { ing: find('Mantequilla'), qty: 50, unit: 'g' },
+          { ing: find('Nuez moscada'), qty: null, unit: 'pizca' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Cuece las patatas peladas y troceadas en agua con sal hasta que estén muy tiernas.',
+          'Escúrrelas bien y cháfalas todavía calientes con un pasapurés o un tenedor.',
+          'Calienta la leche con la mantequilla, sin que llegue a hervir.',
+          'Incorpora la leche caliente al puré poco a poco, removiendo hasta la textura que te guste.',
+          'Sazona con sal y nuez moscada.'
+        ],
+        notes: 'No lo batas con batidora eléctrica: el almidón se rompe y queda pegajoso, casi como cola.'
+      },
+      {
+        id: uid(), name: 'Arroz blanco', icon: 'arroz', cat: 'Guarnición',
+        diff: 'Fácil', time: 20, portions: 4,
+        items: [
+          { ing: find('Arroz'), qty: 300, unit: 'g' },
+          { ing: find('Aceite de oliva'), qty: 1, unit: 'cda' },
+          { ing: find('Ajo'), qty: 1, unit: 'diente' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Sofríe el ajo entero en el aceite hasta que aromatice, y retíralo.',
+          'Añade el arroz y remueve un minuto para que se impregne del aceite.',
+          'Cubre con el doble de volumen de agua que de arroz y sala.',
+          'Cuece tapado a fuego bajo 18-20 minutos, sin destapar ni remover.',
+          'Deja reposar 5 minutos tapado antes de servir, para que se suelte el grano.'
+        ],
+        notes: 'Un arroz blanco suelto siempre es un buen comodín para acompañar guisos con mucha salsa.'
+      },
+      {
+        id: uid(), name: 'Tarta de queso', icon: 'pastel', cat: 'Postre',
+        diff: 'Media', time: 70, portions: 8,
+        items: [
+          { ing: find('Queso crema'), qty: 500, unit: 'g' },
+          { ing: find('Huevo'), qty: 3, unit: 'ud' },
+          { ing: find('Azúcar'), qty: 150, unit: 'g' },
+          { ing: find('Nata'), qty: 200, unit: 'ml' },
+          { ing: find('Galletas'), qty: 150, unit: 'g' },
+          { ing: find('Mantequilla'), qty: 60, unit: 'g' }
+        ],
+        steps: [
+          'Tritura las galletas y mézclalas con la mantequilla fundida. Extiende en la base de un molde y enfría 15 minutos.',
+          'Bate el queso crema con el azúcar hasta que quede liso.',
+          'Añade los huevos de uno en uno, batiendo entre cada uno, y por último la nata.',
+          'Vierte la mezcla sobre la base fría.',
+          'Hornea a 180 °C unos 45-50 minutos, hasta que los bordes estén cuajados y el centro tiemble ligeramente.',
+          'Deja enfriar del todo y refrigera un mínimo de 4 horas antes de desmoldar.'
+        ],
+        notes: 'Se agrieta si se hornea a demasiada temperatura o se enfría de golpe: déjala templar dentro del horno apagado y entreabierto.'
+      },
+      {
+        id: uid(), name: 'Arroz con leche', icon: 'arroz', cat: 'Postre',
+        diff: 'Fácil', time: 45, portions: 6,
+        items: [
+          { ing: find('Arroz'), qty: 150, unit: 'g' },
+          { ing: find('Leche'), qty: 1, unit: 'l' },
+          { ing: find('Azúcar'), qty: 100, unit: 'g' },
+          { ing: find('Canela'), qty: 1, unit: 'rama' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' }
+        ],
+        steps: [
+          'Pon a hervir la leche con la piel del limón y la rama de canela.',
+          'Cuando hierva, añade el arroz y baja el fuego al mínimo.',
+          'Cuece 35-40 minutos removiendo a menudo, hasta que esté cremoso y el arroz tierno.',
+          'Añade el azúcar en los últimos 10 minutos de cocción.',
+          'Retira la piel de limón y la canela, y sirve templado o frío, con canela molida por encima.'
+        ],
+        notes: 'Remover a menudo es lo que suelta el almidón y hace que quede cremoso sin necesidad de nata.'
+      },
+
+      /* ---- salsas (además del alioli, arriba) ---- */
+      {
+        id: uid(), name: 'Mahonesa', icon: 'huevo', cat: 'Salsa',
+        diff: 'Fácil', time: 5, portions: 4,
+        items: [
+          { ing: find('Huevo'), qty: 1, unit: 'ud' },
+          { ing: find('Aceite de oliva'), qty: 200, unit: 'ml' },
+          { ing: find('Limón'), qty: null, unit: 'al gusto' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pon el huevo entero en el vaso de la batidora, con el aceite por encima.',
+          'Introduce la batidora hasta el fondo, pégala bien al fondo del vaso y no la muevas.',
+          'Bate sin mover hasta que empiece a emulsionar y blanquear en la base.',
+          'Cuando esté ligada por abajo, ve subiendo la batidora muy despacio.',
+          'Ajusta de sal y unas gotas de limón al final.'
+        ],
+        notes: 'El truco es no mover la batidora al principio: así se forma la emulsión desde el fondo.'
+      },
+      {
+        id: uid(), name: 'Salsa de tomate casera', icon: 'tomate', cat: 'Salsa',
+        diff: 'Fácil', time: 40, portions: 4,
+        items: [
+          { ing: find('Tomate'), qty: 1, unit: 'kg' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Albahaca'), qty: null, unit: 'al gusto' },
+          { ing: find('Azúcar'), qty: 1, unit: 'cdta' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pica muy fino la cebolla y el ajo, y sofríelos en el aceite a fuego bajo hasta que estén tiernos y dulces.',
+          'Añade el tomate triturado, la sal y el azúcar (para corregir la acidez).',
+          'Cocina a fuego bajo 30-35 minutos, removiendo de vez en cuando, hasta que espese.',
+          'Añade la albahaca fresca los últimos minutos.',
+          'Tritura si la quieres fina, o déjala tal cual si te gusta con tropezones.'
+        ],
+        notes: 'Se congela perfectamente en raciones — merece la pena hacer el doble.'
+      },
+      {
+        id: uid(), name: 'Vinagreta', icon: 'aceite', cat: 'Salsa',
+        diff: 'Fácil', time: 5, portions: 4,
+        items: [
+          { ing: find('Aceite de oliva'), qty: 6, unit: 'cda' },
+          { ing: find('Vinagre'), qty: 2, unit: 'cda' },
+          { ing: find('Mostaza'), qty: 1, unit: 'cdta' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' },
+          { ing: find('Pimienta negra'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pon el vinagre, la mostaza, la sal y la pimienta en un bote con tapa.',
+          'Añade el aceite y cierra bien el bote.',
+          'Agita con fuerza hasta que emulsione y quede homogénea.',
+          'Vuelve a agitar justo antes de usarla: se separa en reposo.'
+        ],
+        notes: 'La mostaza no es solo sabor: ayuda a que el aceite y el vinagre liguen y no se separen tan rápido.'
+      },
+      {
+        id: uid(), name: 'Bechamel', icon: 'leche', cat: 'Salsa',
+        diff: 'Fácil', time: 15, portions: 4,
+        items: [
+          { ing: find('Mantequilla'), qty: 50, unit: 'g' },
+          { ing: find('Harina'), qty: 50, unit: 'g' },
+          { ing: find('Leche'), qty: 500, unit: 'ml' },
+          { ing: find('Nuez moscada'), qty: null, unit: 'pizca' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Derrite la mantequilla a fuego medio-bajo.',
+          'Añade la harina de golpe y cocina 2 minutos removiendo, sin dejar que se dore.',
+          'Vierte la leche poco a poco, sin dejar de remover con varillas, para que no se formen grumos.',
+          'Cocina 8-10 minutos a fuego bajo hasta que espese, removiendo a menudo.',
+          'Sazona con sal y nuez moscada.'
+        ],
+        notes: 'Si salen grumos, pasa la batidora un momento: no pasa nada, se arregla.'
+      },
+      {
+        id: uid(), name: 'Chimichurri', icon: 'hierba', cat: 'Salsa',
+        diff: 'Fácil', time: 10, portions: 4,
+        items: [
+          { ing: find('Perejil'), qty: null, unit: 'al gusto' },
+          { ing: find('Ajo'), qty: 3, unit: 'diente' },
+          { ing: find('Aceite de oliva'), qty: 150, unit: 'ml' },
+          { ing: find('Vinagre'), qty: 30, unit: 'ml' },
+          { ing: find('Guindilla'), qty: null, unit: 'al gusto' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pica muy fino el perejil y el ajo.',
+          'Mézclalos en un bote con el aceite, el vinagre, la guindilla picada y la sal.',
+          'Remueve bien y deja reposar al menos 1 hora antes de usarla, para que se integren los sabores.',
+          'Se conserva en la nevera varios días, tapada.'
+        ],
+        notes: 'Es la salsa clásica para carnes a la parrilla, pero también anima una verdura asada o un pan tostado.'
       },
 
       /* ---- bebidas: una receta por cada vaso del directorio de cristalería ---- */
@@ -524,6 +838,43 @@ const Store = {
           'Bébelo de un trago.'
         ],
         notes: 'El toque cítrico del licor de limón es lo que lo distingue de un chupito de vodka a secas.'
+      },
+      {
+        id: uid(), name: 'Limonada casera', icon: 'vaso-alto', cat: 'Bebida', glass: 'vaso-alto',
+        diff: 'Fácil', time: 10, portions: 4,
+        items: [
+          { ing: find('Limón'), qty: 4, unit: 'ud' },
+          { ing: find('Azúcar'), qty: 100, unit: 'g' },
+          { ing: find('Agua'), qty: 800, unit: 'ml' },
+          { ing: find('Menta'), qty: null, unit: 'al gusto' },
+          { ing: find('Hielo'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Exprime los limones y cuela el zumo.',
+          'Disuelve el azúcar en un poco de agua caliente para hacer un almíbar ligero.',
+          'Mezcla el zumo de limón, el almíbar y el resto del agua.',
+          'Sirve con mucho hielo y unas hojas de menta.'
+        ],
+        notes: 'Ajusta el azúcar al gusto: cuanto más ácidos sean los limones, más almíbar necesitarás.'
+      },
+      {
+        id: uid(), name: 'Horchata de arroz', icon: 'vaso-alto', cat: 'Bebida', glass: 'vaso-alto',
+        diff: 'Fácil', time: 15, portions: 4,
+        items: [
+          { ing: find('Arroz'), qty: 150, unit: 'g' },
+          { ing: find('Agua'), qty: 1, unit: 'l' },
+          { ing: find('Leche'), qty: 250, unit: 'ml' },
+          { ing: find('Azúcar'), qty: 80, unit: 'g' },
+          { ing: find('Canela'), qty: 1, unit: 'rama' }
+        ],
+        steps: [
+          'Deja el arroz en remojo con el agua y la rama de canela un mínimo de 4 horas, mejor toda la noche.',
+          'Tritura todo junto, arroz incluido, hasta que quede muy fino.',
+          'Cuela con un paño o una bolsa de leche vegetal, apretando bien para sacar todo el líquido.',
+          'Mezcla el líquido colado con la leche y el azúcar.',
+          'Sirve bien fría, con hielo.'
+        ],
+        notes: 'Esta es la versión mexicana, con arroz; la española lleva chufa y es otra bebida distinta, aunque comparten nombre.'
       }
     ];
     this.data.recipes.forEach(normalizeRecipe);

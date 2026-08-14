@@ -20,6 +20,14 @@ const CAT_COLOR = {
   'Guarnición': 'yellow', Bebida: 'blue', Salsa: 'red', Otro: 'dim'
 };
 
+// agrupación amplia del índice: cada categoría de receta cae en uno de estos
+// tres cajones. Todo lo que no es ni bebida ni salsa es "Comida".
+const REC_GROUPS = ['Comida', 'Bebidas', 'Salsas'];
+const GROUP_OF_CAT = {
+  Entrante: 'Comida', Principal: 'Comida', Postre: 'Comida',
+  'Guarnición': 'Comida', Otro: 'Comida', Bebida: 'Bebidas', Salsa: 'Salsas'
+};
+
 const view = $('#view');
 let ui = { tab: 'index', search: '', filter: '' };  // pestaña visible y filtros del índice
 let draft = null;                                    // receta en edición
@@ -92,8 +100,14 @@ function render() {
 
 function renderIndex() {
   const q = ui.search.trim().toLowerCase();
+  const group = ui.group || '';
   let recipes = Store.data.recipes;
 
+  // cuenta de cada pestaña de grupo sobre el total, sin aplicar el resto de
+  // filtros — así "Bebidas (11)" es siempre cuántas bebidas hay en total
+  const groupCount = g => Store.data.recipes.filter(r => (GROUP_OF_CAT[r.cat] || 'Comida') === g).length;
+
+  if (group) recipes = recipes.filter(r => (GROUP_OF_CAT[r.cat] || 'Comida') === group);
   if (ui.filter) recipes = recipes.filter(r => r.cat === ui.filter);
   if (ui.soloDudas) recipes = recipes.filter(r => contarDudas(r) > 0);
   if (q) {
@@ -129,6 +143,13 @@ function renderIndex() {
   }).join('');
 
   view.innerHTML = `
+    <div class="subtabs" id="group-tabs">
+      <button class="subtab ${!group ? 'on' : ''}" data-group="">Todas
+        <span class="count">${Store.data.recipes.length}</span></button>
+      ${REC_GROUPS.map(g => `<button class="subtab ${group === g ? 'on' : ''}" data-group="${g}">${g}
+        <span class="count">${groupCount(g)}</span></button>`).join('')}
+    </div>
+
     <div class="toolbar">
       <div class="grow">
         <input type="search" id="q" placeholder="Buscar receta o ingrediente..." value="${esc(ui.search)}">
@@ -144,7 +165,7 @@ function renderIndex() {
 
     <h2 class="sec">Indice — ${recipes.length} receta${recipes.length === 1 ? '' : 's'}</h2>
 
-    ${recipes.length || q || ui.filter || ui.soloDudas ? '' : `
+    ${recipes.length || q || ui.filter || ui.soloDudas || group ? '' : `
       <div class="empty pbox">
         ${iconSVG('olla', 64)}
         <p>El recetario está vacío.<br>Crea tu primera ficha.</p>
@@ -166,6 +187,12 @@ function renderIndex() {
     const s2 = $('#q');
     s2.focus();
     s2.setSelectionRange(pos, pos);
+  });
+  $('#group-tabs').addEventListener('click', e => {
+    const btn = e.target.closest('[data-group]');
+    if (!btn) return;
+    ui.group = btn.dataset.group;
+    renderIndex();
   });
   $('#filter').addEventListener('change', e => { ui.filter = e.target.value; renderIndex(); });
   $('#only-q').addEventListener('click', () => { ui.soloDudas = !ui.soloDudas; renderIndex(); });

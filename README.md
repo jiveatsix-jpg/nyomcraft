@@ -26,12 +26,17 @@ Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
 - **Despensa** — biblioteca de ingredientes. Cada uno tiene nombre, categoría, unidad por
   defecto y un sprite. El sprite se autocompleta a partir del nombre (`guessIcon` en
   `js/icons.js`) salvo que elijas otro a mano.
-- **Recetario de ejemplo** — una instalación nueva arranca con 50 ingredientes y 16 recetas:
-  6 de cocina (tortilla de patatas, gazpacho, pollo al ajillo, guacamole, flan de huevo,
-  alioli...) y una bebida por cada uno de los 9 vasos del directorio de cristalería (mojito,
-  margarita, gin-tonic, daiquiri, sangría, mimosa, old fashioned, michelada, lemon drop). Es
-  contenido semilla: solo aparece en `localStorage` vacío, así que no toca instalaciones que
-  ya tengan datos.
+- **Índice por grupos** — bajo el título del índice, tres pestañas (**Comida**, **Bebidas**,
+  **Salsas**, más **Todas**) filtran de un vistazo, cada una con su recuento. Se combinan con
+  la búsqueda y con el filtro de categoría fino que ya había, así que puedes buscar «lima»
+  dentro de Bebidas y quedarte solo con los cócteles que la llevan.
+- **Recetario de ejemplo** — una instalación nueva arranca con 65 ingredientes y 33 recetas:
+  16 de cocina (tortilla de patatas, gazpacho, pollo al ajillo, croquetas de jamón, salmón al
+  horno, lentejas guisadas, patatas bravas, tarta de queso...), 6 salsas (alioli, mahonesa,
+  salsa de tomate, vinagreta, bechamel, chimichurri) y 11 bebidas — una por cada uno de los 9
+  vasos del directorio de cristalería, más limonada y horchata para cubrir también los zumos
+  sin alcohol. Es contenido semilla: solo aparece en `localStorage` vacío, así que no toca
+  instalaciones que ya tengan datos.
 - **Fichas de receta** — nombre, icono, categoría, dificultad, tiempo y raciones. Para
   cócteles, zumos y demás líquidos (categoría «Bebida»), también un **vaso o copa de
   servicio** opcional: 9 tipos de cristalería a 8×8 (vaso corto, tubo, cóctel, balón de

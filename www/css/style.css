@@ -180,6 +180,31 @@ label.fld > span {
 
 .view { max-width: 1080px; margin: 0 auto; padding: 22px 18px 40px; }
 
+/* pestañas secundarias: agrupación amplia del índice (Comida / Bebidas / Salsas) */
+.subtabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.subtab {
+  font-family: var(--pixel); font-size: 9px; letter-spacing: 1px;
+  text-transform: uppercase; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 7px;
+  color: var(--dim);
+  background: var(--panel);
+  border: var(--px) solid var(--ink);
+  box-shadow: inset var(--px) var(--px) 0 rgba(255,255,255,.07), 0 var(--px) 0 rgba(0,0,0,.55);
+  padding: 9px 12px;
+}
+.subtab:hover { color: var(--text); }
+.subtab.on {
+  color: var(--ink);
+  background: var(--yellow);
+  box-shadow: inset var(--px) var(--px) 0 rgba(255,255,255,.5), 0 var(--px) 0 rgba(0,0,0,.55);
+}
+.subtab .count {
+  font-size: 8px;
+  background: rgba(0,0,0,.28);
+  padding: 3px 6px;
+}
+.subtab.on .count { background: rgba(0,0,0,.18); }
+
 .toolbar {
   display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
   margin-bottom: 20px;
