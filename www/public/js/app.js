@@ -21,10 +21,10 @@ const CAT_COLOR = {
 };
 
 // agrupación amplia del índice: cada categoría de receta cae en uno de estos
-// tres cajones. Todo lo que no es ni bebida ni salsa es "Comida".
-const REC_GROUPS = ['Comida', 'Bebidas', 'Salsas'];
+// cuatro cajones. Todo lo que no es postre, bebida ni salsa es "Comida".
+const REC_GROUPS = ['Comida', 'Postres', 'Bebidas', 'Salsas'];
 const GROUP_OF_CAT = {
-  Entrante: 'Comida', Principal: 'Comida', Postre: 'Comida',
+  Entrante: 'Comida', Principal: 'Comida', Postre: 'Postres',
   'Guarnición': 'Comida', Otro: 'Comida', Bebida: 'Bebidas', Salsa: 'Salsas'
 };
 
@@ -632,21 +632,6 @@ function saveDraft() {
 
 /* ---------------------------------------------------------------- DESPENSA */
 
-/** Los macros se guardan sin redondear; al mostrarlos se recortan a un decimal
-    como mucho, para no fingir una precisión que un "aproximado" no tiene. */
-function fmtMacro(n) {
-  if (n == null) return '0';
-  return Number.isInteger(n) ? String(n) : String(Math.round(n * 10) / 10);
-}
-
-function nutriLinea(ing) {
-  if (ing.kcal == null) return '<span class="mt nutri-vacio">Sin datos nutricionales</span>';
-  const unidad = (ing.unit === 'ml' || ing.unit === 'l') ? '100 ml' : '100 g';
-  const detalle = `${fmtMacro(ing.protein)} g proteína · ${fmtMacro(ing.carbs)} g carbohidratos · ` +
-    `${fmtMacro(ing.fat)} g grasa, por ${unidad}`;
-  return `<span class="mt nutri" title="${esc(detalle)}">${fmtMacro(ing.kcal)} kcal /${unidad}</span>`;
-}
-
 function renderPantry() {
   const list = Store.data.ingredients;
 
@@ -668,46 +653,18 @@ function renderPantry() {
         ${ICON_KEYS.map((k, n) => `<button type="button" data-icon="${k}" title="${esc(ICONS[k].label)}"
           class="${n === 0 ? 'on' : ''}">${iconSVG(k, 30)}</button>`).join('')}
       </div>
-
-      <label class="fld" style="margin-top:14px">
-        <span>Valores nutricionales aproximados, por 100 g/ml (opcional)</span></label>
-      <div class="form-grid">
-        <label class="fld"><span>Kcal</span><input type="number" id="p-kcal" min="0" step="1" placeholder="p. ej. 150"></label>
-        <label class="fld"><span>Proteína (g)</span><input type="number" id="p-protein" min="0" step="0.1"></label>
-        <label class="fld"><span>Carbohidratos (g)</span><input type="number" id="p-carbs" min="0" step="0.1"></label>
-        <label class="fld"><span>Grasa (g)</span><input type="number" id="p-fat" min="0" step="0.1"></label>
-      </div>
-
       <button class="btn green" id="p-add" style="margin-top:14px">+ Añadir a la despensa</button>
     </section>
 
     <h3 class="sub">Biblioteca</h3>
     ${list.length ? `<div class="pantry-grid">${list.map(i => `
       <div class="ing-card">
-        <div class="ing-card-main">
-          ${iconSVG(i.icon, 32)}
-          <div class="body">
-            <span class="nm">${esc(i.name)}</span>
-            <span class="mt">${esc(i.cat)} · ${esc(i.unit)} · ${Store.usage(i.id)} recetas</span>
-            ${nutriLinea(i)}
-          </div>
-          <div class="ing-card-btns">
-            <button class="btn small ghost" data-nutri-toggle="${i.id}"
-                    title="Editar valores nutricionales">Nutrición</button>
-            <button class="btn small red" data-del="${i.id}" title="Borrar">X</button>
-          </div>
+        ${iconSVG(i.icon, 32)}
+        <div class="body">
+          <span class="nm">${esc(i.name)}</span>
+          <span class="mt">${esc(i.cat)} · ${esc(i.unit)} · ${Store.usage(i.id)} recetas</span>
         </div>
-        <div class="nutri-form" id="nutri-${i.id}" hidden>
-          <label class="fld"><span>Kcal /100${(i.unit === 'ml' || i.unit === 'l') ? 'ml' : 'g'}</span>
-            <input type="number" min="0" step="1" data-f="kcal" value="${i.kcal ?? ''}"></label>
-          <label class="fld"><span>Proteína (g)</span>
-            <input type="number" min="0" step="0.1" data-f="protein" value="${i.protein ?? ''}"></label>
-          <label class="fld"><span>Carbohidratos (g)</span>
-            <input type="number" min="0" step="0.1" data-f="carbs" value="${i.carbs ?? ''}"></label>
-          <label class="fld"><span>Grasa (g)</span>
-            <input type="number" min="0" step="0.1" data-f="fat" value="${i.fat ?? ''}"></label>
-          <button class="btn small green" data-save-nutri="${i.id}">Guardar</button>
-        </div>
+        <button class="btn small red" data-del="${i.id}" title="Borrar">X</button>
       </div>`).join('')}</div>`
       : '<div class="empty pbox">' + iconSVG('legumbre', 48) + '<p>La despensa está vacía.</p></div>'}
 
@@ -734,16 +691,9 @@ function renderPantry() {
     paint(btn.dataset.icon);
   });
 
-  // campo vacío -> null ("no se sabe"), nunca 0 ("es cero de verdad")
-  const numField = sel => { const v = $(sel).value; return v === '' ? null : Math.max(0, +v); };
-
   function add() {
     const name = $('#p-name').value;
-    const res = Store.addIngredient({
-      name, cat: $('#p-cat').value, unit: $('#p-unit').value, icon: chosen,
-      kcal: numField('#p-kcal'), protein: numField('#p-protein'),
-      carbs: numField('#p-carbs'), fat: numField('#p-fat')
-    });
+    const res = Store.addIngredient({ name, cat: $('#p-cat').value, unit: $('#p-unit').value, icon: chosen });
     if (!res) return toast('Escribe un nombre', true);
     if (res.dupe) return toast(`"${res.dupe.name}" ya existe`, true);
     toast(`"${res.ing.name}" añadido`);
@@ -761,22 +711,6 @@ function renderPantry() {
     if (!confirm(msg)) return;
     Store.removeIngredient(ing.id);
     toast('Ingrediente borrado');
-    renderPantry();
-  }));
-
-  $$('[data-nutri-toggle]').forEach(b => b.addEventListener('click', () => {
-    const panel = $(`#nutri-${b.dataset.nutriToggle}`);
-    panel.hidden = !panel.hidden;
-  }));
-  $$('[data-save-nutri]').forEach(b => b.addEventListener('click', () => {
-    const id = b.dataset.saveNutri;
-    const panel = $(`#nutri-${id}`);
-    const val = f => {
-      const v = panel.querySelector(`[data-f="${f}"]`).value;
-      return v === '' ? null : Math.max(0, +v);
-    };
-    Store.updateIngredient(id, { kcal: val('kcal'), protein: val('protein'), carbs: val('carbs'), fat: val('fat') });
-    toast('Valores nutricionales guardados');
     renderPantry();
   }));
 

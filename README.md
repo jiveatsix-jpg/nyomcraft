@@ -26,24 +26,18 @@ Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
 - **Despensa** — biblioteca de ingredientes. Cada uno tiene nombre, categoría, unidad por
   defecto y un sprite. El sprite se autocompleta a partir del nombre (`guessIcon` en
   `js/icons.js`) salvo que elijas otro a mano.
-- **Nutrición aproximada** — cada ingrediente puede llevar kcal, proteína, carbohidratos y
-  grasa por 100 g/ml. Los 70 ingredientes de la despensa de ejemplo ya traen valores de
-  referencia; al añadir uno propio son opcionales, y en cualquier ingrediente existente
-  —incluidos los de la semilla— el botón **Nutrición** de su tarjeta despliega el formulario
-  para rellenarlos o corregirlos. Sin datos se lee «Sin datos nutricionales»: un campo vacío
-  nunca se confunde con un valor real de 0 (la sal, el agua o el hielo sí llevan
-  legítimamente 0 kcal).
-- **Índice por grupos** — bajo el título del índice, tres pestañas (**Comida**, **Bebidas**,
-  **Salsas**, más **Todas**) filtran de un vistazo, cada una con su recuento. Se combinan con
-  la búsqueda y con el filtro de categoría fino que ya había, así que puedes buscar «lima»
-  dentro de Bebidas y quedarte solo con los cócteles que la llevan.
-- **Recetario de ejemplo** — una instalación nueva arranca con 78 ingredientes y 47 recetas:
-  27 de cocina, repartidas de forma pareja entre entrantes, principales, postres y
-  guarniciones (tortilla de patatas, paella de pollo y verduras, merluza en salsa verde,
-  albóndigas, torrijas, natillas, brownie, pisto...), 6 salsas (alioli, mahonesa, salsa de
-  tomate, vinagreta, bechamel, chimichurri) y 14 bebidas — una por cada uno de los 9 vasos
-  del directorio de cristalería, más limonada, horchata y tres batidos para cubrir también
-  los zumos y batidos sin alcohol. Es contenido semilla: solo
+- **Índice por grupos** — bajo el título del índice, pestañas (**Comida**, **Postres**,
+  **Bebidas**, **Salsas**, más **Todas**) filtran de un vistazo, cada una con su recuento. Se
+  combinan con la búsqueda y con el filtro de categoría fino que ya había, así que puedes
+  buscar «lima» dentro de Bebidas y quedarte solo con los cócteles que la llevan. La pestaña
+  agrupa por categoría de receta, no por origen: un postre chileno y uno español conviven en
+  la misma pestaña «Postres».
+- **Recetario de ejemplo** — una instalación nueva arranca con 86 ingredientes y 58 recetas:
+  36 de cocina (entre comida y postres), entre ellas un buen puñado de platos chilenos (empanadas de pino, pastel de
+  choclo, cazuela de pollo, carbonada, charquicán, porotos granados, humitas, sopaipillas,
+  pebre, mote con huesillo, kuchen de manzana) además de las españolas, mexicanas e
+  italianas ya presentes; 7 salsas y 15 bebidas — una por cada uno de los 9 vasos del
+  directorio de cristalería, más zumos y batidos sin alcohol. Es contenido semilla: solo
   aparece en `localStorage` vacío, así que no toca instalaciones que ya tengan datos.
 - **Sello** — un «✓» que marcas en una receta cuando la has hecho y te ha salido perfecta,
   distinto de la duda (que marca lo que falta por confirmar). Se pone y se quita con un botón

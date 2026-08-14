@@ -41,23 +41,6 @@ function normalizeRecipe(rec) {
   return rec;
 }
 
-/** Un valor nutricional valido es un numero >= 0; cualquier otra cosa (falta,
-    texto, negativo) se trata como "no se sabe" y se guarda como null, nunca
-    como 0 — 0 significa "de verdad no tiene calorias/proteina/...", no
-    "no se ha rellenado todavia".                                           */
-const numOrNull = v => (typeof v === 'number' && isFinite(v) && v >= 0) ? v : null;
-
-/** Pone al día un ingrediente: los cuatro valores nutricionales aproximados
-    (por 100 g o 100 ml) son opcionales y pueden faltar en datos antiguos. */
-function normalizeIngredient(ing) {
-  if (!ing) return ing;
-  ing.kcal = numOrNull(ing.kcal);
-  ing.protein = numOrNull(ing.protein);
-  ing.carbs = numOrNull(ing.carbs);
-  ing.fat = numOrNull(ing.fat);
-  return ing;
-}
-
 const Store = {
   KEY: 'nomcraft.v1',
   data: { ingredients: [], recipes: [], masaOverrides: {} },
@@ -68,7 +51,6 @@ const Store = {
       if (raw) {
         const parsed = JSON.parse(raw);
         this.data.ingredients = Array.isArray(parsed.ingredients) ? parsed.ingredients : [];
-        this.data.ingredients.forEach(normalizeIngredient);
         this.data.recipes = Array.isArray(parsed.recipes) ? parsed.recipes : [];
         this.data.recipes.forEach(normalizeRecipe);
         this.data.masaOverrides = (parsed.masaOverrides && typeof parsed.masaOverrides === 'object')
@@ -88,15 +70,12 @@ const Store = {
   /* ---- ingredientes ---- */
   ingredient(id) { return this.data.ingredients.find(i => i.id === id) || null; },
 
-  addIngredient({ name, cat, unit, icon, kcal, protein, carbs, fat }) {
+  addIngredient({ name, cat, unit, icon }) {
     const clean = (name || '').trim();
     if (!clean) return null;
     const dupe = this.data.ingredients.find(i => i.name.toLowerCase() === clean.toLowerCase());
     if (dupe) return { dupe };
-    const ing = {
-      id: uid(), name: clean, cat: cat || 'Otro', unit: unit || 'g', icon: icon || guessIcon(clean),
-      kcal: numOrNull(kcal), protein: numOrNull(protein), carbs: numOrNull(carbs), fat: numOrNull(fat)
-    };
+    const ing = { id: uid(), name: clean, cat: cat || 'Otro', unit: unit || 'g', icon: icon || guessIcon(clean) };
     this.data.ingredients.push(ing);
     this.sortIngredients();
     this.save();
@@ -213,7 +192,6 @@ const Store = {
       Object.assign(this.data.masaOverrides, masaOv);
     }
     this.data.recipes.forEach(normalizeRecipe);
-    this.data.ingredients.forEach(normalizeIngredient);
     this.sortIngredients();
     this.save();
     return { ings: ings.length, recs: recs.length };
@@ -222,87 +200,95 @@ const Store = {
   /* ---- semilla inicial ---- */
   seed() {
     const base = [
-      ['Aceite de oliva', 'Salsa', 'cda', 884, 0, 0, 100],
-      ['Agua', 'Otro', 'ml', 0, 0, 0, 0],
-      ['Agua con gas', 'Otro', 'ml', 0, 0, 0, 0],
-      ['Aguacate', 'Fruta', 'ud', 160, 2, 9, 15],
-      ['Ajo', 'Verdura', 'diente', 149, 6.4, 33, 0.5],
-      ['Albahaca', 'Especia', 'hoja', 23, 3.2, 2.7, 0.6],
-      ['Almendras', 'Fruta', 'g', 579, 21, 22, 50],
-      ['Angostura', 'Especia', 'al gusto', 250, 0, 25, 0],
-      ['Arroz', 'Cereal', 'g', 365, 7.1, 80, 0.7],
-      ['Azafrán', 'Especia', 'al gusto', 310, 11, 65, 6],
-      ['Azúcar', 'Otro', 'g', 387, 0, 100, 0],
-      ['Berenjena', 'Verdura', 'ud', 25, 1, 6, 0.2],
-      ['Brandy', 'Otro', 'ml', 231, 0, 0.5, 0],
-      ['Calabacín', 'Verdura', 'ud', 17, 1.2, 3.1, 0.3],
-      ['Caldo', 'Otro', 'ml', 5, 0.5, 0.5, 0.2],
-      ['Canela', 'Especia', 'rama', 247, 4, 81, 1.2],
-      ['Carne picada', 'Carne', 'g', 215, 18, 0, 15],
-      ['Cava', 'Otro', 'ml', 80, 0.1, 1.5, 0],
-      ['Cebolla', 'Verdura', 'ud', 40, 1.1, 9.3, 0.1],
-      ['Cerveza', 'Otro', 'ml', 43, 0.5, 3.6, 0],
-      ['Champiñones', 'Verdura', 'g', 22, 3.1, 3.3, 0.3],
-      ['Chocolate en polvo', 'Otro', 'g', 228, 20, 58, 14],
-      ['Chocolate negro', 'Otro', 'g', 598, 7.8, 46, 43],
-      ['Cilantro', 'Especia', 'hoja', 23, 2.1, 3.7, 0.5],
-      ['Espaguetis', 'Cereal', 'g', 371, 13, 75, 1.5],
-      ['Espinaca', 'Verdura', 'g', 23, 2.9, 3.6, 0.4],
-      ['Fresa', 'Fruta', 'g', 32, 0.7, 7.7, 0.3],
-      ['Galletas', 'Otro', 'g', 440, 7, 68, 15],
-      ['Garbanzos', 'Legumbre', 'g', 364, 19, 61, 6],
-      ['Ginebra', 'Otro', 'ml', 231, 0, 0, 0],
-      ['Guindilla', 'Especia', 'ud', 40, 1.9, 9, 0.4],
-      ['Harina', 'Cereal', 'g', 364, 10, 76, 1],
-      ['Hielo', 'Otro', 'al gusto', 0, 0, 0, 0],
-      ['Huevo', 'Otro', 'ud', 155, 13, 1.1, 11],
-      ['Jamón', 'Carne', 'g', 241, 30, 0, 13],
-      ['Judía verde', 'Legumbre', 'g', 31, 1.8, 7, 0.2],
-      ['Leche', 'Lácteo', 'ml', 61, 3.2, 4.8, 3.3],
-      ['Lechuga', 'Verdura', 'ud', 15, 1.4, 2.9, 0.2],
-      ['Lentejas', 'Legumbre', 'g', 353, 25, 60, 1],
-      ['Licor de limón', 'Otro', 'ml', 270, 0, 30, 0],
-      ['Lima', 'Fruta', 'ud', 30, 0.7, 11, 0.2],
-      ['Limón', 'Fruta', 'ud', 29, 1.1, 9.3, 0.3],
-      ['Mantequilla', 'Lácteo', 'g', 717, 0.9, 0.1, 81],
-      ['Manzana', 'Fruta', 'ud', 52, 0.3, 14, 0.2],
-      ['Menta', 'Especia', 'hoja', 70, 3.8, 15, 0.9],
-      ['Merluza', 'Pescado', 'g', 86, 17, 0, 1.3],
-      ['Mostaza', 'Salsa', 'cdta', 66, 4.4, 5.8, 4],
-      ['Naranja', 'Fruta', 'ud', 47, 0.9, 12, 0.1],
-      ['Nata', 'Lácteo', 'ml', 340, 2, 3, 35],
-      ['Nuez moscada', 'Especia', 'pizca', 525, 5.8, 49, 36],
-      ['Pan', 'Cereal', 'ud', 265, 9, 49, 3.2],
-      ['Pan rallado', 'Cereal', 'g', 395, 13, 72, 5],
-      ['Patata', 'Verdura', 'ud', 77, 2, 17, 0.1],
-      ['Pepino', 'Verdura', 'ud', 15, 0.7, 3.6, 0.1],
-      ['Perejil', 'Especia', 'hoja', 36, 3, 6.3, 0.8],
-      ['Pimentón', 'Especia', 'cdta', 282, 14, 54, 13],
-      ['Pimienta negra', 'Especia', 'pizca', 251, 10, 64, 3.3],
-      ['Pimiento', 'Verdura', 'ud', 20, 0.9, 4.6, 0.2],
-      ['Plátano', 'Fruta', 'ud', 89, 1.1, 23, 0.3],
-      ['Pollo', 'Carne', 'g', 165, 31, 0, 3.6],
-      ['Queso crema', 'Lácteo', 'g', 342, 6, 4, 34],
-      ['Queso parmesano', 'Lácteo', 'g', 392, 35, 3.2, 26],
-      ['Ron blanco', 'Otro', 'ml', 231, 0, 0, 0],
-      ['Sal', 'Especia', 'pizca', 0, 0, 0, 0],
-      ['Salmón', 'Pescado', 'g', 208, 20, 0, 13],
-      ['Salsa inglesa', 'Salsa', 'cdta', 78, 0, 19.5, 0],
-      ['Salsa picante', 'Salsa', 'al gusto', 12, 0.5, 2, 0.2],
-      ['Tequila', 'Otro', 'ml', 231, 0, 0, 0],
-      ['Tomate', 'Verdura', 'ud', 18, 0.9, 3.9, 0.2],
-      ['Tónica', 'Otro', 'ml', 34, 0, 8.8, 0],
-      ['Triple seco', 'Otro', 'ml', 260, 0, 28, 0],
-      ['Vinagre', 'Salsa', 'ml', 18, 0, 0.4, 0],
-      ['Vino blanco', 'Otro', 'ml', 82, 0.1, 2.6, 0],
-      ['Vino tinto', 'Otro', 'ml', 85, 0.1, 2.6, 0],
-      ['Vodka', 'Otro', 'ml', 231, 0, 0, 0],
-      ['Whisky', 'Otro', 'ml', 231, 0, 0, 0],
-      ['Zanahoria', 'Verdura', 'ud', 41, 0.9, 9.6, 0.2],
-      ['Zumo de naranja', 'Otro', 'ml', 45, 0.7, 10.4, 0.2]
+      ['Aceite de oliva', 'Salsa', 'cda'],
+      ['Aceitunas negras', 'Otro', 'g'],
+      ['Agua', 'Otro', 'ml'],
+      ['Agua con gas', 'Otro', 'ml'],
+      ['Aguacate', 'Fruta', 'ud'],
+      ['Ajo', 'Verdura', 'diente'],
+      ['Albahaca', 'Especia', 'hoja'],
+      ['Almendras', 'Fruta', 'g'],
+      ['Angostura', 'Especia', 'al gusto'],
+      ['Arroz', 'Cereal', 'g'],
+      ['Azafrán', 'Especia', 'al gusto'],
+      ['Azúcar', 'Otro', 'g'],
+      ['Berenjena', 'Verdura', 'ud'],
+      ['Brandy', 'Otro', 'ml'],
+      ['Calabacín', 'Verdura', 'ud'],
+      ['Caldo', 'Otro', 'ml'],
+      ['Canela', 'Especia', 'rama'],
+      ['Carne picada', 'Carne', 'g'],
+      ['Cava', 'Otro', 'ml'],
+      ['Cebolla', 'Verdura', 'ud'],
+      ['Cerveza', 'Otro', 'ml'],
+      ['Champiñones', 'Verdura', 'g'],
+      ['Choclo', 'Verdura', 'g'],
+      ['Chocolate en polvo', 'Otro', 'g'],
+      ['Chocolate negro', 'Otro', 'g'],
+      ['Cilantro', 'Especia', 'hoja'],
+      ['Comino', 'Especia', 'cdta'],
+      ['Espaguetis', 'Cereal', 'g'],
+      ['Espinaca', 'Verdura', 'g'],
+      ['Fresa', 'Fruta', 'g'],
+      ['Galletas', 'Otro', 'g'],
+      ['Garbanzos', 'Legumbre', 'g'],
+      ['Ginebra', 'Otro', 'ml'],
+      ['Guindilla', 'Especia', 'ud'],
+      ['Harina', 'Cereal', 'g'],
+      ['Hielo', 'Otro', 'al gusto'],
+      ['Huesillos', 'Fruta', 'g'],
+      ['Huevo', 'Otro', 'ud'],
+      ['Jamón', 'Carne', 'g'],
+      ['Judía verde', 'Legumbre', 'g'],
+      ['Leche', 'Lácteo', 'ml'],
+      ['Lechuga', 'Verdura', 'ud'],
+      ['Lentejas', 'Legumbre', 'g'],
+      ['Licor de limón', 'Otro', 'ml'],
+      ['Lima', 'Fruta', 'ud'],
+      ['Limón', 'Fruta', 'ud'],
+      ['Mantequilla', 'Lácteo', 'g'],
+      ['Manzana', 'Fruta', 'ud'],
+      ['Menta', 'Especia', 'hoja'],
+      ['Merluza', 'Pescado', 'g'],
+      ['Mostaza', 'Salsa', 'cdta'],
+      ['Mote', 'Cereal', 'g'],
+      ['Naranja', 'Fruta', 'ud'],
+      ['Nata', 'Lácteo', 'ml'],
+      ['Nuez moscada', 'Especia', 'pizca'],
+      ['Pan', 'Cereal', 'ud'],
+      ['Pan rallado', 'Cereal', 'g'],
+      ['Pasas', 'Fruta', 'g'],
+      ['Patata', 'Verdura', 'ud'],
+      ['Pepino', 'Verdura', 'ud'],
+      ['Perejil', 'Especia', 'hoja'],
+      ['Pimentón', 'Especia', 'cdta'],
+      ['Pimienta negra', 'Especia', 'pizca'],
+      ['Pimiento', 'Verdura', 'ud'],
+      ['Plátano', 'Fruta', 'ud'],
+      ['Pollo', 'Carne', 'g'],
+      ['Porotos', 'Legumbre', 'g'],
+      ['Queso crema', 'Lácteo', 'g'],
+      ['Queso parmesano', 'Lácteo', 'g'],
+      ['Ron blanco', 'Otro', 'ml'],
+      ['Sal', 'Especia', 'pizca'],
+      ['Salmón', 'Pescado', 'g'],
+      ['Salsa inglesa', 'Salsa', 'cdta'],
+      ['Salsa picante', 'Salsa', 'al gusto'],
+      ['Tequila', 'Otro', 'ml'],
+      ['Tomate', 'Verdura', 'ud'],
+      ['Tónica', 'Otro', 'ml'],
+      ['Triple seco', 'Otro', 'ml'],
+      ['Vinagre', 'Salsa', 'ml'],
+      ['Vino blanco', 'Otro', 'ml'],
+      ['Vino tinto', 'Otro', 'ml'],
+      ['Vodka', 'Otro', 'ml'],
+      ['Whisky', 'Otro', 'ml'],
+      ['Zanahoria', 'Verdura', 'ud'],
+      ['Zapallo', 'Verdura', 'g'],
+      ['Zumo de naranja', 'Otro', 'ml']
     ];
-    this.data.ingredients = base.map(([name, cat, unit, kcal, protein, carbs, fat]) => ({
-      id: uid(), name, cat, unit, icon: guessIcon(name), kcal, protein, carbs, fat
+    this.data.ingredients = base.map(([name, cat, unit]) => ({
+      id: uid(), name, cat, unit, icon: guessIcon(name)
     }));
     this.sortIngredients();
 
@@ -520,6 +506,54 @@ const Store = {
         notes: 'Cuanto más fría y reposada esté la masa, más fácil es formar las croquetas sin que se rompan.'
       },
       {
+        id: uid(), name: 'Empanadas de pino', icon: 'carne', cat: 'Entrante',
+        diff: 'Media', time: 90, portions: 12,
+        items: [
+          { ing: find('Carne picada'), qty: 600, unit: 'g' },
+          { ing: find('Cebolla'), qty: 4, unit: 'ud' },
+          { ing: find('Aceitunas negras'), qty: 12, unit: 'ud' },
+          { ing: find('Pasas'), qty: 50, unit: 'g' },
+          { ing: find('Huevo'), qty: 2, unit: 'ud' },
+          { ing: find('Pimentón'), qty: 1, unit: 'cdta' },
+          { ing: find('Comino'), qty: 1, unit: 'cdta' },
+          { ing: find('Harina'), qty: 500, unit: 'g' },
+          { ing: find('Mantequilla'), qty: 100, unit: 'g' },
+          { ing: find('Agua'), qty: 150, unit: 'ml' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pica la cebolla en cuadraditos pequeños y ponla a cocinar a fuego bajo, hasta que esté muy tierna y dulce (unos 20-30 minutos): esto es "el pino".',
+          'Añade la carne picada, el pimentón y el comino, y cocina hasta que la carne esté hecha. Deja enfriar del todo.',
+          'Para la masa, mezcla la harina con la mantequilla derretida, el agua tibia y sal, hasta formar una masa lisa. Deja reposar 15 minutos.',
+          'Estira la masa y corta círculos. Rellena cada uno con el pino frío, una aceituna, un poco de pasas y un trozo de huevo duro.',
+          'Cierra las empanadas doblando por la mitad y sellando el borde, y pinta con huevo batido.',
+          'Hornea a 200 °C unos 25-30 minutos, hasta que estén doradas.'
+        ],
+        notes: 'El pino se hace siempre el día antes y se enfría del todo: si está caliente, humedece la masa y no cierra bien.'
+      },
+      {
+        id: uid(), name: 'Humitas', icon: 'plato', cat: 'Entrante',
+        diff: 'Media', time: 60, portions: 6,
+        items: [
+          { ing: find('Choclo'), qty: 1200, unit: 'g' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Albahaca'), qty: null, unit: 'al gusto' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Pimentón'), qty: null, unit: 'al gusto' },
+          { ing: find('Azúcar'), qty: 1, unit: 'cdta' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Ralla o tritura el choclo hasta conseguir una pasta gruesa, sin que quede totalmente líquida.',
+          'Sofríe la cebolla picada en el aceite hasta que esté tierna, sin dorarse.',
+          'Mezcla la cebolla con el choclo molido, la albahaca picada, el pimentón, el azúcar y la sal.',
+          'Envuelve porciones de la mezcla en hojas de choclo o papel de horno, formando paquetitos atados.',
+          'Cuece los paquetitos al vapor o hervidos, 40-45 minutos.',
+          'Sirve calientes, dentro de su propia hoja.'
+        ],
+        notes: 'Cada casa tiene su punto de sal y azúcar: algunas familias las hacen más dulces, otras más saladas — no hay una única receta correcta.'
+      },
+      {
         id: uid(), name: 'Espaguetis a la boloñesa', icon: 'olla', cat: 'Principal',
         diff: 'Media', time: 60, portions: 4,
         items: [
@@ -677,6 +711,106 @@ const Store = {
         notes: 'No remover el arroz una vez añadido el caldo es la regla de oro: es lo que permite que se forme el socarrat en el fondo.'
       },
       {
+        id: uid(), name: 'Pastel de choclo', icon: 'plato', cat: 'Principal',
+        diff: 'Media', time: 80, portions: 6,
+        items: [
+          { ing: find('Choclo'), qty: 800, unit: 'g' },
+          { ing: find('Carne picada'), qty: 400, unit: 'g' },
+          { ing: find('Cebolla'), qty: 2, unit: 'ud' },
+          { ing: find('Aceitunas negras'), qty: 8, unit: 'ud' },
+          { ing: find('Pasas'), qty: 30, unit: 'g' },
+          { ing: find('Huevo'), qty: 2, unit: 'ud' },
+          { ing: find('Leche'), qty: 100, unit: 'ml' },
+          { ing: find('Mantequilla'), qty: 40, unit: 'g' },
+          { ing: find('Azúcar'), qty: 1, unit: 'cdta' },
+          { ing: find('Albahaca'), qty: null, unit: 'al gusto' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Prepara el pino: sofríe la cebolla picada hasta que esté tierna, añade la carne picada y cocina hasta que esté hecha. Sazona y reserva.',
+          'Tritura el choclo con la leche, la mantequilla y el azúcar hasta conseguir una crema espesa.',
+          'Cocina la crema de choclo a fuego bajo, removiendo a menudo, hasta que espese un poco más. Añade la albahaca picada.',
+          'En una fuente para horno, reparte el pino, unas aceitunas, pasas y trozos de huevo duro.',
+          'Cubre todo con la crema de choclo, alisando la superficie.',
+          'Espolvorea con un poco de azúcar por encima y hornea a 200 °C unos 25-30 minutos, hasta que la superficie se dore.'
+        ],
+        notes: 'El toque dulce de la superficie es tradicional: no te pases de azúcar, es solo para ayudar a que gratine y dore.'
+      },
+      {
+        id: uid(), name: 'Cazuela de pollo', icon: 'carne', cat: 'Principal',
+        diff: 'Media', time: 60, portions: 4,
+        items: [
+          { ing: find('Pollo'), qty: 800, unit: 'g' },
+          { ing: find('Zapallo'), qty: 300, unit: 'g' },
+          { ing: find('Choclo'), qty: 2, unit: 'ud' },
+          { ing: find('Patata'), qty: 2, unit: 'ud' },
+          { ing: find('Zanahoria'), qty: 1, unit: 'ud' },
+          { ing: find('Arroz'), qty: 50, unit: 'g' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pon el pollo troceado en una olla grande con agua, la cebolla y el ajo. Lleva a hervor y cocina 20 minutos, retirando la espuma que suba.',
+          'Añade la zanahoria y el zapallo en trozos grandes, y cocina 10 minutos más.',
+          'Incorpora las patatas enteras o en mitades y el trozo de choclo.',
+          'Añade el arroz y cocina otros 15-20 minutos, hasta que todas las verduras estén tiernas.',
+          'Sala al gusto y sirve bien caliente, con un trozo de cada verdura en cada plato.'
+        ],
+        notes: 'Una buena cazuela se sirve con el caldo bien caliente y un trozo de choclo entero — es casi tan importante como la carne.'
+      },
+      {
+        id: uid(), name: 'Carbonada', icon: 'carne', cat: 'Principal',
+        diff: 'Media', time: 60, portions: 4,
+        items: [
+          { ing: find('Carne picada'), qty: 400, unit: 'g' },
+          { ing: find('Patata'), qty: 2, unit: 'ud' },
+          { ing: find('Zanahoria'), qty: 2, unit: 'ud' },
+          { ing: find('Zapallo'), qty: 200, unit: 'g' },
+          { ing: find('Choclo'), qty: 1, unit: 'ud' },
+          { ing: find('Arroz'), qty: 50, unit: 'g' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Pimentón'), qty: 1, unit: 'cdta' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Agua'), qty: 1000, unit: 'ml' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Dora la carne picada en el aceite junto con la cebolla y el ajo picados.',
+          'Añade el pimentón y remueve un momento.',
+          'Incorpora el agua y lleva a hervor.',
+          'Añade la patata, la zanahoria y el zapallo en dados pequeños, y el choclo en trozos.',
+          'Cuece 25-30 minutos, y añade el arroz los últimos 15 minutos.',
+          'Sala al gusto y sirve bien caliente, como una sopa espesa.'
+        ],
+        notes: 'A diferencia de la cazuela, en la carbonada todo se corta en dados pequeños: es más sopa que guiso de trozos grandes.'
+      },
+      {
+        id: uid(), name: 'Porotos granados', icon: 'legumbre', cat: 'Principal',
+        diff: 'Media', time: 60, portions: 4,
+        items: [
+          { ing: find('Porotos'), qty: 400, unit: 'g' },
+          { ing: find('Zapallo'), qty: 300, unit: 'g' },
+          { ing: find('Choclo'), qty: 400, unit: 'g' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Albahaca'), qty: null, unit: 'al gusto' },
+          { ing: find('Pimentón'), qty: 1, unit: 'cdta' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Si usas porotos secos, déjalos en remojo la noche anterior y cuécelos hasta que estén tiernos.',
+          'Sofríe la cebolla y el ajo en el aceite hasta que estén tiernos, y añade el pimentón.',
+          'Incorpora el zapallo en dados y cocina unos minutos.',
+          'Añade los porotos con un poco de su caldo de cocción, y el choclo triturado grueso.',
+          'Cuece a fuego bajo 20-25 minutos, hasta que el zapallo esté tierno y el guiso haya espesado.',
+          'Añade la albahaca picada al final y sala al gusto.'
+        ],
+        notes: 'El choclo molido es lo que espesa el guiso de forma natural — cuanto más grueso lo dejes, más textura tendrá.'
+      },
+      {
         id: uid(), name: 'Patatas bravas', icon: 'plato', cat: 'Guarnición',
         diff: 'Fácil', time: 30, portions: 4,
         items: [
@@ -793,6 +927,47 @@ const Store = {
         notes: 'Cuanto más tiempo y más bajo el fuego, más se concentran los sabores — el pisto mejora de un día para otro.'
       },
       {
+        id: uid(), name: 'Charquicán', icon: 'plato', cat: 'Guarnición',
+        diff: 'Fácil', time: 45, portions: 4,
+        items: [
+          { ing: find('Zapallo'), qty: 300, unit: 'g' },
+          { ing: find('Patata'), qty: 400, unit: 'g' },
+          { ing: find('Choclo'), qty: 200, unit: 'g' },
+          { ing: find('Carne picada'), qty: 200, unit: 'g' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Pimentón'), qty: 1, unit: 'cdta' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Cuece por separado el zapallo y la patata en agua con sal hasta que estén muy tiernos.',
+          'Mientras, sofríe la cebolla y el ajo en el aceite, añade la carne picada y el pimentón, y cocina hasta que esté hecha.',
+          'Escurre bien el zapallo y la patata, y májalos juntos con un tenedor hasta conseguir un puré grueso, con algo de textura.',
+          'Mezcla el puré con el sofrito de carne y el choclo.',
+          'Sirve caliente, tradicionalmente con un huevo frito encima.'
+        ],
+        notes: 'No lo tritures demasiado fino: el charquicán se distingue del puré de patatas por conservar tropezones de verdura.'
+      },
+      {
+        id: uid(), name: 'Sopaipillas', icon: 'pan', cat: 'Guarnición',
+        diff: 'Fácil', time: 30, portions: 6,
+        items: [
+          { ing: find('Zapallo'), qty: 200, unit: 'g' },
+          { ing: find('Harina'), qty: 400, unit: 'g' },
+          { ing: find('Aceite de oliva'), qty: 500, unit: 'ml' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Cuece el zapallo en trozos hasta que esté muy tierno, escúrrelo bien y hazlo puré.',
+          'Mezcla el puré de zapallo con la harina y la sal, hasta formar una masa que no se pegue en las manos.',
+          'Estira la masa y corta círculos con un vaso o un cortapastas.',
+          'Pincha cada disco un par de veces con un tenedor, para que no suban demasiado al freírlas.',
+          'Fríe en aceite bien caliente hasta que doren por ambos lados.'
+        ],
+        notes: 'Se comen solas, con pebre, o bañadas en chancaca (miel de caña) para la versión dulce.'
+      },
+      {
         id: uid(), name: 'Tarta de queso', icon: 'pastel', cat: 'Postre',
         diff: 'Media', time: 70, portions: 8,
         items: [
@@ -893,6 +1068,27 @@ const Store = {
         ],
         notes: 'Un brownie perfecto se hornea de menos, no de más — si el palillo sale limpio, ya se ha pasado.'
       },
+      {
+        id: uid(), name: 'Kuchen de manzana', icon: 'pastel', cat: 'Postre',
+        diff: 'Media', time: 60, portions: 8,
+        items: [
+          { ing: find('Manzana'), qty: 4, unit: 'ud' },
+          { ing: find('Harina'), qty: 250, unit: 'g' },
+          { ing: find('Mantequilla'), qty: 150, unit: 'g' },
+          { ing: find('Huevo'), qty: 2, unit: 'ud' },
+          { ing: find('Azúcar'), qty: 150, unit: 'g' },
+          { ing: find('Canela'), qty: 1, unit: 'cdta' }
+        ],
+        steps: [
+          'Bate la mantequilla con la mitad del azúcar hasta que quede cremosa.',
+          'Añade los huevos uno a uno, y luego la harina, hasta formar una masa blanda.',
+          'Extiende la masa en un molde, cubriendo también un poco los bordes.',
+          'Pela las manzanas, córtalas en láminas finas y colócalas encima de la masa, en forma de abanico.',
+          'Espolvorea con el resto del azúcar mezclado con la canela.',
+          'Hornea a 180 °C unos 40-45 minutos, hasta que la masa esté dorada y las manzanas tiernas.'
+        ],
+        notes: 'Los kuchen llegaron con la inmigración alemana al sur de Chile, y hoy son tan chilenos como cualquier otro postre de la lista.'
+      },
 
       /* ---- salsas (además del alioli, arriba) ---- */
       {
@@ -989,6 +1185,27 @@ const Store = {
           'Se conserva en la nevera varios días, tapada.'
         ],
         notes: 'Es la salsa clásica para carnes a la parrilla, pero también anima una verdura asada o un pan tostado.'
+      },
+      {
+        id: uid(), name: 'Pebre', icon: 'tomate', cat: 'Salsa',
+        diff: 'Fácil', time: 10, portions: 4,
+        items: [
+          { ing: find('Tomate'), qty: 3, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Cilantro'), qty: null, unit: 'al gusto' },
+          { ing: find('Ajo'), qty: 1, unit: 'diente' },
+          { ing: find('Guindilla'), qty: null, unit: 'al gusto' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Lima'), qty: 1, unit: 'ud' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pica el tomate, la cebolla, el cilantro, el ajo y la guindilla muy finos, en dados pequeños.',
+          'Mezcla todo en un bol.',
+          'Añade el aceite, el zumo de lima y la sal, y remueve bien.',
+          'Deja reposar 10 minutos antes de servir, para que se mezclen los sabores.'
+        ],
+        notes: 'Se sirve con pan o con sopaipillas — es el condimento que acompaña casi cualquier comida chilena.'
       },
 
       /* ---- bebidas: una receta por cada vaso del directorio de cristalería ---- */
@@ -1240,6 +1457,25 @@ const Store = {
           'Sirve con hielo.'
         ],
         notes: 'Si no tienes espinaca fresca, la congelada funciona igual de bien y no cambia el sabor.'
+      },
+      {
+        id: uid(), name: 'Mote con huesillo', icon: 'vaso-alto', cat: 'Bebida', glass: 'vaso-alto',
+        diff: 'Fácil', time: 20, portions: 4,
+        items: [
+          { ing: find('Huesillos'), qty: 200, unit: 'g' },
+          { ing: find('Mote'), qty: 150, unit: 'g' },
+          { ing: find('Azúcar'), qty: 150, unit: 'g' },
+          { ing: find('Canela'), qty: 1, unit: 'rama' },
+          { ing: find('Agua'), qty: 1500, unit: 'ml' }
+        ],
+        steps: [
+          'Deja los huesillos en remojo la noche anterior, en agua suficiente para cubrirlos.',
+          'Cuece los huesillos con su agua de remojo, el azúcar y la canela, 15-20 minutos, hasta que estén tiernos.',
+          'Deja enfriar el cocimiento en la nevera.',
+          'Cuece el mote por separado en agua hasta que esté tierno, y enfríalo.',
+          'Para servir, pon unas cucharadas de mote en el fondo de un vaso, añade un huesillo y cubre con el jugo frío.'
+        ],
+        notes: 'Se toma bien frío, casi siempre en la calle, en verano: es la bebida veraniega por excelencia en Chile.'
       }
     ];
     this.data.recipes.forEach(normalizeRecipe);

@@ -221,7 +221,7 @@ function guessIcon(name) {
     [/aceite|oliva|girasol|sésamo|sesamo/, 'aceite'],
     [/ajo/, 'ajo'],
     [/limón|limon|lima|naranja|cítric|citric/, 'limon'],
-    [/garbanz|lenteja|alubia|judía|judia|frijol|soja|guisante/, 'legumbre'],
+    [/garbanz|lenteja|alubia|judía|judia|frijol|soja|guisante|poroto/, 'legumbre'],
     [/azúcar|azucar|chocolate|miel|postre|tarta|galleta|vainilla|canela/, 'pastel'],
     [/pasta|espagueti|macarr|fideo|noodle/, 'olla']
   ];
