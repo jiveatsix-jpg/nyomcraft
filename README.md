@@ -30,13 +30,18 @@ Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
   **Salsas**, más **Todas**) filtran de un vistazo, cada una con su recuento. Se combinan con
   la búsqueda y con el filtro de categoría fino que ya había, así que puedes buscar «lima»
   dentro de Bebidas y quedarte solo con los cócteles que la llevan.
-- **Recetario de ejemplo** — una instalación nueva arranca con 65 ingredientes y 33 recetas:
-  16 de cocina (tortilla de patatas, gazpacho, pollo al ajillo, croquetas de jamón, salmón al
-  horno, lentejas guisadas, patatas bravas, tarta de queso...), 6 salsas (alioli, mahonesa,
-  salsa de tomate, vinagreta, bechamel, chimichurri) y 11 bebidas — una por cada uno de los 9
-  vasos del directorio de cristalería, más limonada y horchata para cubrir también los zumos
-  sin alcohol. Es contenido semilla: solo aparece en `localStorage` vacío, así que no toca
-  instalaciones que ya tengan datos.
+- **Recetario de ejemplo** — una instalación nueva arranca con 70 ingredientes y 37 recetas:
+  17 de cocina (tortilla de patatas, gazpacho, ajoblanco, pollo al ajillo, croquetas de
+  jamón, salmón al horno, lentejas guisadas, patatas bravas, tarta de queso...), 6 salsas
+  (alioli, mahonesa, salsa de tomate, vinagreta, bechamel, chimichurri) y 14 bebidas — una
+  por cada uno de los 9 vasos del directorio de cristalería, más limonada, horchata y tres
+  batidos para cubrir también los zumos y batidos sin alcohol. Es contenido semilla: solo
+  aparece en `localStorage` vacío, así que no toca instalaciones que ya tengan datos.
+- **Sello** — un «✓» que marcas en una receta cuando la has hecho y te ha salido perfecta,
+  distinto de la duda (que marca lo que falta por confirmar). Se pone y se quita con un botón
+  en la propia ficha; las recetas con sello se distinguen en el índice con una insignia verde,
+  y el botón **✓ Probadas** deja ver solo esas — útil si vas construyendo el recetario poco a
+  poco y quieres separar lo ya confirmado de lo que todavía estás probando.
 - **Fichas de receta** — nombre, icono, categoría, dificultad, tiempo y raciones. Para
   cócteles, zumos y demás líquidos (categoría «Bebida»), también un **vaso o copa de
   servicio** opcional: 9 tipos de cristalería a 8×8 (vaso corto, tubo, cóctel, balón de

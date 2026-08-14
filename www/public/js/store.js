@@ -37,6 +37,7 @@ function normalizeRecipe(rec) {
   rec.items.forEach(i => { if (i.q === undefined) i.q = null; });
   if (rec.q === undefined) rec.q = null;
   if (rec.glass === undefined) rec.glass = null;
+  if (typeof rec.sello !== 'boolean') rec.sello = false;
   return rec;
 }
 
@@ -150,11 +151,21 @@ const Store = {
     this.save();
   },
 
+  /** El sello marca "la he hecho y me sale perfecta" — a diferencia de la
+      duda, vive solo a nivel de receta entera, no por ingrediente o paso. */
+  toggleSello(id) {
+    const rec = this.recipe(id);
+    if (!rec) return;
+    rec.sello = !rec.sello;
+    this.save();
+    return rec.sello;
+  },
+
   blankRecipe() {
     return {
       id: uid(), name: '', icon: 'plato', cat: 'Principal', diff: 'Fácil',
       time: 30, portions: 2, items: [], steps: [{ t: '', q: null }], notes: '', q: null,
-      glass: null
+      glass: null, sello: false
     };
   },
 
@@ -192,12 +203,14 @@ const Store = {
       ['Aceite de oliva', 'Salsa', 'cda'], ['Agua', 'Otro', 'ml'],
       ['Agua con gas', 'Otro', 'ml'], ['Aguacate', 'Fruta', 'ud'],
       ['Ajo', 'Verdura', 'diente'], ['Albahaca', 'Especia', 'hoja'],
-      ['Angostura', 'Especia', 'al gusto'], ['Arroz', 'Cereal', 'g'],
-      ['Azúcar', 'Otro', 'g'], ['Brandy', 'Otro', 'ml'],
-      ['Canela', 'Especia', 'rama'], ['Carne picada', 'Carne', 'g'],
-      ['Cava', 'Otro', 'ml'], ['Cebolla', 'Verdura', 'ud'],
-      ['Cerveza', 'Otro', 'ml'], ['Cilantro', 'Especia', 'hoja'],
-      ['Espaguetis', 'Cereal', 'g'], ['Galletas', 'Otro', 'g'],
+      ['Almendras', 'Fruta', 'g'], ['Angostura', 'Especia', 'al gusto'],
+      ['Arroz', 'Cereal', 'g'], ['Azúcar', 'Otro', 'g'],
+      ['Brandy', 'Otro', 'ml'], ['Canela', 'Especia', 'rama'],
+      ['Carne picada', 'Carne', 'g'], ['Cava', 'Otro', 'ml'],
+      ['Cebolla', 'Verdura', 'ud'], ['Cerveza', 'Otro', 'ml'],
+      ['Chocolate en polvo', 'Otro', 'g'], ['Cilantro', 'Especia', 'hoja'],
+      ['Espaguetis', 'Cereal', 'g'], ['Espinaca', 'Verdura', 'g'],
+      ['Fresa', 'Fruta', 'g'], ['Galletas', 'Otro', 'g'],
       ['Garbanzos', 'Legumbre', 'g'], ['Ginebra', 'Otro', 'ml'],
       ['Guindilla', 'Especia', 'ud'], ['Harina', 'Cereal', 'g'],
       ['Hielo', 'Otro', 'al gusto'], ['Huevo', 'Otro', 'ud'],
@@ -212,7 +225,8 @@ const Store = {
       ['Patata', 'Verdura', 'ud'], ['Pepino', 'Verdura', 'ud'],
       ['Perejil', 'Especia', 'hoja'], ['Pimentón', 'Especia', 'cdta'],
       ['Pimienta negra', 'Especia', 'pizca'], ['Pimiento', 'Verdura', 'ud'],
-      ['Pollo', 'Carne', 'g'], ['Queso crema', 'Lácteo', 'g'],
+      ['Plátano', 'Fruta', 'ud'], ['Pollo', 'Carne', 'g'],
+      ['Queso crema', 'Lácteo', 'g'],
       ['Queso parmesano', 'Lácteo', 'g'], ['Ron blanco', 'Otro', 'ml'],
       ['Sal', 'Especia', 'pizca'], ['Salmón', 'Pescado', 'g'],
       ['Salsa inglesa', 'Salsa', 'cdta'], ['Salsa picante', 'Salsa', 'al gusto'],
@@ -292,6 +306,28 @@ const Store = {
           'Rectifica de sal y vinagre antes de servir: el frío apaga los sabores.'
         ],
         notes: 'Se conserva 3-4 días en la nevera, bien tapado.'
+      },
+      {
+        id: uid(), name: 'Ajoblanco', icon: 'plato', cat: 'Entrante',
+        diff: 'Fácil', time: 20, portions: 4,
+        items: [
+          { ing: find('Pan'), qty: 150, unit: 'g' },
+          { ing: find('Almendras'), qty: 150, unit: 'g' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Aceite de oliva'), qty: 100, unit: 'ml' },
+          { ing: find('Vinagre'), qty: 30, unit: 'ml' },
+          { ing: find('Agua'), qty: 500, unit: 'ml' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pon el pan a remojo en agua unos 15 minutos y escúrrelo bien.',
+          'Tritura las almendras con el ajo hasta conseguir una pasta fina.',
+          'Añade el pan escurrido y sigue triturando.',
+          'Incorpora el aceite en hilo, sin dejar de triturar, como si montaras una mahonesa.',
+          'Añade el vinagre, la sal y el agua necesaria hasta conseguir la textura de una crema ligera.',
+          'Cuela si quieres que quede más fino, y enfría en la nevera un mínimo de 2 horas.'
+        ],
+        notes: 'Se sirve tradicionalmente con unas uvas o taquitos de melón por encima — el contraste dulce es parte de la gracia.'
       },
       {
         id: uid(), name: 'Pollo al ajillo', icon: 'carne', cat: 'Principal',
@@ -875,6 +911,59 @@ const Store = {
           'Sirve bien fría, con hielo.'
         ],
         notes: 'Esta es la versión mexicana, con arroz; la española lleva chufa y es otra bebida distinta, aunque comparten nombre.'
+      },
+      {
+        id: uid(), name: 'Batido de fresa y plátano', icon: 'vaso-alto', cat: 'Bebida', glass: 'vaso-alto',
+        diff: 'Fácil', time: 5, portions: 2,
+        items: [
+          { ing: find('Fresa'), qty: 200, unit: 'g' },
+          { ing: find('Plátano'), qty: 1, unit: 'ud' },
+          { ing: find('Leche'), qty: 250, unit: 'ml' },
+          { ing: find('Azúcar'), qty: null, unit: 'al gusto' },
+          { ing: find('Hielo'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Lava y trocea las fresas, quitando el rabito.',
+          'Pon las fresas, el plátano troceado y la leche en la batidora.',
+          'Tritura hasta que quede fino y sin trozos.',
+          'Prueba y añade azúcar solo si lo necesitas.',
+          'Sirve con hielo bien frío.'
+        ],
+        notes: 'Cuanto más maduro el plátano, más dulce sale el batido sin necesidad de azúcar.'
+      },
+      {
+        id: uid(), name: 'Batido de chocolate', icon: 'vaso-alto', cat: 'Bebida', glass: 'vaso-alto',
+        diff: 'Fácil', time: 5, portions: 2,
+        items: [
+          { ing: find('Leche'), qty: 300, unit: 'ml' },
+          { ing: find('Chocolate en polvo'), qty: 30, unit: 'g' },
+          { ing: find('Azúcar'), qty: 20, unit: 'g' },
+          { ing: find('Hielo'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Bate la leche fría con el chocolate en polvo y el azúcar hasta que se disuelva bien.',
+          'Añade hielo y bate unos segundos más si lo quieres tipo batido espumoso.',
+          'Sirve inmediatamente.'
+        ],
+        notes: 'Para uno más cremoso, cambia el azúcar por medio vaso de leche condensada.'
+      },
+      {
+        id: uid(), name: 'Batido verde', icon: 'vaso-alto', cat: 'Bebida', glass: 'vaso-alto',
+        diff: 'Fácil', time: 10, portions: 2,
+        items: [
+          { ing: find('Espinaca'), qty: 60, unit: 'g' },
+          { ing: find('Manzana'), qty: 1, unit: 'ud' },
+          { ing: find('Limón'), qty: null, unit: 'al gusto' },
+          { ing: find('Agua'), qty: 200, unit: 'ml' },
+          { ing: find('Hielo'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Lava bien la espinaca y trocea la manzana, sin necesidad de pelarla.',
+          'Tritura todo junto con el agua hasta que quede fino.',
+          'Añade un chorro de limón para que no oxide y equilibre el dulzor.',
+          'Sirve con hielo.'
+        ],
+        notes: 'Si no tienes espinaca fresca, la congelada funciona igual de bien y no cambia el sabor.'
       }
     ];
     this.data.recipes.forEach(normalizeRecipe);

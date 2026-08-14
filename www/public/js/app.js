@@ -110,6 +110,7 @@ function renderIndex() {
   if (group) recipes = recipes.filter(r => (GROUP_OF_CAT[r.cat] || 'Comida') === group);
   if (ui.filter) recipes = recipes.filter(r => r.cat === ui.filter);
   if (ui.soloDudas) recipes = recipes.filter(r => contarDudas(r) > 0);
+  if (ui.soloSello) recipes = recipes.filter(r => r.sello);
   if (q) {
     recipes = recipes.filter(r => {
       if (r.name.toLowerCase().includes(q)) return true;
@@ -124,10 +125,11 @@ function renderIndex() {
     const color = CAT_COLOR[r.cat] || 'dim';
     const dudas = contarDudas(r);
     return `<article class="card pbox" data-open="${r.id}" role="button" tabindex="0"
-             aria-label="Abrir ficha ${esc(r.name)}${dudas ? `, ${dudas} por confirmar` : ''}">
+             aria-label="Abrir ficha ${esc(r.name)}${r.sello ? ', con sello' : ''}${dudas ? `, ${dudas} por confirmar` : ''}">
       <div class="card-top">
         ${iconSVG(r.icon, 40)}
         <div class="card-title">${esc(r.name || 'Sin nombre')}</div>
+        ${r.sello ? '<span class="sello-badge" title="Probada y perfecta">✓</span>' : ''}
         ${dudas ? `<span class="duda" title="${dudas} cosa(s) por confirmar">?${dudas > 1 ? dudas : ''}</span>` : ''}
       </div>
       <div class="ficha-tags">
@@ -160,12 +162,14 @@ function renderIndex() {
       </select>
       <button class="btn ${ui.soloDudas ? 'yellow-on' : 'ghost'}" id="only-q"
               title="Ver solo las recetas con algo por confirmar">? Por confirmar</button>
+      <button class="btn ${ui.soloSello ? 'green-on' : 'ghost'}" id="only-sello"
+              title="Ver solo las recetas con sello">✓ Probadas</button>
       <button class="btn green" id="new">+ Nueva receta</button>
     </div>
 
     <h2 class="sec">Indice — ${recipes.length} receta${recipes.length === 1 ? '' : 's'}</h2>
 
-    ${recipes.length || q || ui.filter || ui.soloDudas || group ? '' : `
+    ${recipes.length || q || ui.filter || ui.soloDudas || ui.soloSello || group ? '' : `
       <div class="empty pbox">
         ${iconSVG('olla', 64)}
         <p>El recetario está vacío.<br>Crea tu primera ficha.</p>
@@ -196,6 +200,7 @@ function renderIndex() {
   });
   $('#filter').addEventListener('change', e => { ui.filter = e.target.value; renderIndex(); });
   $('#only-q').addEventListener('click', () => { ui.soloDudas = !ui.soloDudas; renderIndex(); });
+  $('#only-sello').addEventListener('click', () => { ui.soloSello = !ui.soloSello; renderIndex(); });
   $('#new').addEventListener('click', newRecipe);
   $('#new-card').addEventListener('click', newRecipe);
   $$('[data-open]').forEach(el => {
@@ -240,6 +245,9 @@ function renderRecipe(id) {
     <div class="toolbar">
       <button class="btn ghost" id="back">&lt; Indice</button>
       <div class="grow"></div>
+      <button class="btn ${r.sello ? 'green' : 'ghost'}" id="sello-btn"
+              title="${r.sello ? 'Quitar el sello' : 'Marcar como probada y perfecta'}">
+        ✓ ${r.sello ? 'Con sello' : 'Poner sello'}</button>
       <button class="btn blue" id="edit">Editar</button>
       <button class="btn" id="pdf" title="Guardar esta ficha como PDF">Exportar PDF</button>
       <button class="btn red" id="del">Borrar</button>
@@ -256,6 +264,7 @@ function renderRecipe(id) {
             <span class="tag dim">${r.time} min</span>
             <span class="tag dim">${r.portions} raciones</span>
             ${r.glass ? `<span class="tag dim glass-tag">${iconSVG(r.glass, 16)} ${esc(ICONS[r.glass].label)}</span>` : ''}
+            ${r.sello ? '<span class="tag green">✓ Probada y perfecta</span>' : ''}
             ${dudas ? `<span class="tag yellow">${dudas} por confirmar</span>` : ''}
           </div>
         </div>
@@ -283,6 +292,11 @@ function renderRecipe(id) {
     </section>`;
 
   $('#back').addEventListener('click', () => go('index'));
+  $('#sello-btn').addEventListener('click', () => {
+    const puesto = Store.toggleSello(r.id);
+    toast(puesto ? 'Sello puesto: probada y perfecta' : 'Sello quitado');
+    renderRecipe(r.id);
+  });
   // El navegador toma el título del documento como nombre sugerido del PDF.
   $('#pdf').addEventListener('click', () => {
     const prev = document.title;
