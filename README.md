@@ -26,6 +26,13 @@ Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
 - **Despensa** — biblioteca de ingredientes. Cada uno tiene nombre, categoría, unidad por
   defecto y un sprite. El sprite se autocompleta a partir del nombre (`guessIcon` en
   `js/icons.js`) salvo que elijas otro a mano.
+- **Nutrición aproximada** — cada ingrediente puede llevar kcal, proteína, carbohidratos y
+  grasa por 100 g/ml. Los 70 ingredientes de la despensa de ejemplo ya traen valores de
+  referencia; al añadir uno propio son opcionales, y en cualquier ingrediente existente
+  —incluidos los de la semilla— el botón **Nutrición** de su tarjeta despliega el formulario
+  para rellenarlos o corregirlos. Sin datos se lee «Sin datos nutricionales»: un campo vacío
+  nunca se confunde con un valor real de 0 (la sal, el agua o el hielo sí llevan
+  legítimamente 0 kcal).
 - **Índice por grupos** — bajo el título del índice, tres pestañas (**Comida**, **Bebidas**,
   **Salsas**, más **Todas**) filtran de un vistazo, cada una con su recuento. Se combinan con
   la búsqueda y con el filtro de categoría fino que ya había, así que puedes buscar «lima»

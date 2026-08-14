@@ -41,6 +41,23 @@ function normalizeRecipe(rec) {
   return rec;
 }
 
+/** Un valor nutricional valido es un numero >= 0; cualquier otra cosa (falta,
+    texto, negativo) se trata como "no se sabe" y se guarda como null, nunca
+    como 0 — 0 significa "de verdad no tiene calorias/proteina/...", no
+    "no se ha rellenado todavia".                                           */
+const numOrNull = v => (typeof v === 'number' && isFinite(v) && v >= 0) ? v : null;
+
+/** Pone al día un ingrediente: los cuatro valores nutricionales aproximados
+    (por 100 g o 100 ml) son opcionales y pueden faltar en datos antiguos. */
+function normalizeIngredient(ing) {
+  if (!ing) return ing;
+  ing.kcal = numOrNull(ing.kcal);
+  ing.protein = numOrNull(ing.protein);
+  ing.carbs = numOrNull(ing.carbs);
+  ing.fat = numOrNull(ing.fat);
+  return ing;
+}
+
 const Store = {
   KEY: 'nomcraft.v1',
   data: { ingredients: [], recipes: [], masaOverrides: {} },
@@ -51,6 +68,7 @@ const Store = {
       if (raw) {
         const parsed = JSON.parse(raw);
         this.data.ingredients = Array.isArray(parsed.ingredients) ? parsed.ingredients : [];
+        this.data.ingredients.forEach(normalizeIngredient);
         this.data.recipes = Array.isArray(parsed.recipes) ? parsed.recipes : [];
         this.data.recipes.forEach(normalizeRecipe);
         this.data.masaOverrides = (parsed.masaOverrides && typeof parsed.masaOverrides === 'object')
@@ -70,12 +88,15 @@ const Store = {
   /* ---- ingredientes ---- */
   ingredient(id) { return this.data.ingredients.find(i => i.id === id) || null; },
 
-  addIngredient({ name, cat, unit, icon }) {
+  addIngredient({ name, cat, unit, icon, kcal, protein, carbs, fat }) {
     const clean = (name || '').trim();
     if (!clean) return null;
     const dupe = this.data.ingredients.find(i => i.name.toLowerCase() === clean.toLowerCase());
     if (dupe) return { dupe };
-    const ing = { id: uid(), name: clean, cat: cat || 'Otro', unit: unit || 'g', icon: icon || guessIcon(clean) };
+    const ing = {
+      id: uid(), name: clean, cat: cat || 'Otro', unit: unit || 'g', icon: icon || guessIcon(clean),
+      kcal: numOrNull(kcal), protein: numOrNull(protein), carbs: numOrNull(carbs), fat: numOrNull(fat)
+    };
     this.data.ingredients.push(ing);
     this.sortIngredients();
     this.save();
@@ -192,6 +213,7 @@ const Store = {
       Object.assign(this.data.masaOverrides, masaOv);
     }
     this.data.recipes.forEach(normalizeRecipe);
+    this.data.ingredients.forEach(normalizeIngredient);
     this.sortIngredients();
     this.save();
     return { ings: ings.length, recs: recs.length };
@@ -200,45 +222,79 @@ const Store = {
   /* ---- semilla inicial ---- */
   seed() {
     const base = [
-      ['Aceite de oliva', 'Salsa', 'cda'], ['Agua', 'Otro', 'ml'],
-      ['Agua con gas', 'Otro', 'ml'], ['Aguacate', 'Fruta', 'ud'],
-      ['Ajo', 'Verdura', 'diente'], ['Albahaca', 'Especia', 'hoja'],
-      ['Almendras', 'Fruta', 'g'], ['Angostura', 'Especia', 'al gusto'],
-      ['Arroz', 'Cereal', 'g'], ['Azúcar', 'Otro', 'g'],
-      ['Brandy', 'Otro', 'ml'], ['Canela', 'Especia', 'rama'],
-      ['Carne picada', 'Carne', 'g'], ['Cava', 'Otro', 'ml'],
-      ['Cebolla', 'Verdura', 'ud'], ['Cerveza', 'Otro', 'ml'],
-      ['Chocolate en polvo', 'Otro', 'g'], ['Cilantro', 'Especia', 'hoja'],
-      ['Espaguetis', 'Cereal', 'g'], ['Espinaca', 'Verdura', 'g'],
-      ['Fresa', 'Fruta', 'g'], ['Galletas', 'Otro', 'g'],
-      ['Garbanzos', 'Legumbre', 'g'], ['Ginebra', 'Otro', 'ml'],
-      ['Guindilla', 'Especia', 'ud'], ['Harina', 'Cereal', 'g'],
-      ['Hielo', 'Otro', 'al gusto'], ['Huevo', 'Otro', 'ud'],
-      ['Jamón', 'Carne', 'g'], ['Leche', 'Lácteo', 'ml'],
-      ['Lechuga', 'Verdura', 'ud'], ['Lentejas', 'Legumbre', 'g'],
-      ['Licor de limón', 'Otro', 'ml'], ['Lima', 'Fruta', 'ud'],
-      ['Limón', 'Fruta', 'ud'], ['Mantequilla', 'Lácteo', 'g'],
-      ['Manzana', 'Fruta', 'ud'], ['Menta', 'Especia', 'hoja'],
-      ['Mostaza', 'Salsa', 'cdta'], ['Naranja', 'Fruta', 'ud'],
-      ['Nata', 'Lácteo', 'ml'], ['Nuez moscada', 'Especia', 'pizca'],
-      ['Pan', 'Cereal', 'ud'], ['Pan rallado', 'Cereal', 'g'],
-      ['Patata', 'Verdura', 'ud'], ['Pepino', 'Verdura', 'ud'],
-      ['Perejil', 'Especia', 'hoja'], ['Pimentón', 'Especia', 'cdta'],
-      ['Pimienta negra', 'Especia', 'pizca'], ['Pimiento', 'Verdura', 'ud'],
-      ['Plátano', 'Fruta', 'ud'], ['Pollo', 'Carne', 'g'],
-      ['Queso crema', 'Lácteo', 'g'],
-      ['Queso parmesano', 'Lácteo', 'g'], ['Ron blanco', 'Otro', 'ml'],
-      ['Sal', 'Especia', 'pizca'], ['Salmón', 'Pescado', 'g'],
-      ['Salsa inglesa', 'Salsa', 'cdta'], ['Salsa picante', 'Salsa', 'al gusto'],
-      ['Tequila', 'Otro', 'ml'], ['Tomate', 'Verdura', 'ud'],
-      ['Triple seco', 'Otro', 'ml'], ['Tónica', 'Otro', 'ml'],
-      ['Vinagre', 'Salsa', 'ml'], ['Vino blanco', 'Otro', 'ml'],
-      ['Vino tinto', 'Otro', 'ml'], ['Vodka', 'Otro', 'ml'],
-      ['Whisky', 'Otro', 'ml'], ['Zanahoria', 'Verdura', 'ud'],
-      ['Zumo de naranja', 'Otro', 'ml']
+      ['Aceite de oliva', 'Salsa', 'cda', 884, 0, 0, 100],
+      ['Agua', 'Otro', 'ml', 0, 0, 0, 0],
+      ['Agua con gas', 'Otro', 'ml', 0, 0, 0, 0],
+      ['Aguacate', 'Fruta', 'ud', 160, 2, 9, 15],
+      ['Ajo', 'Verdura', 'diente', 149, 6.4, 33, 0.5],
+      ['Albahaca', 'Especia', 'hoja', 23, 3.2, 2.7, 0.6],
+      ['Almendras', 'Fruta', 'g', 579, 21, 22, 50],
+      ['Angostura', 'Especia', 'al gusto', 250, 0, 25, 0],
+      ['Arroz', 'Cereal', 'g', 365, 7.1, 80, 0.7],
+      ['Azúcar', 'Otro', 'g', 387, 0, 100, 0],
+      ['Brandy', 'Otro', 'ml', 231, 0, 0.5, 0],
+      ['Canela', 'Especia', 'rama', 247, 4, 81, 1.2],
+      ['Carne picada', 'Carne', 'g', 215, 18, 0, 15],
+      ['Cava', 'Otro', 'ml', 80, 0.1, 1.5, 0],
+      ['Cebolla', 'Verdura', 'ud', 40, 1.1, 9.3, 0.1],
+      ['Cerveza', 'Otro', 'ml', 43, 0.5, 3.6, 0],
+      ['Chocolate en polvo', 'Otro', 'g', 228, 20, 58, 14],
+      ['Cilantro', 'Especia', 'hoja', 23, 2.1, 3.7, 0.5],
+      ['Espaguetis', 'Cereal', 'g', 371, 13, 75, 1.5],
+      ['Espinaca', 'Verdura', 'g', 23, 2.9, 3.6, 0.4],
+      ['Fresa', 'Fruta', 'g', 32, 0.7, 7.7, 0.3],
+      ['Galletas', 'Otro', 'g', 440, 7, 68, 15],
+      ['Garbanzos', 'Legumbre', 'g', 364, 19, 61, 6],
+      ['Ginebra', 'Otro', 'ml', 231, 0, 0, 0],
+      ['Guindilla', 'Especia', 'ud', 40, 1.9, 9, 0.4],
+      ['Harina', 'Cereal', 'g', 364, 10, 76, 1],
+      ['Hielo', 'Otro', 'al gusto', 0, 0, 0, 0],
+      ['Huevo', 'Otro', 'ud', 155, 13, 1.1, 11],
+      ['Jamón', 'Carne', 'g', 241, 30, 0, 13],
+      ['Leche', 'Lácteo', 'ml', 61, 3.2, 4.8, 3.3],
+      ['Lechuga', 'Verdura', 'ud', 15, 1.4, 2.9, 0.2],
+      ['Lentejas', 'Legumbre', 'g', 353, 25, 60, 1],
+      ['Licor de limón', 'Otro', 'ml', 270, 0, 30, 0],
+      ['Lima', 'Fruta', 'ud', 30, 0.7, 11, 0.2],
+      ['Limón', 'Fruta', 'ud', 29, 1.1, 9.3, 0.3],
+      ['Mantequilla', 'Lácteo', 'g', 717, 0.9, 0.1, 81],
+      ['Manzana', 'Fruta', 'ud', 52, 0.3, 14, 0.2],
+      ['Menta', 'Especia', 'hoja', 70, 3.8, 15, 0.9],
+      ['Mostaza', 'Salsa', 'cdta', 66, 4.4, 5.8, 4],
+      ['Naranja', 'Fruta', 'ud', 47, 0.9, 12, 0.1],
+      ['Nata', 'Lácteo', 'ml', 340, 2, 3, 35],
+      ['Nuez moscada', 'Especia', 'pizca', 525, 5.8, 49, 36],
+      ['Pan', 'Cereal', 'ud', 265, 9, 49, 3.2],
+      ['Pan rallado', 'Cereal', 'g', 395, 13, 72, 5],
+      ['Patata', 'Verdura', 'ud', 77, 2, 17, 0.1],
+      ['Pepino', 'Verdura', 'ud', 15, 0.7, 3.6, 0.1],
+      ['Perejil', 'Especia', 'hoja', 36, 3, 6.3, 0.8],
+      ['Pimentón', 'Especia', 'cdta', 282, 14, 54, 13],
+      ['Pimienta negra', 'Especia', 'pizca', 251, 10, 64, 3.3],
+      ['Pimiento', 'Verdura', 'ud', 20, 0.9, 4.6, 0.2],
+      ['Plátano', 'Fruta', 'ud', 89, 1.1, 23, 0.3],
+      ['Pollo', 'Carne', 'g', 165, 31, 0, 3.6],
+      ['Queso crema', 'Lácteo', 'g', 342, 6, 4, 34],
+      ['Queso parmesano', 'Lácteo', 'g', 392, 35, 3.2, 26],
+      ['Ron blanco', 'Otro', 'ml', 231, 0, 0, 0],
+      ['Sal', 'Especia', 'pizca', 0, 0, 0, 0],
+      ['Salmón', 'Pescado', 'g', 208, 20, 0, 13],
+      ['Salsa inglesa', 'Salsa', 'cdta', 78, 0, 19.5, 0],
+      ['Salsa picante', 'Salsa', 'al gusto', 12, 0.5, 2, 0.2],
+      ['Tequila', 'Otro', 'ml', 231, 0, 0, 0],
+      ['Tomate', 'Verdura', 'ud', 18, 0.9, 3.9, 0.2],
+      ['Triple seco', 'Otro', 'ml', 260, 0, 28, 0],
+      ['Tónica', 'Otro', 'ml', 34, 0, 8.8, 0],
+      ['Vinagre', 'Salsa', 'ml', 18, 0, 0.4, 0],
+      ['Vino blanco', 'Otro', 'ml', 82, 0.1, 2.6, 0],
+      ['Vino tinto', 'Otro', 'ml', 85, 0.1, 2.6, 0],
+      ['Vodka', 'Otro', 'ml', 231, 0, 0, 0],
+      ['Whisky', 'Otro', 'ml', 231, 0, 0, 0],
+      ['Zanahoria', 'Verdura', 'ud', 41, 0.9, 9.6, 0.2],
+      ['Zumo de naranja', 'Otro', 'ml', 45, 0.7, 10.4, 0.2]
     ];
-    this.data.ingredients = base.map(([name, cat, unit]) => ({
-      id: uid(), name, cat, unit, icon: guessIcon(name)
+    this.data.ingredients = base.map(([name, cat, unit, kcal, protein, carbs, fat]) => ({
+      id: uid(), name, cat, unit, icon: guessIcon(name), kcal, protein, carbs, fat
     }));
     this.sortIngredients();
 

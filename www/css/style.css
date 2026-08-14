@@ -550,17 +550,28 @@ ol.steps li.con-duda { padding-left: 10px; }
 /* ---------- despensa ---------- */
 
 .pantry-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px;
 }
 .ing-card {
-  display: flex; align-items: center; gap: 10px;
   padding: 10px;
   background: var(--panel); border: 2px solid var(--ink);
   box-shadow: 0 2px 0 rgba(0,0,0,.5);
 }
+.ing-card-main { display: flex; align-items: center; gap: 10px; }
 .ing-card .body { flex: 1; min-width: 0; }
 .ing-card .nm { display: block; word-break: break-word; }
 .ing-card .mt { color: var(--dim); font-size: 16px; }
+.ing-card-btns { display: flex; flex-direction: column; gap: 5px; }
+
+.ing-card .nutri { color: var(--yellow); cursor: help; }
+.ing-card .nutri-vacio { font-style: italic; opacity: .7; }
+
+.nutri-form {
+  margin-top: 10px; padding-top: 10px;
+  border-top: 2px dashed var(--line);
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
+}
+.nutri-form button { grid-column: 1 / -1; }
 
 /* ---------- pie y avisos ---------- */
 
