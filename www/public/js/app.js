@@ -17,15 +17,15 @@ const caps = s => deacc(s).toUpperCase();
 
 const CAT_COLOR = {
   Entrante: 'blue', Principal: 'green', Postre: 'pink',
-  'Guarnición': 'yellow', Bebida: 'blue', Salsa: 'red', Otro: 'dim'
+  'Guarnición': 'yellow', Ensalada: 'green', Bebida: 'blue', Salsa: 'red', Otro: 'dim'
 };
 
 // agrupación amplia del índice: cada categoría de receta cae en uno de estos
-// cuatro cajones. Todo lo que no es postre, bebida ni salsa es "Comida".
-const REC_GROUPS = ['Comida', 'Postres', 'Bebidas', 'Salsas'];
+// cinco cajones. Todo lo que no es ensalada, postre, bebida ni salsa es "Comida".
+const REC_GROUPS = ['Comida', 'Ensaladas', 'Postres', 'Bebidas', 'Salsas'];
 const GROUP_OF_CAT = {
   Entrante: 'Comida', Principal: 'Comida', Postre: 'Postres',
-  'Guarnición': 'Comida', Otro: 'Comida', Bebida: 'Bebidas', Salsa: 'Salsas'
+  'Guarnición': 'Comida', Otro: 'Comida', Ensalada: 'Ensaladas', Bebida: 'Bebidas', Salsa: 'Salsas'
 };
 
 const view = $('#view');

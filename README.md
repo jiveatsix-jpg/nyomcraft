@@ -26,20 +26,23 @@ Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
 - **Despensa** — biblioteca de ingredientes. Cada uno tiene nombre, categoría, unidad por
   defecto y un sprite. El sprite se autocompleta a partir del nombre (`guessIcon` en
   `js/icons.js`) salvo que elijas otro a mano.
-- **Índice por grupos** — bajo el título del índice, pestañas (**Comida**, **Postres**,
-  **Bebidas**, **Salsas**, más **Todas**) filtran de un vistazo, cada una con su recuento. Se
-  combinan con la búsqueda y con el filtro de categoría fino que ya había, así que puedes
-  buscar «lima» dentro de Bebidas y quedarte solo con los cócteles que la llevan. La pestaña
-  agrupa por categoría de receta, no por origen: un postre chileno y uno español conviven en
-  la misma pestaña «Postres».
-- **Recetario de ejemplo** — una instalación nueva arranca con 87 ingredientes y 58 recetas:
-  28 de comida y 7 postres (entre ellas un buen puñado de platos chilenos — empanadas de
-  pino, pastel de choclo, cazuela de pollo, carbonada, charquicán, porotos granados,
-  humitas, sopaipillas, kuchen de manzana — además de las españolas, mexicanas e italianas
-  ya presentes), 8 salsas (alioli, mayonesa, romesco, pebre entre ellas) y 15 bebidas — una
-  por cada uno de los 9 vasos del directorio de cristalería, más zumos y batidos sin
-  alcohol. Es contenido semilla: solo aparece en `localStorage` vacío, así que no toca
-  instalaciones que ya tengan datos.
+- **Índice por grupos** — bajo el título del índice, pestañas (**Comida**, **Ensaladas**,
+  **Postres**, **Bebidas**, **Salsas**, más **Todas**) filtran de un vistazo, cada una con su
+  recuento. Se combinan con la búsqueda y con el filtro de categoría fino que ya había, así
+  que puedes buscar «lima» dentro de Bebidas y quedarte solo con los cócteles que la llevan.
+  La pestaña agrupa por categoría de receta, no por origen: un postre chileno y uno español
+  conviven en la misma pestaña «Postres».
+- **Recetario de ejemplo** — una instalación nueva arranca con 158 ingredientes y 116
+  recetas: 36 de comida (fabada, fideuá, tacos al pastor, risotto, lasaña, arroz a la cubana,
+  además de un buen puñado de platos chilenos — empanadas de pino, pastel de choclo, cazuela
+  de pollo, carbonada, charquicán, porotos granados, humitas, sopaipillas — y las españolas,
+  mexicanas e italianas ya presentes), 17 ensaladas (César, griega, rusa, tabulé, caprese,
+  Waldorf, Cobb, Niçoise, panzanella, fattoush, coleslaw entre ellas), 17 postres (tiramisú,
+  tres leches, alfajores, torrijas, cannoli entre ellos), 21 salsas (alioli, mayonesa,
+  romesco, pebre, pomodoro, Alfredo, demi-glace, holandesa, bearnesa, pesto genovés entre
+  ellas) y 25 bebidas — cócteles clásicos y de autor (pisco sour, negroni, caipirinha,
+  terremoto), más zumos y batidos sin alcohol. Es contenido semilla: solo aparece en
+  `localStorage` vacío, así que no toca instalaciones que ya tengan datos.
 - **Sello** — un «✓» que marcas en una receta cuando la has hecho y te ha salido perfecta,
   distinto de la duda (que marca lo que falta por confirmar). Se pone y se quita con un botón
   en la propia ficha; las recetas con sello se distinguen en el índice con una insignia verde,

@@ -3,7 +3,7 @@
 const UNITS = ['g', 'kg', 'ml', 'l', 'ud', 'cda', 'cdta', 'taza', 'pizca', 'diente', 'rama', 'hoja', 'al gusto'];
 
 const ING_CATS = ['Verdura', 'Fruta', 'Carne', 'Pescado', 'Lácteo', 'Cereal', 'Legumbre', 'Especia', 'Salsa', 'Otro'];
-const REC_CATS = ['Entrante', 'Principal', 'Postre', 'Guarnición', 'Bebida', 'Salsa', 'Otro'];
+const REC_CATS = ['Entrante', 'Principal', 'Postre', 'Guarnición', 'Ensalada', 'Bebida', 'Salsa', 'Otro'];
 const DIFFS = ['Fácil', 'Media', 'Difícil'];
 
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -286,7 +286,78 @@ const Store = {
       ['Whisky', 'Otro', 'ml'],
       ['Zanahoria', 'Verdura', 'ud'],
       ['Zapallo', 'Verdura', 'g'],
-      ['Zumo de naranja', 'Otro', 'ml']
+      ['Zumo de naranja', 'Otro', 'ml'],
+      ['Apio', 'Verdura', 'rama'],
+      ['Bulgur', 'Cereal', 'g'],
+      ['Concentrado de tomate', 'Otro', 'cda'],
+      ['Guisantes', 'Legumbre', 'g'],
+      ['Laurel', 'Especia', 'hoja'],
+      ['Mayonesa', 'Salsa', 'cda'],
+      ['Nueces', 'Fruta', 'g'],
+      ['Orégano', 'Especia', 'cdta'],
+      ['Pasta fettuccine', 'Cereal', 'g'],
+      ['Pepinillos', 'Otro', 'g'],
+      ['Queso feta', 'Lácteo', 'g'],
+      ['Queso mozzarella', 'Lácteo', 'g'],
+      ['Tomillo', 'Especia', 'rama'],
+      ['Achiote', 'Especia', 'cda'],
+      ['Alubias blancas', 'Legumbre', 'g'],
+      ['Anchoas', 'Pescado', 'g'],
+      ['Atún en lata', 'Pescado', 'g'],
+      ['Azúcar moreno', 'Otro', 'g'],
+      ['Bizcochos de soletilla', 'Otro', 'ud'],
+      ['Cachaça', 'Otro', 'ml'],
+      ['Café', 'Otro', 'ml'],
+      ['Camarones', 'Pescado', 'g'],
+      ['Camote', 'Verdura', 'ud'],
+      ['Campari', 'Otro', 'ml'],
+      ['Carne de cerdo', 'Carne', 'g'],
+      ['Cerveza de jengibre', 'Otro', 'ml'],
+      ['Chalota', 'Verdura', 'ud'],
+      ['Chancaca', 'Otro', 'g'],
+      ['Chile guajillo', 'Especia', 'ud'],
+      ['Chile verde', 'Especia', 'ud'],
+      ['Chorizo', 'Carne', 'g'],
+      ['Coco rallado', 'Fruta', 'g'],
+      ['Crema de coco', 'Otro', 'ml'],
+      ['Curry en polvo', 'Especia', 'cdta'],
+      ['Estragón', 'Especia', 'rama'],
+      ['Fideos finos', 'Cereal', 'g'],
+      ['Flor de jamaica', 'Especia', 'g'],
+      ['Fusilli', 'Cereal', 'g'],
+      ['Gaseosa de limón', 'Otro', 'ml'],
+      ['Gelatina en polvo', 'Otro', 'g'],
+      ['Granadina', 'Otro', 'ml'],
+      ['Helado de piña', 'Otro', 'ud'],
+      ['Ketchup', 'Salsa', 'g'],
+      ['Láminas de lasaña', 'Cereal', 'ud'],
+      ['Leche condensada', 'Lácteo', 'ml'],
+      ['Leche de coco', 'Otro', 'ml'],
+      ['Leche evaporada', 'Lácteo', 'ml'],
+      ['Levadura', 'Otro', 'cdta'],
+      ['Manjar', 'Lácteo', 'g'],
+      ['Marisco variado', 'Pescado', 'g'],
+      ['Mascarpone', 'Lácteo', 'g'],
+      ['Mirin', 'Otro', 'ml'],
+      ['Morcilla', 'Carne', 'g'],
+      ['Panceta', 'Carne', 'g'],
+      ['Piña', 'Fruta', 'g'],
+      ['Piñones', 'Fruta', 'g'],
+      ['Pisco', 'Otro', 'ml'],
+      ['Quinoa', 'Cereal', 'g'],
+      ['Queso azul', 'Lácteo', 'g'],
+      ['Repollo', 'Verdura', 'g'],
+      ['Ricotta', 'Lácteo', 'g'],
+      ['Sake', 'Otro', 'ml'],
+      ['Salsa de soja', 'Salsa', 'ml'],
+      ['Tomatillo', 'Verdura', 'ud'],
+      ['Tortilla de maíz', 'Cereal', 'ud'],
+      ['Vainilla', 'Especia', 'al gusto'],
+      ['Vermut rojo', 'Otro', 'ml'],
+      ['Zumaque', 'Especia', 'cdta'],
+      ['Zumo de arándano', 'Otro', 'ml'],
+      ['Zumo de piña', 'Otro', 'ml'],
+      ['Zumo de tomate', 'Otro', 'ml'],
     ];
     this.data.ingredients = base.map(([name, cat, unit]) => ({
       id: uid(), name, cat, unit, icon: guessIcon(name)
@@ -459,9 +530,279 @@ const Store = {
         ],
         notes: 'Con huevo es más estable y perdona mejor los fallos que el alioli tradicional solo con ajo y aceite.'
       },
+      {
+        id: uid(), name: 'Fabada asturiana', icon: 'legumbre', cat: 'Principal',
+        diff: 'Media', time: 150, portions: 6,
+        items: [
+          { ing: find('Alubias blancas'), qty: 500, unit: 'g' },
+          { ing: find('Chorizo'), qty: 200, unit: 'g' },
+          { ing: find('Morcilla'), qty: 150, unit: 'g' },
+          { ing: find('Panceta'), qty: 150, unit: 'g' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Laurel'), qty: 1, unit: 'hoja' },
+          { ing: find('Azafrán'), qty: null, unit: 'al gusto' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Deja las alubias en remojo con agua fría toda la noche, para que se hidraten bien y no se rompan al cocer.',
+          'Escurre las alubias y ponlas en una olla amplia junto al chorizo, la morcilla, la panceta, la cebolla entera pelada, los ajos y el laurel. Cubre con agua fría, sin sal todavía.',
+          'Lleva a hervor a fuego medio y retira con espumadera la espuma que suba a la superficie.',
+          'Baja el fuego al mínimo y deja cocer tapado, muy suave, durante unas 2 horas. Si hierve fuerte las alubias se rompen — el punto justo es asustarlas de vez en cuando con un chorrito de agua fría.',
+          'Cuando las alubias estén tiernas, saca un cucharón, tritúralo y devuélvelo a la olla — esto espesa el caldo sin necesidad de harina.',
+          'Añade el azafrán disuelto en un poco de caldo caliente, rectifica de sal y deja reposar unos minutos antes de servir.'
+        ],
+        notes: 'La fabada gana con el reposo: muchos asturianos dicen que sabe mejor al día siguiente, recalentada muy despacio.'
+      },
+      {
+        id: uid(), name: 'Fideuá', icon: 'pescado', cat: 'Principal',
+        diff: 'Media', time: 45, portions: 4,
+        items: [
+          { ing: find('Fideos finos'), qty: 300, unit: 'g' },
+          { ing: find('Marisco variado'), qty: 400, unit: 'g' },
+          { ing: find('Tomate'), qty: 2, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Pimentón'), qty: 1, unit: 'cdta' },
+          { ing: find('Caldo'), qty: 750, unit: 'ml' },
+          { ing: find('Azafrán'), qty: null, unit: 'al gusto' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Calienta el caldo aparte y mantenlo hirviendo suave — nunca lo añadas frío, o corta la cocción de golpe.',
+          'En una paellera o sartén ancha, dora el marisco en el aceite hasta que tome color y retíralo.',
+          'En el mismo aceite, sofríe la cebolla y el ajo picados finos hasta que estén tiernos, y añade el tomate rallado hasta que pierda el agua.',
+          'Incorpora el pimentón, remueve un segundo para que no se queme y añade enseguida los fideos, tostándolos removiendo un par de minutos — este tueste es lo que le da su sabor a la fideuá.',
+          'Vierte el caldo caliente con el azafrán y reparte los fideos en una capa pareja. A partir de aquí no vuelvas a remover.',
+          'Cocina a fuego vivo unos 10 minutos, reparte el marisco por encima, baja el fuego y deja 5-6 minutos más, hasta que el caldo se haya evaporado casi del todo.',
+          'Deja reposar 5 minutos fuera del fuego antes de servir, idealmente con alioli aparte.'
+        ],
+        notes: 'La señal de que está en su punto es el socarrat del fondo, igual que en la paella: un fideo bien tostado pegado a la sartén.'
+      },
+      {
+        id: uid(), name: 'Tacos al pastor', icon: 'carne', cat: 'Principal',
+        diff: 'Media', time: 45, portions: 4,
+        items: [
+          { ing: find('Carne de cerdo'), qty: 600, unit: 'g' },
+          { ing: find('Chile guajillo'), qty: 3, unit: 'ud' },
+          { ing: find('Achiote'), qty: 2, unit: 'cda' },
+          { ing: find('Piña'), qty: 200, unit: 'g' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Vinagre'), qty: 2, unit: 'cda' },
+          { ing: find('Cilantro'), qty: null, unit: 'al gusto' },
+          { ing: find('Tortilla de maíz'), qty: 12, unit: 'ud' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Remoja los chiles guajillo en agua caliente 10 minutos hasta que se ablanden, y lícualos con el achiote, un trozo de piña, la mitad de la cebolla, el ajo, el vinagre y sal, hasta lograr una pasta fina.',
+          'Corta la carne en filetes delgados y báñala bien con el adobo por todos lados. Tapa y deja marinar en la nevera al menos 4 horas, mejor toda la noche — es lo que da el color y el sabor característicos.',
+          'Corta el resto de la piña en dados pequeños y pica la cebolla y el cilantro que falten, para el acompañamiento.',
+          'Cocina la carne marinada en una sartén o plancha muy caliente, por tandas, hasta que se dore bien por fuera y quede jugosa por dentro. Pica en trozos pequeños.',
+          'Calienta las tortillas de maíz en una sartén seca hasta que estén flexibles.',
+          'Rellena cada tortilla con la carne, corona con piña, cebolla y cilantro picados, y un chorrito de limón.'
+        ],
+        notes: 'En las taquerías la carne se asa en un trompo vertical con un trozo de piña goteando encima mientras gira — en casa, la plancha bien caliente y la piña picada aparte dan un resultado muy parecido.'
+      },
+      {
+        id: uid(), name: 'Enchiladas verdes', icon: 'chile', cat: 'Principal',
+        diff: 'Media', time: 50, portions: 4,
+        items: [
+          { ing: find('Tomatillo'), qty: 500, unit: 'g' },
+          { ing: find('Pollo'), qty: 400, unit: 'g' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Guindilla'), qty: 1, unit: 'ud' },
+          { ing: find('Cilantro'), qty: null, unit: 'al gusto' },
+          { ing: find('Tortilla de maíz'), qty: 8, unit: 'ud' },
+          { ing: find('Nata'), qty: 100, unit: 'ml' },
+          { ing: find('Queso crema'), qty: 100, unit: 'g' },
+          { ing: find('Caldo'), qty: 100, unit: 'ml' },
+          { ing: find('Aceite de oliva'), qty: 2, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Cuece el pollo en agua con un trozo de cebolla y un diente de ajo hasta que esté hecho, unos 20 minutos. Desmenúzalo cuando se entibie.',
+          'Hierve los tomatillos con el resto de la cebolla, el ajo y la guindilla durante 6-7 minutos, hasta que los tomatillos cambien de color y se ablanden.',
+          'Licúa los tomatillos escurridos con el cilantro y un poco de caldo, hasta obtener una salsa lisa. Cocínala unos minutos en una sartén con el aceite para que pierda el sabor a crudo.',
+          'Pasa cada tortilla por la salsa caliente para que se impregne por los dos lados, sin dejarla tanto tiempo que se rompa.',
+          'Rellena cada tortilla con el pollo desmenuzado, enróllala y colócala en la fuente con el cierre hacia abajo.',
+          'Cubre todas las enchiladas con el resto de la salsa, la nata y el queso crema, y sirve enseguida antes de que la tortilla se ablande demasiado.'
+        ],
+        notes: 'El tomatillo no es un tomate sin madurar, sino una fruta distinta de cáscara papel — su acidez es la que le da a la salsa ese punto fresco tan característico.'
+      },
+      {
+        id: uid(), name: 'Risotto de champiñones', icon: 'seta', cat: 'Principal',
+        diff: 'Media', time: 35, portions: 4,
+        items: [
+          { ing: find('Arroz'), qty: 320, unit: 'g' },
+          { ing: find('Champiñones'), qty: 300, unit: 'g' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 1, unit: 'diente' },
+          { ing: find('Caldo'), qty: 1, unit: 'l' },
+          { ing: find('Vino blanco'), qty: 100, unit: 'ml' },
+          { ing: find('Mantequilla'), qty: 40, unit: 'g' },
+          { ing: find('Queso parmesano'), qty: 60, unit: 'g' },
+          { ing: find('Aceite de oliva'), qty: 2, unit: 'cda' },
+          { ing: find('Perejil'), qty: null, unit: 'al gusto' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Calienta el caldo en una olla aparte y mantenlo siempre hirviendo suave — el arroz debe recibirlo caliente, nunca frío.',
+          'Sofríe la cebolla picada fina en el aceite y la mitad de la mantequilla hasta que esté transparente, sin dejar que se dore.',
+          'Añade los champiñones laminados y el ajo, y cocina a fuego medio-alto hasta que suelten el agua y tomen algo de color.',
+          'Incorpora el arroz y tuéstalo removiendo 1-2 minutos, hasta que los granos se vean nacarados y algo translúcidos por los bordes.',
+          'Sube el fuego, añade el vino blanco y deja que se evapore removiendo, hasta que no huela a alcohol crudo.',
+          'Añade el caldo caliente de a poco, un cucharón cada vez, sin dejar de remover y esperando a que el arroz absorba cada tanda antes de la siguiente. Repite durante 16-18 minutos.',
+          'Retira del fuego cuando el arroz esté al dente y el conjunto quede meloso. Añade la mantequilla restante y el parmesano, y remueve con energía fuera del fuego — esta mantecatura es la que da la cremosidad final.',
+          'Deja reposar un minuto tapado, espolvorea perejil picado y sirve enseguida, porque el risotto no espera a nadie.'
+        ],
+        notes: 'El arroz ideal para risotto es uno con mucho almidón, como el arborio o el carnaroli — ese almidón liberado al remover es lo que crea la cremosidad, sin necesidad de nata.'
+      },
+      {
+        id: uid(), name: 'Lasaña a la boloñesa', icon: 'queso', cat: 'Principal',
+        diff: 'Media', time: 90, portions: 6,
+        items: [
+          { ing: find('Láminas de lasaña'), qty: 12, unit: 'ud' },
+          { ing: find('Carne picada'), qty: 500, unit: 'g' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Zanahoria'), qty: 1, unit: 'ud' },
+          { ing: find('Apio'), qty: 1, unit: 'rama' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Concentrado de tomate'), qty: 3, unit: 'cda' },
+          { ing: find('Vino tinto'), qty: 100, unit: 'ml' },
+          { ing: find('Mantequilla'), qty: 50, unit: 'g' },
+          { ing: find('Harina'), qty: 50, unit: 'g' },
+          { ing: find('Leche'), qty: 600, unit: 'ml' },
+          { ing: find('Nuez moscada'), qty: 1, unit: 'pizca' },
+          { ing: find('Queso parmesano'), qty: 80, unit: 'g' },
+          { ing: find('Aceite de oliva'), qty: 2, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pica la cebolla, la zanahoria, el apio y el ajo bien finos, y sofríelos en el aceite a fuego bajo hasta que estén tiernos, unos 10 minutos.',
+          'Sube el fuego, añade la carne picada y desmenúzala bien mientras se dora, hasta que no quede nada de color rosado.',
+          'Añade el vino tinto y deja que se evapore. Incorpora el concentrado de tomate, un poco de agua y sal. Tapa y cuece a fuego muy bajo al menos 40 minutos, removiendo de vez en cuando — cuanto más lenta y larga la cocción, mejor sabe la boloñesa.',
+          'Para la bechamel, derrite la mantequilla en un cazo, añade la harina y cocina un minuto sin dejar de remover, hasta formar una pasta.',
+          'Vierte la leche poco a poco sin dejar de batir, para que no se formen grumos, y cocina a fuego bajo hasta que espese. Sazona con sal y nuez moscada.',
+          'En una fuente de horno, pon una capa fina de bechamel en el fondo, luego láminas de lasaña, una capa de boloñesa y otra de bechamel. Repite el orden hasta terminar los ingredientes, dejando bechamel para cubrir la última capa.',
+          'Espolvorea el parmesano por encima y hornea a 200°C durante 25-30 minutos, hasta que la superficie esté dorada y burbujeante.',
+          'Deja reposar 10 minutos fuera del horno antes de cortar — así las capas no se desarman al servir.'
+        ],
+        notes: 'En Bolonia la salsa lleva también un chorrito de leche al final de su cocción, para suavizar la acidez del tomate — un truco que muchas recetas fuera de Italia se saltan.'
+      },
+      {
+        id: uid(), name: 'Chupe de camarones', icon: 'pescado', cat: 'Principal',
+        diff: 'Media', time: 40, portions: 4,
+        items: [
+          { ing: find('Camarones'), qty: 500, unit: 'g' },
+          { ing: find('Pan'), qty: 2, unit: 'ud' },
+          { ing: find('Leche'), qty: 300, unit: 'ml' },
+          { ing: find('Nata'), qty: 100, unit: 'ml' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Pimiento'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Vino blanco'), qty: 100, unit: 'ml' },
+          { ing: find('Queso parmesano'), qty: 80, unit: 'g' },
+          { ing: find('Pimentón'), qty: 1, unit: 'cdta' },
+          { ing: find('Aceite de oliva'), qty: 2, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pela los camarones y reserva las cáscaras y cabezas. Si tienes tiempo, hiérvelas unos minutos en agua para hacer un caldo corto — le da mucho más fondo al chupe.',
+          'Corta el pan en trozos y déjalo remojar en la leche hasta que quede bien empapado.',
+          'Sofríe la cebolla y el pimiento picados finos en el aceite hasta que estén tiernos, añade el ajo y el pimentón, y remueve un momento para que no se queme.',
+          'Añade los camarones y saltea un par de minutos, solo hasta que cambien de color por fuera.',
+          'Vierte el vino blanco y deja que se evapore el alcohol.',
+          'Licúa el pan remojado con la nata hasta formar una crema lisa, e incorpórala a la sartén junto con un poco del caldo de cáscaras si lo preparaste.',
+          'Cocina a fuego bajo removiendo, hasta que espese a textura de crema. Rectifica de sal.',
+          'Reparte en cazuelas individuales, cubre con el queso parmesano y gratina en el horno unos minutos hasta que la superficie se dore.'
+        ],
+        notes: 'Lo que distingue a la versión chilena de otros chupes sudamericanos es justamente el pan remojado en leche como espesante, en vez de arroz o harina — le da una cremosidad muy particular.'
+      },
+      {
+        id: uid(), name: 'Pastel de papas', icon: 'pastel', cat: 'Principal',
+        diff: 'Fácil', time: 60, portions: 6,
+        items: [
+          { ing: find('Papa'), qty: 1000, unit: 'g' },
+          { ing: find('Carne picada'), qty: 400, unit: 'g' },
+          { ing: find('Cebolla'), qty: 2, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Aceitunas negras'), qty: 8, unit: 'ud' },
+          { ing: find('Huevo'), qty: 2, unit: 'ud' },
+          { ing: find('Leche'), qty: 100, unit: 'ml' },
+          { ing: find('Mantequilla'), qty: 50, unit: 'g' },
+          { ing: find('Comino'), qty: 1, unit: 'cdta' },
+          { ing: find('Azúcar'), qty: 1, unit: 'cdta' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Cuece los huevos hasta que estén duros, unos 10 minutos, enfríalos y córtalos en rodajas.',
+          'Pela y cuece las papas en agua con sal hasta que estén blandas. Escúrrelas y hazlas puré con la leche y la mantequilla, batiendo hasta que quede suave.',
+          'Para el pino, sofríe una cebolla picada y el ajo hasta que estén transparentes, añade la carne picada y el comino, y cocina hasta que la carne esté hecha. Sazona con sal.',
+          'En una fuente de horno, extiende una base de puré, cubre con el pino de carne y reparte las aceitunas y las rodajas de huevo duro.',
+          'Cubre todo con el resto del puré, alisando bien la superficie con un tenedor para que se dore de forma pareja.',
+          'Espolvorea con un poco de azúcar por encima — es lo que da esa costra ligeramente caramelizada, típica de este plato.',
+          'Hornea a 200°C durante 20-25 minutos, hasta que la superficie esté dorada.'
+        ],
+        notes: 'Es primo directo del pastel de choclo, pero con puré de papa en vez de crema de choclo — igual de casero, y se sirve bien caliente en la misma fuente donde se horneó.'
+      },
+      {
+        id: uid(), name: 'Berenjenas rellenas', icon: 'tomate', cat: 'Entrante',
+        diff: 'Fácil', time: 50, portions: 4,
+        items: [
+          { ing: find('Berenjena'), qty: 2, unit: 'ud' },
+          { ing: find('Carne picada'), qty: 200, unit: 'g' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Tomate'), qty: 2, unit: 'ud' },
+          { ing: find('Queso mozzarella'), qty: 100, unit: 'g' },
+          { ing: find('Pan rallado'), qty: 2, unit: 'cda' },
+          { ing: find('Orégano'), qty: 1, unit: 'cdta' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Corta las berenjenas por la mitad a lo largo, haz unos cortes en cruz en la pulpa sin llegar a la piel, riega con un poco de aceite y ásalas en el horno a 200°C durante 25-30 minutos, hasta que estén tiernas.',
+          'Deja templar y, con una cuchara, vacía con cuidado la pulpa dejando la piel entera como un barquito. Pica la pulpa que has sacado.',
+          'Sofríe la cebolla y el ajo en el aceite restante hasta que estén tiernos, añade la carne picada y dórala.',
+          'Incorpora el tomate picado y la pulpa de berenjena reservada, y cocina a fuego medio unos 10 minutos, hasta que espese y no quede agua suelta. Sazona con el orégano y sal.',
+          'Rellena las pieles de berenjena con esta mezcla, presionando un poco.',
+          'Cubre cada mitad con el queso mozzarella y el pan rallado, y vuelve a hornear 10 minutos más, hasta que el queso gratine y se dore.'
+        ],
+        notes: 'Puedes saltarte la carne y rellenarlas solo con más verdura salteada (pimiento, champiñones) para una versión vegetariana igual de sabrosa.'
+      },
+      {
+        id: uid(), name: 'Arroz a la cubana', icon: 'arroz', cat: 'Principal',
+        diff: 'Fácil', time: 30, portions: 4,
+        items: [
+          { ing: find('Arroz'), qty: 300, unit: 'g' },
+          { ing: find('Huevo'), qty: 4, unit: 'ud' },
+          { ing: find('Plátano'), qty: 4, unit: 'ud' },
+          { ing: find('Tomate'), qty: 4, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Orégano'), qty: 1, unit: 'cdta' },
+          { ing: find('Azúcar'), qty: 1, unit: 'cdta' },
+          { ing: find('Aceite de oliva'), qty: 4, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Para el arroz blanco, dora un diente de ajo laminado en un poco de aceite, añade el arroz y remuévelo un minuto para que se impregne.',
+          'Cubre con agua fría, en proporción de unas 2 partes de agua por cada parte de arroz, sazona con sal y cuece tapado a fuego bajo hasta que absorba el líquido y quede suelto, unos 18 minutos.',
+          'Para la salsa, sofríe la cebolla picada y el otro diente de ajo en aceite hasta que se doren.',
+          'Añade el tomate picado, el orégano y el azúcar, y cocina a fuego bajo 15-20 minutos, hasta lograr una salsa espesa y de sabor concentrado.',
+          'Pela los plátanos, córtalos por la mitad a lo largo y fríelos en aceite caliente hasta que se doren por ambos lados.',
+          'Fríe los huevos en el mismo aceite, dejando la yema líquida.',
+          'Sirve el arroz en el centro del plato, cubre con abundante salsa de tomate, corona con el huevo frito y acompaña con el plátano frito a un lado.'
+        ],
+        notes: 'Pese al nombre, es un plato típico español, sobre todo de posguerra — la teoría más aceptada es que el plátano llegaba entonces de Canarias, y "cubana" se usaba como sinónimo de exótico o tropical.'
+      },
 
       {
-        id: uid(), name: 'Ensalada César', icon: 'hierba', cat: 'Entrante',
+        id: uid(), name: 'Ensalada César', icon: 'hierba', cat: 'Ensalada',
         diff: 'Fácil', time: 20, portions: 4,
         items: [
           { ing: find('Pollo'), qty: 300, unit: 'g' },
@@ -481,6 +822,362 @@ const Store = {
           'Aliña con aceite de oliva y un chorro de limón justo antes de servir.'
         ],
         notes: 'La versión clásica lleva anchoas y una salsa con huevo; esta es la versión rápida de cada día.'
+      },
+      {
+        id: uid(), name: 'Ensalada griega', icon: 'hierba', cat: 'Ensalada',
+        diff: 'Fácil', time: 15, portions: 4,
+        items: [
+          { ing: find('Tomate'), qty: 4, unit: 'ud' },
+          { ing: find('Pepino'), qty: 1, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 0.5, unit: 'ud' },
+          { ing: find('Pimiento'), qty: 1, unit: 'ud' },
+          { ing: find('Aceitunas negras'), qty: 100, unit: 'g' },
+          { ing: find('Queso feta'), qty: 200, unit: 'g' },
+          { ing: find('Orégano'), qty: 1, unit: 'cdta' },
+          { ing: find('Aceite de oliva'), qty: 4, unit: 'cda' },
+          { ing: find('Vinagre'), qty: 1, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Corta los tomates y el pepino en trozos grandes, no en dados pequeños: es un rasgo típico de la horiatiki griega.',
+          'Corta la cebolla en aros finos y el pimiento en tiras.',
+          'Reparte las verduras en una fuente, sin mezclarlas demasiado.',
+          'Añade las aceitunas negras por encima.',
+          'Coloca el bloque de queso feta entero encima, sin desmenuzar.',
+          'Riega con el aceite de oliva y el vinagre, y espolvorea el orégano sobre el queso.',
+          'Sazona con sal y sirve enseguida, sin remover: el aliño se mezcla al servir en el plato.'
+        ],
+        notes: 'La horiatiki auténtica no lleva lechuga ni se mezcla antes de servir — el feta va entero encima, no en dados.'
+      },
+      {
+        id: uid(), name: 'Ensalada rusa', icon: 'plato', cat: 'Ensalada',
+        diff: 'Media', time: 50, portions: 6,
+        items: [
+          { ing: find('Papa'), qty: 3, unit: 'ud' },
+          { ing: find('Zanahoria'), qty: 1, unit: 'ud' },
+          { ing: find('Guisantes'), qty: 150, unit: 'g' },
+          { ing: find('Pollo'), qty: 300, unit: 'g' },
+          { ing: find('Huevo'), qty: 3, unit: 'ud' },
+          { ing: find('Pepinillos'), qty: 3, unit: 'ud' },
+          { ing: find('Manzana'), qty: 1, unit: 'ud' },
+          { ing: find('Mayonesa'), qty: 200, unit: 'g' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' },
+          { ing: find('Pimienta negra'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Cuece las papas y la zanahoria con piel en agua con sal hasta que estén tiernas; cuece los huevos aparte hasta que estén duros.',
+          'Cuece o hierve el pollo hasta que esté hecho y desmenúzalo o córtalo en dados pequeños.',
+          'Cuando las papas, la zanahoria y los huevos estén templados, pélalos y córtalos en dados pequeños y regulares.',
+          'Cuece los guisantes 2-3 minutos en agua hirviendo, hasta que estén tiernos, y escúrrelos.',
+          'Corta la manzana y los pepinillos en dados del mismo tamaño que el resto.',
+          'Mezcla todos los ingredientes en un bol grande con la mayonesa, la sal y la pimienta, con cuidado de no aplastarlos.',
+          'Enfría al menos 1 hora en la nevera antes de servir.'
+        ],
+        notes: 'Es la ensalada Olivier, creada en Moscú en el siglo XIX — la clave está en cortar todo en dados del mismo tamaño pequeño y dejarla enfriar bien antes de servir.'
+      },
+      {
+        id: uid(), name: 'Tabulé', icon: 'hierba', cat: 'Ensalada',
+        diff: 'Fácil', time: 25, portions: 4,
+        items: [
+          { ing: find('Perejil'), qty: 200, unit: 'g' },
+          { ing: find('Bulgur'), qty: 60, unit: 'g' },
+          { ing: find('Tomate'), qty: 2, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 0.25, unit: 'ud' },
+          { ing: find('Menta'), qty: 6, unit: 'hoja' },
+          { ing: find('Limón'), qty: 2, unit: 'ud' },
+          { ing: find('Aceite de oliva'), qty: 4, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Lava el perejil y sécalo muy bien: con la hoja húmeda se apelmaza al picar.',
+          'Pica el perejil muy fino, junto con la menta y la cebolla.',
+          'Pica el tomate en dados pequeños, reservando el jugo que suelte.',
+          'Pon el bulgur fino en un bol con el jugo de limón y el jugo del tomate, y déjalo en remojo 15-20 minutos sin hervirlo: se ablanda solo con el líquido ácido.',
+          'Mezcla el bulgur ya hidratado con el perejil, la menta, la cebolla y el tomate.',
+          'Aliña con el aceite de oliva y sal, y remueve bien.',
+          'Deja reposar al menos 30 minutos en la nevera antes de servir, para que se asienten los sabores.'
+        ],
+        notes: 'El tabulé auténtico es una ensalada de perejil con un toque de bulgur, no al revés: la proporción tradicional es casi dos manojos de perejil por cada taza de bulgur.'
+      },
+      {
+        id: uid(), name: 'Caprese', icon: 'tomate', cat: 'Ensalada',
+        diff: 'Fácil', time: 15, portions: 4,
+        items: [
+          { ing: find('Tomate'), qty: 4, unit: 'ud' },
+          { ing: find('Queso mozzarella'), qty: 250, unit: 'g' },
+          { ing: find('Albahaca'), qty: 8, unit: 'hoja' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' },
+          { ing: find('Pimienta negra'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Corta el tomate y la mozzarella en rodajas de un grosor similar, de medio centímetro.',
+          'Seca las rodajas de tomate con papel de cocina y sazona con un poco de sal: ayuda a que suelten menos agua y concentren sabor.',
+          'Ve alternando las rodajas de tomate y mozzarella en un plato o fuente, superpuestas.',
+          'Reparte las hojas de albahaca fresca entre las rodajas, rasgándolas con la mano en vez de cortarlas con cuchillo.',
+          'Riega con el aceite de oliva y sazona con sal y pimienta recién molida.',
+          'Deja reposar 15-30 minutos a temperatura ambiente antes de servir, para que suelte los jugos y se mezclen los sabores.'
+        ],
+        notes: 'Rasga la albahaca con los dedos, no la cortes con cuchillo: el filo la oxida y ennegrece los bordes.'
+      },
+      {
+        id: uid(), name: 'Ensalada Waldorf', icon: 'manzana', cat: 'Ensalada',
+        diff: 'Fácil', time: 15, portions: 4,
+        items: [
+          { ing: find('Manzana'), qty: 3, unit: 'ud' },
+          { ing: find('Apio'), qty: 2, unit: 'rama' },
+          { ing: find('Nueces'), qty: 60, unit: 'g' },
+          { ing: find('Mayonesa'), qty: 100, unit: 'g' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Corta la manzana en dados, dejando la piel, y rocíala enseguida con el zumo de limón para que no se oxide.',
+          'Pica el apio en rodajas finas.',
+          'Trocea las nueces groseramente.',
+          'Mezcla la manzana, el apio y las nueces con la mayonesa hasta que quede todo bien cubierto.',
+          'Sazona con una pizca de sal y enfría al menos 30 minutos antes de servir.'
+        ],
+        notes: 'La receta original de 1893 del hotel Waldorf-Astoria solo llevaba manzana, apio y mayonesa: las nueces se añadieron después y hoy son casi inseparables de la ensalada.'
+      },
+      {
+        id: uid(), name: 'Ensalada Cobb', icon: 'carne', cat: 'Ensalada',
+        diff: 'Media', time: 35, portions: 4,
+        items: [
+          { ing: find('Pollo'), qty: 300, unit: 'g' },
+          { ing: find('Panceta'), qty: 150, unit: 'g' },
+          { ing: find('Huevo'), qty: 3, unit: 'ud' },
+          { ing: find('Aguacate'), qty: 1, unit: 'ud' },
+          { ing: find('Tomate'), qty: 2, unit: 'ud' },
+          { ing: find('Queso azul'), qty: 100, unit: 'g' },
+          { ing: find('Lechuga'), qty: 1, unit: 'ud' },
+          { ing: find('Vinagre'), qty: 3, unit: 'cda' },
+          { ing: find('Aceite de oliva'), qty: 6, unit: 'cda' },
+          { ing: find('Mostaza'), qty: 1, unit: 'cdta' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' },
+          { ing: find('Pimienta negra'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Cuece los huevos 10 minutos, pásalos por agua fría, pélalos y pícalos.',
+          'Cocina el pollo a la plancha con sal y pimienta hasta que quede dorado y jugoso, y córtalo en cubos.',
+          'Fríe la panceta en trozos hasta que quede crujiente y escúrrela sobre papel absorbente.',
+          'Corta la lechuga bien fina y extiéndela como base en una fuente grande.',
+          'Coloca por encima el pollo, la panceta, el huevo, el aguacate en cubos, el tomate y el queso azul desmenuzado, cada uno en su propia franja, sin mezclar.',
+          'Bate el vinagre con el aceite y la mostaza hasta que emulsione y riega la ensalada justo antes de servir.'
+        ],
+        notes: 'La gracia de la Cobb es servirla en filas separadas, no mezclada: cada uno la revuelve a su gusto en el plato. Se dice que nació en Hollywood, en el restaurante Brown Derby, con las sobras de la nevera.'
+      },
+      {
+        id: uid(), name: 'Ensalada Niçoise', icon: 'pescado', cat: 'Ensalada',
+        diff: 'Media', time: 35, portions: 4,
+        items: [
+          { ing: find('Atún en lata'), qty: 250, unit: 'g' },
+          { ing: find('Judía verde'), qty: 200, unit: 'g' },
+          { ing: find('Papa'), qty: 3, unit: 'ud' },
+          { ing: find('Huevo'), qty: 3, unit: 'ud' },
+          { ing: find('Aceitunas negras'), qty: 80, unit: 'g' },
+          { ing: find('Anchoas'), qty: 30, unit: 'g' },
+          { ing: find('Tomate'), qty: 3, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Mostaza'), qty: 1, unit: 'cdta' },
+          { ing: find('Vinagre'), qty: 2, unit: 'cda' },
+          { ing: find('Aceite de oliva'), qty: 5, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Cuece las papas con piel en agua con sal hasta que estén tiernas, escúrrelas y córtalas en rodajas cuando templen.',
+          'Blanquea las judías verdes en agua hirviendo unos 4 minutos y pásalas enseguida por agua fría para que queden firmes y verdes.',
+          'Cuece los huevos 9-10 minutos, enfríalos, pélalos y pártelos en cuartos.',
+          'Corta el tomate en gajos y la cebolla en aros finos.',
+          'Bate el aceite con el vinagre y la mostaza para hacer la vinagreta.',
+          'Reparte en una fuente las papas, las judías, el tomate, la cebolla, los huevos, el atún desmenuzado, las aceitunas y las anchoas, cada cosa en su sector, y termina con la vinagreta por encima.'
+        ],
+        notes: 'Es una ensalada de reparto, no de mezcla: en Niza cada ingrediente va en su rincón del plato y se sirve tibio o a temperatura ambiente, nunca recién sacado de la nevera.'
+      },
+      {
+        id: uid(), name: 'Panzanella', icon: 'pan', cat: 'Ensalada',
+        diff: 'Fácil', time: 75, portions: 4,
+        items: [
+          { ing: find('Pan'), qty: 4, unit: 'ud' },
+          { ing: find('Agua'), qty: 200, unit: 'ml' },
+          { ing: find('Tomate'), qty: 4, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Albahaca'), qty: 6, unit: 'hoja' },
+          { ing: find('Vinagre'), qty: 3, unit: 'cda' },
+          { ing: find('Aceite de oliva'), qty: 5, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Remoja el pan duro en un bol con el agua y un chorrito de vinagre unos 10 minutos, dándole vuelta a mitad de camino.',
+          'Escurre el pan y apriétalo bien con las manos para quitarle el exceso de líquido, luego desmígalo en trozos con los dedos.',
+          'Corta el tomate en trozos pequeños dejando que caiga su jugo en el bol, y corta la cebolla en láminas finas.',
+          'Mezcla el pan escurrido con el tomate y su jugo, la cebolla y la albahaca troceada.',
+          'Aliña con el aceite de oliva, el resto del vinagre y sal, y deja reposar en la nevera al menos una hora para que el pan absorba bien los jugos antes de servir.'
+        ],
+        notes: 'Cuanto más reposa, mejor sabe: nació para aprovechar el pan de varios días, y de un día para otro queda todavía más sabrosa.'
+      },
+      {
+        id: uid(), name: 'Fattoush', icon: 'limon', cat: 'Ensalada',
+        diff: 'Fácil', time: 25, portions: 4,
+        items: [
+          { ing: find('Pan'), qty: 2, unit: 'ud' },
+          { ing: find('Pepino'), qty: 2, unit: 'ud' },
+          { ing: find('Tomate'), qty: 3, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Perejil'), qty: 10, unit: 'hoja' },
+          { ing: find('Menta'), qty: 6, unit: 'hoja' },
+          { ing: find('Zumaque'), qty: 1, unit: 'cdta' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 1, unit: 'diente' },
+          { ing: find('Aceite de oliva'), qty: 4, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Corta el pan pita en triángulos, pincélalos con un poco de aceite y tuéstalos en el horno o en una sartén hasta que queden bien crujientes y dorados.',
+          'Corta el pepino, el tomate y la cebolla en trozos pequeños, y pica el perejil y la menta.',
+          'Machaca el ajo con una pizca de sal, mézclalo con el zumo de limón y déjalo un par de minutos para que pierda fuerza.',
+          'Añade el zumaque y el aceite de oliva al majado de ajo y limón, batiendo hasta que quede una vinagreta homogénea.',
+          'Junta las verduras y las hierbas en un bol grande, incorpora el pan tostado en el último momento y termina con la vinagreta, mezclando justo antes de servir para que el pan no se ablande.'
+        ],
+        notes: 'El zumaque aporta ese toque ácido y afrutado típico de la cocina levantina; si no lo consigues, un poco más de limón y su ralladura son un sustituto aceptable.'
+      },
+      {
+        id: uid(), name: 'Coleslaw', icon: 'zanahoria', cat: 'Ensalada',
+        diff: 'Fácil', time: 75, portions: 6,
+        items: [
+          { ing: find('Repollo'), qty: 500, unit: 'g' },
+          { ing: find('Zanahoria'), qty: 2, unit: 'ud' },
+          { ing: find('Mayonesa'), qty: 6, unit: 'cda' },
+          { ing: find('Vinagre'), qty: 2, unit: 'cda' },
+          { ing: find('Azúcar'), qty: 1, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' },
+          { ing: find('Pimienta negra'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Corta el repollo en tiras lo más finas posible y ralla la zanahoria.',
+          'Mezcla el repollo y la zanahoria en un bol grande.',
+          'Bate la mayonesa con el vinagre, el azúcar, sal y pimienta hasta que quede una salsa lisa.',
+          'Vierte la salsa sobre las verduras y mezcla bien hasta que todo quede cubierto.',
+          'Tapa y deja reposar en la nevera al menos una hora antes de servir, para que el repollo suelte agua y se ablande un poco.'
+        ],
+        notes: 'El nombre viene del holandés koolsla, "ensalada de repollo": llegó a Estados Unidos con los colonos holandeses y de ahí se quedó como coleslaw.'
+      },
+      {
+        id: uid(), name: 'Ensalada de quinoa', icon: 'arroz', cat: 'Ensalada',
+        diff: 'Fácil', time: 30, portions: 4,
+        items: [
+          { ing: find('Quinoa'), qty: 200, unit: 'g' },
+          { ing: find('Agua'), qty: 400, unit: 'ml' },
+          { ing: find('Pepino'), qty: 1, unit: 'ud' },
+          { ing: find('Tomate'), qty: 2, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Perejil'), qty: 8, unit: 'hoja' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Enjuaga la quinoa bajo el agua fría frotándola con las manos, para quitarle el sabor amargo de su capa natural.',
+          'Cuece la quinoa en el agua con una pizca de sal: llévala a hervor, baja el fuego y déjala a fuego lento hasta que absorba todo el líquido, unos 12-15 minutos.',
+          'Retira del fuego, tapa y deja reposar 10 minutos más, luego suéltala con un tenedor y déjala enfriar.',
+          'Corta el pepino, el tomate y la cebolla en dados pequeños y pica el perejil.',
+          'Mezcla la quinoa fría con las verduras, riega con el zumo de limón y el aceite de oliva, y ajusta de sal.'
+        ],
+        notes: 'La quinoa se cultiva en los Andes desde hace miles de años; enjuagarla bien evita el regusto amargo de la saponina que la recubre de forma natural.'
+      },
+      {
+        id: uid(), name: 'Ensalada de garbanzos', icon: 'legumbre', cat: 'Ensalada',
+        diff: 'Fácil', time: 20, portions: 4,
+        items: [
+          { ing: find('Garbanzos'), qty: 400, unit: 'g' },
+          { ing: find('Tomate'), qty: 2, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Queso feta'), qty: 100, unit: 'g' },
+          { ing: find('Aceite de oliva'), qty: 3, unit: 'cda' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' },
+          { ing: find('Perejil'), qty: 8, unit: 'hoja' },
+          { ing: find('Orégano'), qty: 1, unit: 'cdta' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Escurre y enjuaga bien los garbanzos, y sécalos con un paño para que la ensalada no quede aguada.',
+          'Corta el tomate y la cebolla en dados pequeños.',
+          'Mezcla los garbanzos con el tomate y la cebolla en un bol grande.',
+          'Desmenuza el queso feta por encima y espolvorea el orégano.',
+          'Riega con el aceite de oliva y el zumo de limón, sazona y deja reposar unos minutos para que se mezclen los sabores antes de servir.'
+        ],
+        notes: 'Es de esas ensaladas que mejoran con el tiempo: si la preparas un par de horas antes, los garbanzos absorben mucho mejor el aliño.'
+      },
+      {
+        id: uid(), name: 'Ensalada de pollo', icon: 'manzana', cat: 'Ensalada',
+        diff: 'Fácil', time: 20, portions: 4,
+        items: [
+          { ing: find('Pollo'), qty: 400, unit: 'g' },
+          { ing: find('Apio'), qty: 2, unit: 'rama' },
+          { ing: find('Manzana'), qty: 1, unit: 'ud' },
+          { ing: find('Nueces'), qty: 40, unit: 'g' },
+          { ing: find('Mayonesa'), qty: 5, unit: 'cda' },
+          { ing: find('Mostaza'), qty: 1, unit: 'cdta' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' },
+          { ing: find('Pimienta negra'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Cuece o cocina a la plancha el pollo, déjalo enfriar y desmenúzalo o córtalo en cubos pequeños.',
+          'Pica el apio en trozos finos y corta la manzana en dados, rociándola con un poco de zumo de limón para que no se oscurezca.',
+          'Tuesta las nueces unos minutos en una sartén sin aceite hasta que huelan bien, y trocéalas.',
+          'Mezcla la mayonesa con la mostaza y un chorrito de limón.',
+          'Junta el pollo, el apio, la manzana y las nueces con la salsa, mezcla con cuidado para no aplastar la fruta, y ajusta de sal y pimienta.'
+        ],
+        notes: 'Es la base perfecta para un sándwich o para servir sobre hojas de lechuga; la fruta aporta ese punto dulce que equilibra la mayonesa.'
+      },
+      {
+        id: uid(), name: 'Ensalada de pasta', icon: 'rodillo', cat: 'Ensalada',
+        diff: 'Fácil', time: 70, portions: 6,
+        items: [
+          { ing: find('Fusilli'), qty: 300, unit: 'g' },
+          { ing: find('Tomate'), qty: 2, unit: 'ud' },
+          { ing: find('Pimiento'), qty: 1, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Aceitunas negras'), qty: 60, unit: 'g' },
+          { ing: find('Queso mozzarella'), qty: 150, unit: 'g' },
+          { ing: find('Aceite de oliva'), qty: 4, unit: 'cda' },
+          { ing: find('Vinagre'), qty: 2, unit: 'cda' },
+          { ing: find('Orégano'), qty: 1, unit: 'cdta' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Cuece la pasta en agua bien salada hasta que esté al dente, escúrrela y pásala por agua fría para cortar la cocción y quitarle el exceso de almidón.',
+          'Corta el tomate, el pimiento y la cebolla en trozos pequeños, y el queso mozzarella en cubos.',
+          'Bate el aceite de oliva con el vinagre y el orégano para hacer la vinagreta.',
+          'Mezcla la pasta fría con las verduras, las aceitunas y el queso.',
+          'Riega con la vinagreta, mezcla bien y deja reposar en la nevera al menos una hora antes de servir para que coja sabor.'
+        ],
+        notes: 'Enfriar la pasta bajo el chorro de agua corta la cocción residual y evita que quede pasada cuando la mezcles con el aliño.'
+      },
+      {
+        id: uid(), name: 'Ensalada de espinacas con nueces y queso', icon: 'hierba', cat: 'Ensalada',
+        diff: 'Fácil', time: 20, portions: 4,
+        items: [
+          { ing: find('Espinaca'), qty: 200, unit: 'g' },
+          { ing: find('Panceta'), qty: 100, unit: 'g' },
+          { ing: find('Nueces'), qty: 60, unit: 'g' },
+          { ing: find('Queso azul'), qty: 80, unit: 'g' },
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Vinagre'), qty: 3, unit: 'cda' },
+          { ing: find('Mostaza'), qty: 1, unit: 'cdta' },
+          { ing: find('Aceite de oliva'), qty: 4, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Lava y seca bien las hojas de espinaca y ponlas en un bol grande.',
+          'Fríe la panceta en trozos hasta que quede crujiente y reserva un par de cucharadas de la grasa que suelte.',
+          'Tuesta las nueces unos minutos en una sartén seca hasta que huelan tostado.',
+          'En la misma sartén con la grasa reservada, calienta el vinagre, la mostaza y el aceite de oliva removiendo bien, para hacer una vinagreta tibia.',
+          'Vierte la vinagreta caliente sobre las espinacas y mezcla rápido: el calor las marchita apenas un poco, sin llegar a cocerlas.',
+          'Reparte por encima la panceta, las nueces tostadas, el queso azul desmenuzado y la cebolla en aros finos.'
+        ],
+        notes: 'El truco está en que la vinagreta llegue bien caliente pero la espinaca no se cocine: solo debe ablandarse un poco al contacto, quedando todavía fresca.'
       },
       {
         id: uid(), name: 'Croquetas de jamón', icon: 'carne', cat: 'Entrante',
@@ -851,7 +1548,7 @@ const Store = {
         notes: 'Un arroz blanco suelto siempre es un buen comodín para acompañar guisos con mucha salsa.'
       },
       {
-        id: uid(), name: 'Ensalada de tomate y cebolla', icon: 'tomate', cat: 'Guarnición',
+        id: uid(), name: 'Ensalada de tomate y cebolla', icon: 'tomate', cat: 'Ensalada',
         diff: 'Fácil', time: 10, portions: 4,
         items: [
           { ing: find('Tomate'), qty: 4, unit: 'ud' },
@@ -1075,6 +1772,227 @@ const Store = {
         ],
         notes: 'Si no tienes soplete, un momento bajo el grill del horno también carameliza el azúcar — vigílala de cerca, se quema en segundos.'
       },
+      {
+        id: uid(), name: 'Tiramisú', icon: 'pastel', cat: 'Postre',
+        diff: 'Media', time: 40, portions: 8,
+        items: [
+          { ing: find('Huevo'), qty: 4, unit: 'ud' },
+          { ing: find('Azúcar'), qty: 100, unit: 'g' },
+          { ing: find('Mascarpone'), qty: 500, unit: 'g' },
+          { ing: find('Café'), qty: 300, unit: 'ml' },
+          { ing: find('Bizcochos de soletilla'), qty: 24, unit: 'ud' },
+          { ing: find('Chocolate en polvo'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Separa las yemas de las claras. Bate las yemas con la mitad del azúcar hasta que blanqueen y dupliquen su volumen.',
+          'Añade el mascarpone a las yemas batidas y mezcla con movimientos envolventes, sin batir fuerte, hasta lograr una crema lisa.',
+          'Monta las claras a punto de nieve con el resto del azúcar e incorpóralas a la crema en dos o tres tandas, de abajo hacia arriba, para no bajar el aire.',
+          'Prepara el café bien cargado y déjalo enfriar. Moja cada bizcocho por ambos lados durante un segundo, sin empaparlo o se deshará, y forma una primera capa en el molde.',
+          'Cubre con la mitad de la crema, repite con otra capa de bizcochos mojados y termina con el resto de la crema, alisando la superficie.',
+          'Tapa y refrigera al menos 4 horas, mejor toda la noche. Justo antes de servir, espolvorea generosamente con cacao en polvo.'
+        ],
+        notes: 'El nombre significa "tírame para arriba" en dialecto véneto, por el subidón del café. La receta original de los años 60-70 no lleva nata montada ni licor: solo huevo, mascarpone, café y cacao.'
+      },
+      {
+        id: uid(), name: 'Panna cotta', icon: 'leche', cat: 'Postre',
+        diff: 'Fácil', time: 20, portions: 6,
+        items: [
+          { ing: find('Nata'), qty: 500, unit: 'ml' },
+          { ing: find('Leche'), qty: 100, unit: 'ml' },
+          { ing: find('Azúcar'), qty: 80, unit: 'g' },
+          { ing: find('Vainilla'), qty: null, unit: 'al gusto' },
+          { ing: find('Gelatina en polvo'), qty: 7, unit: 'g' }
+        ],
+        steps: [
+          'Hidrata la gelatina en polvo con un par de cucharadas de agua fría durante unos 5 minutos, hasta que se hinche.',
+          'Calienta la nata junto con la leche, el azúcar y la vainilla en un cazo a fuego suave, removiendo, sin dejar que llegue a hervir.',
+          'Retira del fuego y añade la gelatina hidratada, removiendo hasta que se disuelva por completo y no queden grumos.',
+          'Reparte en moldes individuales y deja templar a temperatura ambiente antes de meter en la nevera.',
+          'Refrigera un mínimo de 4 horas, hasta que cuaje con una textura temblorosa pero firme. Para desmoldar, sumerge la base del molde unos segundos en agua caliente.'
+        ],
+        notes: 'Panna cotta significa literalmente "nata cocida". No lleva huevo: toda la textura viene de la gelatina, así que si te pasas de cantidad queda como goma, la clave es que tiemble como un flan muy suave.'
+      },
+      {
+        id: uid(), name: 'Tres leches', icon: 'pastel', cat: 'Postre',
+        diff: 'Media', time: 70, portions: 10,
+        items: [
+          { ing: find('Huevo'), qty: 5, unit: 'ud' },
+          { ing: find('Azúcar'), qty: 180, unit: 'g' },
+          { ing: find('Harina'), qty: 200, unit: 'g' },
+          { ing: find('Levadura'), qty: 1, unit: 'cdta' },
+          { ing: find('Leche'), qty: 60, unit: 'ml' },
+          { ing: find('Leche evaporada'), qty: 350, unit: 'ml' },
+          { ing: find('Leche condensada'), qty: 350, unit: 'ml' },
+          { ing: find('Nata'), qty: 300, unit: 'ml' },
+          { ing: find('Canela'), qty: 1, unit: 'rama' }
+        ],
+        steps: [
+          'Bate los huevos con el azúcar hasta que la mezcla blanquee y triplique su volumen. Añade la leche y mezcla suave.',
+          'Incorpora la harina tamizada con la levadura en dos tandas, con movimientos envolventes para no perder el aire.',
+          'Vierte en un molde engrasado y hornea a 180°C unos 25-30 minutos, hasta que al pinchar con un palillo salga limpio. Deja enfriar por completo.',
+          'Mezcla la leche evaporada, la leche condensada y la mitad de la nata. Pincha el bizcocho frío por toda la superficie con un tenedor y vierte la mezcla poco a poco, dejando que se absorba.',
+          'Cubre y refrigera mínimo 4 horas, mejor toda la noche, para que quede bien empapado.',
+          'Antes de servir, monta el resto de la nata y cubre el pastel. Espolvorea con canela desmenuzada.'
+        ],
+        notes: 'Aunque se asocia a México y Nicaragua, la técnica de empapar bizcochos en leche viene de recetas europeas de "sopa borracha"; la lata de leche condensada lo popularizó a mediados del siglo XX.'
+      },
+      {
+        id: uid(), name: 'Alfajores de maicena', icon: 'rodillo', cat: 'Postre',
+        diff: 'Media', time: 50, portions: 12,
+        items: [
+          { ing: find('Mantequilla'), qty: 150, unit: 'g' },
+          { ing: find('Azúcar'), qty: 100, unit: 'g' },
+          { ing: find('Huevo'), qty: 3, unit: 'ud' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' },
+          { ing: find('Maicena'), qty: 300, unit: 'g' },
+          { ing: find('Harina'), qty: 100, unit: 'g' },
+          { ing: find('Levadura'), qty: 1, unit: 'cdta' },
+          { ing: find('Manjar'), qty: 400, unit: 'g' },
+          { ing: find('Coco rallado'), qty: 100, unit: 'g' }
+        ],
+        steps: [
+          'Bate la mantequilla en pomada con el azúcar hasta que quede cremosa. Añade las yemas de huevo una a una y la ralladura de limón.',
+          'Tamiza juntas la maicena, la harina y la levadura, e incorpóralas a la mezcla hasta formar una masa blanda que no se pegue en las manos.',
+          'Estira la masa con rodillo dejándola de un centímetro de grosor y corta círculos con un cortapastas o un vaso.',
+          'Hornea a 180°C unos 10-12 minutos, vigilando que no se doren: los alfajores chilenos deben quedar pálidos, no tostados.',
+          'Deja enfriar por completo y une de a dos galletas con una capa generosa de manjar en el centro, dejando que rebose un poco por los bordes.',
+          'Pasa los bordes de cada alfajor por coco rallado, presionando suavemente para que se pegue. Deja reposar un par de horas antes de comer.'
+        ],
+        notes: 'Usar maicena en vez de solo harina es lo que da esa textura que se deshace en la boca. Se dice que mejoran al día siguiente, cuando el manjar humedece un poco la masa.'
+      },
+      {
+        id: uid(), name: 'Torrijas', icon: 'pan', cat: 'Postre',
+        diff: 'Fácil', time: 30, portions: 6,
+        items: [
+          { ing: find('Pan'), qty: 1, unit: 'ud' },
+          { ing: find('Leche'), qty: 500, unit: 'ml' },
+          { ing: find('Canela'), qty: 1, unit: 'rama' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' },
+          { ing: find('Azúcar'), qty: 100, unit: 'g' },
+          { ing: find('Huevo'), qty: 2, unit: 'ud' },
+          { ing: find('Aceite de oliva'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Corta el pan del día anterior en rebanadas de 2-3 cm: cuanto más duro esté, mejor absorbe sin deshacerse.',
+          'Calienta la leche con la rama de canela y la piel de limón, sin dejar que hierva, y deja infusionar tapada unos minutos. Cuela y añade la mitad del azúcar.',
+          'Remoja cada rebanada en la leche templada, dejándola unos segundos por cada lado hasta que esté húmeda pero entera.',
+          'Pasa las rebanadas por huevo batido y fríelas en abundante aceite bien caliente hasta que doren por ambos lados.',
+          'Escurre sobre papel absorbente y reboza en caliente con el resto del azúcar mezclado con canela.'
+        ],
+        notes: 'Es el postre típico de Semana Santa en España, pensado originalmente para aprovechar el pan duro. En algunas regiones se remojan en vino dulce en vez de leche, las "torrijas de vino".'
+      },
+      {
+        id: uid(), name: 'Natillas', icon: 'huevo', cat: 'Postre',
+        diff: 'Fácil', time: 30, portions: 6,
+        items: [
+          { ing: find('Leche'), qty: 600, unit: 'ml' },
+          { ing: find('Canela'), qty: 1, unit: 'rama' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' },
+          { ing: find('Huevo'), qty: 4, unit: 'ud' },
+          { ing: find('Azúcar'), qty: 75, unit: 'g' },
+          { ing: find('Maicena'), qty: 15, unit: 'g' },
+          { ing: find('Galletas'), qty: 6, unit: 'ud' }
+        ],
+        steps: [
+          'Calienta la leche junto con la rama de canela y la piel de limón a fuego suave unos 10 minutos, sin que llegue a hervir. Retira la canela y el limón.',
+          'Bate las yemas con el azúcar hasta que blanqueen, y añade la maicena disuelta en un poco de leche fría.',
+          'Vierte un poco de la leche caliente sobre las yemas sin dejar de batir, para atemperarlas, y luego incorpora todo de nuevo al cazo.',
+          'Cocina a fuego bajo removiendo constantemente hasta que espese y nape la cuchara, unos 10 minutos. No dejes que hierva o se cortará.',
+          'Reparte en boles individuales, apoya una galleta encima de cada uno y deja enfriar en la nevera al menos 2 horas antes de servir.'
+        ],
+        notes: 'La diferencia con el flan es que las natillas no se cuajan al horno ni llevan caramelo: espesan solo con el calor y la maicena, quedando más líquidas y sedosas.'
+      },
+      {
+        id: uid(), name: 'Cannoli sicilianos', icon: 'queso', cat: 'Postre',
+        diff: 'Difícil', time: 60, portions: 12,
+        items: [
+          { ing: find('Harina'), qty: 250, unit: 'g' },
+          { ing: find('Mantequilla'), qty: 30, unit: 'g' },
+          { ing: find('Azúcar'), qty: 100, unit: 'g' },
+          { ing: find('Vino blanco'), qty: 60, unit: 'ml' },
+          { ing: find('Huevo'), qty: 1, unit: 'ud' },
+          { ing: find('Ricotta'), qty: 400, unit: 'g' },
+          { ing: find('Chocolate negro'), qty: 50, unit: 'g' },
+          { ing: find('Aceite de oliva'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Mezcla la harina con una cucharada de azúcar, añade la mantequilla derretida y el vino blanco, y amasa hasta obtener una masa lisa y elástica. Envuélvela y deja reposar 30 minutos.',
+          'Estira la masa muy fina, corta círculos y enróllalos alrededor de un tubo o caña metálica, sellando el borde con un poco de huevo batido.',
+          'Fríe los tubos en aceite bien caliente 2-3 minutos, hasta que salgan burbujas y se doren de forma pareja. Retira sobre papel absorbente y deja enfriar antes de sacar el molde.',
+          'Escurre bien la ricotta para quitar el suero y bátela con el resto del azúcar hasta que quede cremosa. Añade el chocolate negro picado.',
+          'Rellena los tubos de masa fría con la crema de ricotta usando una manga pastelera, justo antes de servir.'
+        ],
+        notes: 'Rellenar los cannoli con antelación es el error más común: la humedad de la ricotta reblandece la masa frita en minutos, así que se rellenan literalmente al momento de comer, nunca antes.'
+      },
+      {
+        id: uid(), name: 'Buñuelos de rodilla', icon: 'harina', cat: 'Postre',
+        diff: 'Media', time: 70, portions: 12,
+        items: [
+          { ing: find('Harina'), qty: 300, unit: 'g' },
+          { ing: find('Levadura'), qty: 1, unit: 'cdta' },
+          { ing: find('Sal'), qty: 1, unit: 'pizca' },
+          { ing: find('Huevo'), qty: 1, unit: 'ud' },
+          { ing: find('Mantequilla'), qty: 30, unit: 'g' },
+          { ing: find('Leche'), qty: 120, unit: 'ml' },
+          { ing: find('Azúcar'), qty: 50, unit: 'g' },
+          { ing: find('Chancaca'), qty: 200, unit: 'g' },
+          { ing: find('Canela'), qty: 1, unit: 'rama' },
+          { ing: find('Naranja'), qty: 1, unit: 'ud' },
+          { ing: find('Aceite de oliva'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Mezcla la harina con la levadura y la sal. Añade el huevo, la mantequilla derretida y la leche tibia, y amasa hasta lograr una masa suave que no se pegue.',
+          'Deja reposar la masa tapada unos 30 minutos y divide en bolas del tamaño de una pelota de golf.',
+          'Estira cada bola muy fina, apoyándola sobre la rodilla cubierta con un paño o sobre una superficie enharinada, hasta casi transparentar.',
+          'Fríe cada disco en abundante aceite caliente unos 30-40 segundos por lado, hasta que dore y se llene de burbujas.',
+          'Para la miel, hierve la chancaca troceada con agua, la rama de canela y la piel de naranja hasta que espese ligeramente.',
+          'Sirve los buñuelos calientes espolvoreados con azúcar y canela, o bañados con la miel de chancaca.'
+        ],
+        notes: 'Se llaman "de rodilla" porque tradicionalmente la masa se estira apoyándola literalmente sobre la rodilla hasta dejarla casi transparente, antes de freírla.'
+      },
+      {
+        id: uid(), name: 'Mousse de chocolate', icon: 'huevo', cat: 'Postre',
+        diff: 'Media', time: 25, portions: 6,
+        items: [
+          { ing: find('Chocolate negro'), qty: 200, unit: 'g' },
+          { ing: find('Mantequilla'), qty: 20, unit: 'g' },
+          { ing: find('Huevo'), qty: 4, unit: 'ud' },
+          { ing: find('Azúcar'), qty: 30, unit: 'g' },
+          { ing: find('Sal'), qty: 1, unit: 'pizca' }
+        ],
+        steps: [
+          'Funde el chocolate junto con la mantequilla al baño maría, removiendo hasta obtener una mezcla lisa y brillante. Retira del fuego y deja templar un par de minutos.',
+          'Separa las claras de las yemas. Incorpora las yemas una a una al chocolate templado, batiendo bien después de cada una.',
+          'Monta las claras con la pizca de sal a punto de nieve suave, añadiendo el azúcar a mitad de camino para que se estabilicen.',
+          'Incorpora un tercio de las claras montadas al chocolate para aligerarlo, mezclando con energía. Añade el resto en dos tandas, con movimientos envolventes de abajo hacia arriba, hasta que no queden grumos blancos.',
+          'Reparte en vasitos o copas y refrigera un mínimo de 3 horas antes de servir.'
+        ],
+        notes: 'La receta francesa clásica no lleva nata: toda la textura aireada viene de las claras montadas. Sobrebatir las claras es el fallo más común, si quedan demasiado firmes se cortan y el mousse pierde volumen.'
+      },
+      {
+        id: uid(), name: 'Picarones', icon: 'aceite', cat: 'Postre',
+        diff: 'Media', time: 90, portions: 15,
+        items: [
+          { ing: find('Zapallo'), qty: 300, unit: 'g' },
+          { ing: find('Camote'), qty: 2, unit: 'ud' },
+          { ing: find('Canela'), qty: 1, unit: 'rama' },
+          { ing: find('Harina'), qty: 250, unit: 'g' },
+          { ing: find('Levadura'), qty: 1, unit: 'cdta' },
+          { ing: find('Azúcar'), qty: 30, unit: 'g' },
+          { ing: find('Chancaca'), qty: 300, unit: 'g' },
+          { ing: find('Naranja'), qty: 1, unit: 'ud' },
+          { ing: find('Aceite de oliva'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Cocina el zapallo y el camote pelados y troceados en agua con la rama de canela hasta que estén muy blandos. Escurre y aplasta hasta obtener un puré fino, sin grumos.',
+          'Disuelve la levadura con un poco de azúcar y agua tibia y déjala reposar 10 minutos hasta que espume.',
+          'Mezcla el puré tibio con la harina, la levadura activada y el resto del azúcar, hasta lograr una masa pegajosa, más líquida que una masa de pan.',
+          'Deja fermentar tapada en un lugar cálido durante una hora, hasta que doble su volumen y esté llena de burbujas.',
+          'Con las manos mojadas, forma anillos con la masa y fríelos en abundante aceite caliente hasta que doren y floten, unos 3-4 minutos por lado.',
+          'Para la miel, hierve la chancaca troceada con agua, canela y piel de naranja hasta que espese. Sirve los picarones calientes bañados con la miel.'
+        ],
+        notes: 'Es el postre criollo más antiguo de Perú: nació como adaptación colonial de los buñuelos españoles, reemplazando la harina de trigo por zapallo y camote, productos americanos más baratos en la época virreinal.'
+      },
 
       /* ---- salsas (además del alioli, arriba) ---- */
       {
@@ -1215,6 +2133,279 @@ const Store = {
           'Ajusta de sal y vinagre al gusto.'
         ],
         notes: 'La receta tradicional catalana lleva ñoras (pimientos secos); el pimentón es una versión simplificada que funciona muy bien en casa.'
+      },
+      {
+        id: uid(), name: 'Salsa pomodoro', icon: 'tomate', cat: 'Salsa',
+        diff: 'Fácil', time: 25, portions: 4,
+        items: [
+          { ing: find('Tomate'), qty: 1, unit: 'kg' },
+          { ing: find('Aceite de oliva'), qty: 5, unit: 'cda' },
+          { ing: find('Ajo'), qty: 3, unit: 'diente' },
+          { ing: find('Albahaca'), qty: null, unit: 'al gusto' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Calienta el aceite de oliva a fuego bajo con los dientes de ajo machacados (sin picar), para que aromaticen el aceite sin quemarse.',
+          'Cuando el ajo esté dorado y fragante, retíralo si prefieres un sabor más suave, o déjalo si te gusta más presente.',
+          'Añade el tomate, triturándolo a mano al echarlo a la sartén, para que quede con textura y no como puré.',
+          'Cocina a fuego medio-bajo, sin tapar, 15-20 minutos, hasta que el tomate espese y pierda el sabor a crudo.',
+          'Sazona con sal y añade la albahaca fresca troceada con la mano en el último minuto, para que no pierda su aroma.'
+        ],
+        notes: 'A diferencia de una salsa de tomate con sofrito de cebolla y cocción larga, el pomodoro es más directo: solo tomate, aceite, ajo y albahaca — la cebolla es opcional y no lleva azúcar.'
+      },
+      {
+        id: uid(), name: 'Salsa Alfredo', icon: 'queso', cat: 'Salsa',
+        diff: 'Media', time: 20, portions: 4,
+        items: [
+          { ing: find('Pasta fettuccine'), qty: 400, unit: 'g' },
+          { ing: find('Mantequilla'), qty: 100, unit: 'g' },
+          { ing: find('Queso parmesano'), qty: 150, unit: 'g' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' },
+          { ing: find('Pimienta negra'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Cuece la pasta en agua con sal hasta que esté al dente, y reserva 1 taza del agua de cocción antes de escurrir.',
+          'Deja templar el agua reservada un par de minutos: demasiado caliente derrite el queso de golpe y corta la salsa.',
+          'En la misma olla, ya fuera del fuego, añade la mantequilla y el queso parmesano rallado sobre la pasta escurrida.',
+          'Ve añadiendo el agua de cocción, una cucharada cada vez, removiendo sin parar, hasta que ligue en una salsa sedosa que cubra la pasta.',
+          'Sazona con pimienta negra recién molida y un poco de sal si hace falta.'
+        ],
+        notes: 'La receta italiana original no lleva nata: la cremosidad viene solo de emulsionar mantequilla, parmesano y el almidón del agua de cocción. La versión con nata es una adaptación americana, también válida pero distinta.'
+      },
+      {
+        id: uid(), name: 'Demi-glace rápida', icon: 'olla', cat: 'Salsa',
+        diff: 'Difícil', time: 70, portions: 6,
+        items: [
+          { ing: find('Caldo'), qty: 1, unit: 'l' },
+          { ing: find('Vino tinto'), qty: 200, unit: 'ml' },
+          { ing: find('Cebolla'), qty: 0.5, unit: 'ud' },
+          { ing: find('Zanahoria'), qty: 0.5, unit: 'ud' },
+          { ing: find('Apio'), qty: 1, unit: 'rama' },
+          { ing: find('Concentrado de tomate'), qty: 1, unit: 'cda' },
+          { ing: find('Mantequilla'), qty: 20, unit: 'g' },
+          { ing: find('Harina'), qty: 20, unit: 'g' },
+          { ing: find('Tomillo'), qty: 1, unit: 'rama' },
+          { ing: find('Laurel'), qty: 1, unit: 'hoja' },
+          { ing: find('Pimienta negra'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Sofríe la cebolla, la zanahoria y el apio en un poco de aceite o mantequilla, a fuego medio, hasta que estén bien dorados.',
+          'Añade el concentrado de tomate y cocina 1-2 minutos para que pierda el sabor a crudo.',
+          'Vierte el vino tinto y raspa el fondo de la olla con una cuchara de madera para despegar los jugos dorados pegados: ahí está gran parte del sabor.',
+          'Deja reducir el vino a fuego medio hasta que quede casi un jarabe, unos 3-5 minutos.',
+          'Añade el caldo, el tomillo, el laurel y la pimienta, y deja cocer a fuego bajo 40-50 minutos, hasta que se reduzca a la mitad aproximadamente.',
+          'Cuela la salsa presionando bien las verduras para sacarles todo el jugo, y descarta los sólidos.',
+          'Vuelve a poner la salsa colada al fuego. Amasa la mantequilla con la harina hasta formar una pasta y añádela poco a poco, sin dejar de remover, hasta que la salsa espese y quede brillante.'
+        ],
+        notes: 'La demi-glace clásica francesa se hace con huesos de ternera asados y muchas horas de cocción (salsa española reducida sobre fondo oscuro). Esta es la versión rápida para casa, a partir de caldo ya hecho: no tiene la misma profundidad, pero se acerca mucho en mucho menos tiempo.'
+      },
+      {
+        id: uid(), name: 'Salsa holandesa', icon: 'huevo', cat: 'Salsa',
+        diff: 'Difícil', time: 20, portions: 4,
+        items: [
+          { ing: find('Mantequilla'), qty: 200, unit: 'g' },
+          { ing: find('Huevo'), qty: 3, unit: 'ud' },
+          { ing: find('Agua'), qty: 1, unit: 'cda' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Clarifica la mantequilla al baño maría a fuego muy suave, dejando que se separe en una capa dorada arriba y el suero blanco abajo; usa solo la parte clara y resérvala tibia, entre 50 y 55 °C — ni fría (no liga) ni muy caliente (cuaja el huevo).',
+          'Bate las yemas con la cucharada de agua en un bol al baño maría, sin que el fondo toque el agua, a fuego muy bajo y sin parar, hasta que espesen y doblen su volumen formando una crema pálida que deja rastro al levantar las varillas.',
+          'Si notas que el bol se calienta demasiado rápido, retíralo un momento del fuego: si las yemas pasan de los 70 °C cuajan y ya no hay vuelta atrás.',
+          'Incorpora la mantequilla clarificada en un hilo muy fino sin dejar de batir, empezando gota a gota hasta que la mezcla empiece a ligar, y luego en chorro más seguido.',
+          'Sazona con zumo de limón y sal, y sirve enseguida o consérvala al baño maría a no más de 50 °C — no aguanta bien ni el frío ni el recalentado.'
+        ],
+        notes: 'Si se corta, rescátala batiendo una yema nueva con una cucharada de agua en un bol limpio e incorporando la salsa cortada poco a poco, como si fuera la mantequilla.'
+      },
+      {
+        id: uid(), name: 'Salsa bearnesa', icon: 'hierba', cat: 'Salsa',
+        diff: 'Difícil', time: 25, portions: 4,
+        items: [
+          { ing: find('Chalota'), qty: 2, unit: 'ud' },
+          { ing: find('Vinagre'), qty: 100, unit: 'ml' },
+          { ing: find('Vino blanco'), qty: 50, unit: 'ml' },
+          { ing: find('Estragón'), qty: 2, unit: 'rama' },
+          { ing: find('Huevo'), qty: 3, unit: 'ud' },
+          { ing: find('Mantequilla'), qty: 200, unit: 'g' },
+          { ing: find('Pimienta negra'), qty: null, unit: 'pizca' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pica la chalota bien fina y ponla en un cazo con el vinagre, el vino blanco, la pimienta y la mitad del estragón; reduce a fuego medio hasta que quede casi seco, apenas un par de cucharadas de líquido concentrado.',
+          'Cuela la reducción para quedarte solo con el líquido, y déjala templar.',
+          'Clarifica la mantequilla al baño maría y resérvala tibia, entre 50 y 55 °C, igual que para una holandesa.',
+          'Bate las yemas con la reducción templada en un bol al baño maría, sin parar, hasta que espesen y doblen su volumen.',
+          'Añade la mantequilla clarificada en un hilo fino, batiendo sin parar, hasta que emulsione y espese como una mayonesa.',
+          'Termina con el resto del estragón fresco picado y ajusta de sal.'
+        ],
+        notes: 'Es una salsa "hija" de la holandesa: el mismo montaje de yema y mantequilla clarificada, pero cambia el limón por una reducción ácida de vinagre, vino, chalota y estragón.'
+      },
+      {
+        id: uid(), name: 'Pesto genovés', icon: 'hierba', cat: 'Salsa',
+        diff: 'Media', time: 15, portions: 4,
+        items: [
+          { ing: find('Albahaca'), qty: 60, unit: 'g' },
+          { ing: find('Piñones'), qty: 30, unit: 'g' },
+          { ing: find('Queso parmesano'), qty: 50, unit: 'g' },
+          { ing: find('Ajo'), qty: 1, unit: 'diente' },
+          { ing: find('Aceite de oliva'), qty: 100, unit: 'ml' },
+          { ing: find('Sal'), qty: null, unit: 'pizca' }
+        ],
+        steps: [
+          'Machaca el ajo con una pizca de sal gruesa en el mortero, girando la maja contra las paredes, hasta hacer una pasta.',
+          'Añade los piñones y sigue majando hasta integrarlos con el ajo.',
+          'Incorpora la albahaca en tandas pequeñas y macha con movimientos circulares, aplastando las hojas en vez de cortarlas — así no se oxidan ni se oscurecen tan rápido.',
+          'Ve añadiendo el aceite de oliva poco a poco mientras sigues trabajando la pasta, hasta que ligue en una salsa untuosa.',
+          'Fuera del mortero, mezcla el parmesano rallado a mano con una cuchara — si lo majas junto con el resto, el calor de la fricción lo apelmaza.',
+          'Prueba y ajusta de sal. Si usas batidora en lugar de mortero, trabaja en pulsos cortos y con el vaso bien frío, porque el calor del motor quema la albahaca y la vuelve marrón.'
+        ],
+        notes: 'El Consorzio del Pesto Genovese estandariza esta receta desde 2005, y desde 2008 existe un campeonato mundial de pesto al mortero en Génova.'
+      },
+      {
+        id: uid(), name: 'Salsa teriyaki', icon: 'sal', cat: 'Salsa',
+        diff: 'Fácil', time: 20, portions: 4,
+        items: [
+          { ing: find('Salsa de soja'), qty: 120, unit: 'ml' },
+          { ing: find('Mirin'), qty: 60, unit: 'ml' },
+          { ing: find('Sake'), qty: 60, unit: 'ml' },
+          { ing: find('Azúcar'), qty: 2, unit: 'cda' }
+        ],
+        steps: [
+          'Mezcla la salsa de soja, el mirin, el sake y el azúcar en un cazo pequeño.',
+          'Lleva a hervor suave y baja el fuego al mínimo, sin tapar.',
+          'Cuece 10-15 minutos sin remover demasiado, dejando que reduzca — el propio azúcar concentrándose es lo que espesa la salsa, no hace falta maicena.',
+          'Sabrás que está lista cuando pase de un marrón oscuro y líquido a un tono cobrizo brillante que se queda pegado a la cuchara.',
+          'Úsala para pincelar carne o pescado a la plancha en los últimos minutos de cocción, no antes: el azúcar se quema si toca el fuego directo demasiado pronto.'
+        ],
+        notes: 'El nombre viene de teri (brillo, por el glaseado) y yaki (a la plancha): es una técnica de acabado, no un adobo largo.'
+      },
+      {
+        id: uid(), name: 'Salsa BBQ', icon: 'tomate', cat: 'Salsa',
+        diff: 'Media', time: 40, portions: 6,
+        items: [
+          { ing: find('Ketchup'), qty: 200, unit: 'g' },
+          { ing: find('Vinagre'), qty: 2, unit: 'cda' },
+          { ing: find('Azúcar moreno'), qty: 3, unit: 'cda' },
+          { ing: find('Salsa inglesa'), qty: 1, unit: 'cdta' },
+          { ing: find('Pimentón'), qty: 1, unit: 'cdta' },
+          { ing: find('Ajo'), qty: 1, unit: 'diente' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pica el ajo muy fino.',
+          'Junta todos los ingredientes en un cazo y mezcla bien.',
+          'Lleva a hervor suave y baja el fuego enseguida a mínimo.',
+          'Cuece destapada 25-30 minutos, removiendo de vez en cuando, hasta que espese notablemente y se pegue a la cuchara — aquí no hay espesante, todo el cuerpo viene de reducir el agua.',
+          'Prueba y ajusta el equilibrio entre dulce y ácido con más azúcar o vinagre antes de retirar del fuego.'
+        ],
+        notes: 'Es del estilo Kansas City: la más espesa y dulce de las salsas barbacoa regionales de EE.UU., frente a las más líquidas y avinagradas de Carolina.'
+      },
+      {
+        id: uid(), name: 'Salsa agridulce', icon: 'tomate', cat: 'Salsa',
+        diff: 'Fácil', time: 15, portions: 4,
+        items: [
+          { ing: find('Ketchup'), qty: 3, unit: 'cda' },
+          { ing: find('Vinagre'), qty: 3, unit: 'cda' },
+          { ing: find('Azúcar'), qty: 3, unit: 'cda' },
+          { ing: find('Salsa de soja'), qty: 1, unit: 'cda' },
+          { ing: find('Agua'), qty: 150, unit: 'ml' },
+          { ing: find('Maicena'), qty: 1, unit: 'cda' }
+        ],
+        steps: [
+          'Disuelve la maicena en un par de cucharadas del agua fría, aparte, hasta que no queden grumos.',
+          'En un cazo, mezcla el ketchup, el vinagre, el azúcar, la salsa de soja y el resto del agua.',
+          'Lleva a hervor a fuego medio-alto, removiendo para que el azúcar se disuelva.',
+          'En cuanto hierva, añade la mezcla de maicena sin dejar de remover, y deja burbujear 1-2 minutos — la maicena solo espesa de verdad cuando llega a hervir, no antes.',
+          'Retira cuando tenga una textura brillante y espesa que cubre la cuchara.'
+        ],
+        notes: 'La versión de restaurante suele sumar piña y pimiento; esta es la base rápida de casa, la misma que sirve para bañar rollitos o cerdo agridulce.'
+      },
+      {
+        id: uid(), name: 'Salsa verde mexicana', icon: 'chile', cat: 'Salsa',
+        diff: 'Fácil', time: 25, portions: 4,
+        items: [
+          { ing: find('Tomatillo'), qty: 8, unit: 'ud' },
+          { ing: find('Chile verde'), qty: 2, unit: 'ud' },
+          { ing: find('Cebolla'), qty: 0.25, unit: 'ud' },
+          { ing: find('Ajo'), qty: 1, unit: 'diente' },
+          { ing: find('Cilantro'), qty: null, unit: 'al gusto' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Quita la cáscara seca a los tomatillos y lávalos para sacarles lo pegajoso.',
+          'Ponlos en una olla pequeña con los chiles y el ajo, cubiertos apenas con agua, y cuece tapado a fuego medio 10-15 minutos, hasta que los tomatillos pasen de verde brillante a un verde oliva apagado y se ablanden.',
+          'Escurre, guardando un poco del agua de cocción.',
+          'Licúa los tomatillos con los chiles, el ajo, la cebolla y el cilantro, añadiendo agua de cocción poco a poco hasta el espesor que prefieras.',
+          'No licúes de más: queda mejor con algo de textura, no como puré fino.',
+          'Ajusta de sal.'
+        ],
+        notes: 'Esta es la versión cocida; la cruda se licúa todo en verde sin cocer antes, y queda más ácida y de color más vivo.'
+      },
+      {
+        id: uid(), name: 'Salsa ranchera', icon: 'tomate', cat: 'Salsa',
+        diff: 'Media', time: 30, portions: 4,
+        items: [
+          { ing: find('Tomate'), qty: 4, unit: 'ud' },
+          { ing: find('Chile verde'), qty: 2, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Cebolla'), qty: 0.5, unit: 'ud' },
+          { ing: find('Aceite de oliva'), qty: 1, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Asa los tomates enteros, los ajos sin pelar y los chiles directamente en una sartén o comal muy caliente, sin aceite, dando vueltas hasta que la piel se queme de manera pareja por todos lados.',
+          'Deja templar y pela los ajos ya asados.',
+          'Licúa los tomates con su piel y jugo, los ajos, los chiles y la cebolla, hasta lograr una salsa de textura media, no del todo fina.',
+          'Calienta el aceite en una sartén y vierte la salsa licuada — este paso de "freír la salsa" no es opcional: le quita el sabor a crudo y la espesa de verdad.',
+          'Cocina a fuego medio 8-10 minutos, removiendo de vez en cuando, hasta que oscurezca ligeramente y espese.',
+          'Sazona con sal.'
+        ],
+        notes: 'El asado de los tomates es lo que distingue a la ranchera de una salsa de tomate hervida: da un dulzor caramelizado y un toque ahumado que el tomate crudo no tiene.'
+      },
+      {
+        id: uid(), name: 'Salsa de champiñones', icon: 'seta', cat: 'Salsa',
+        diff: 'Media', time: 25, portions: 4,
+        items: [
+          { ing: find('Champiñones'), qty: 300, unit: 'g' },
+          { ing: find('Cebolla'), qty: 0.5, unit: 'ud' },
+          { ing: find('Mantequilla'), qty: 30, unit: 'g' },
+          { ing: find('Vino blanco'), qty: 100, unit: 'ml' },
+          { ing: find('Nata'), qty: 200, unit: 'ml' },
+          { ing: find('Pimienta negra'), qty: null, unit: 'pizca' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Corta los champiñones en láminas y dóralos en tandas, sin amontonarlos, con parte de la mantequilla a fuego fuerte — si pones demasiados de golpe, sueltan agua y se cuecen en vez de dorarse.',
+          'Retira los champiñones y en la misma sartén pocha la cebolla picada fina con el resto de la mantequilla, a fuego medio, hasta que esté transparente.',
+          'Vierte el vino blanco y raspa el fondo de la sartén con una cuchara de madera para despegar los restos dorados — ahí está buena parte del sabor.',
+          'Deja reducir el vino casi del todo, hasta que apenas quede líquido.',
+          'Añade la nata y los champiñones dorados, baja el fuego y cuece 10-15 minutos, hasta que espese y nape el dorso de una cuchara.',
+          'Sazona con sal y pimienta negra recién molida.'
+        ],
+        notes: 'Con un vino blanco seco queda más clásica; con uno más afrutado, más suave y dulce — ambas versiones son válidas.'
+      },
+      {
+        id: uid(), name: 'Salsa de curry', icon: 'arroz', cat: 'Salsa',
+        diff: 'Media', time: 30, portions: 4,
+        items: [
+          { ing: find('Cebolla'), qty: 1, unit: 'ud' },
+          { ing: find('Ajo'), qty: 2, unit: 'diente' },
+          { ing: find('Curry en polvo'), qty: 2, unit: 'cdta' },
+          { ing: find('Leche de coco'), qty: 400, unit: 'ml' },
+          { ing: find('Caldo'), qty: 100, unit: 'ml' },
+          { ing: find('Aceite de oliva'), qty: 2, unit: 'cda' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pica la cebolla y el ajo bien finos.',
+          'Calienta el aceite a fuego medio-bajo y pocha la cebolla y el ajo 5 minutos, removiendo, hasta que la cebolla esté transparente y el ajo apenas dorado, sin quemarse.',
+          'Añade el curry en polvo directo a la grasa y tuéstalo removiendo unos segundos, hasta que huela intenso — así se despiertan los aceites de las especias; si lo echas directo al líquido, queda con sabor plano.',
+          'Vierte la leche de coco y el caldo, y remueve para integrar.',
+          'Cuece a fuego suave, sin que llegue a hervir fuerte, 10 minutos — un hervor muy fuerte puede cortar la leche de coco.',
+          'Ajusta de sal y sirve.'
+        ],
+        notes: 'Esta versión con leche de coco es más cercana al curry del sur de India; la versión británica clásica de restaurante lleva un roux de harina y queda más espesa y menos aromática.'
       },
 
       /* ---- bebidas: una receta por cada vaso del directorio de cristalería ---- */
@@ -1485,6 +2676,170 @@ const Store = {
           'Para servir, pon unas cucharadas de mote en el fondo de un vaso, añade un huesillo y cubre con el jugo frío.'
         ],
         notes: 'Se toma bien frío, casi siempre en la calle, en verano: es la bebida veraniega por excelencia en Chile.'
+      },
+      {
+        id: uid(), name: 'Piña colada', icon: 'vaso-alto', cat: 'Bebida', glass: 'vaso-alto',
+        diff: 'Fácil', time: 5, portions: 1,
+        items: [
+          { ing: find('Ron blanco'), qty: 60, unit: 'ml' },
+          { ing: find('Zumo de piña'), qty: 90, unit: 'ml' },
+          { ing: find('Crema de coco'), qty: 45, unit: 'ml' },
+          { ing: find('Hielo'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Echa el ron, el zumo de piña y la crema de coco en la licuadora junto con hielo picado.',
+          'Licúa unos 10-15 segundos hasta lograr una textura espesa y homogénea, sin trozos de hielo sueltos.',
+          'Sirve de inmediato en vaso alto bien frío, antes de que empiece a separarse.'
+        ],
+        notes: 'Nació en 1954 en el Caribe Hilton de Puerto Rico; no cambies la crema de coco espesa por leche de coco líquida, porque la mezcla queda aguada y no monta bien en la licuadora.'
+      },
+      {
+        id: uid(), name: 'Caipirinha', icon: 'vaso-corto', cat: 'Bebida', glass: 'vaso-corto',
+        diff: 'Fácil', time: 5, portions: 1,
+        items: [
+          { ing: find('Cachaça'), qty: 60, unit: 'ml' },
+          { ing: find('Lima'), qty: 1, unit: 'ud' },
+          { ing: find('Azúcar'), qty: 2, unit: 'cda' },
+          { ing: find('Hielo'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Corta la lima en cuartos sin pelar y ponla en el fondo del vaso corto junto con el azúcar.',
+          'Machaca solo lo justo para romper la pulpa y soltar el jugo y los aceites de la cáscara; si te pasas, sacas amargor de la piel.',
+          'Rellena con hielo picado, añade la cachaça y remueve bien raspando el fondo del vaso.'
+        ],
+        notes: 'El machacado suave es la clave de esta receta: en Brasil se suele usar azúcar blanca normal pese al mito de que debe ser rubia, y la cachaça no se sustituye por ron sin cambiar por completo el carácter del trago.'
+      },
+      {
+        id: uid(), name: 'Bloody Mary', icon: 'vaso-alto', cat: 'Bebida', glass: 'vaso-alto',
+        diff: 'Fácil', time: 5, portions: 1,
+        items: [
+          { ing: find('Vodka'), qty: 45, unit: 'ml' },
+          { ing: find('Zumo de tomate'), qty: 90, unit: 'ml' },
+          { ing: find('Limón'), qty: 0.5, unit: 'ud' },
+          { ing: find('Salsa inglesa'), qty: 1, unit: 'cdta' },
+          { ing: find('Salsa picante'), qty: null, unit: 'al gusto' },
+          { ing: find('Sal'), qty: null, unit: 'pizca' },
+          { ing: find('Pimienta negra'), qty: null, unit: 'pizca' },
+          { ing: find('Apio'), qty: 1, unit: 'rama' }
+        ],
+        steps: [
+          'Llena un vaso alto con hielo y añade el vodka, el zumo de medio limón, la salsa inglesa y unas gotas de salsa picante.',
+          'Sazona con sal y pimienta negra y remueve con una cuchara de bar; nunca lo prepares en coctelera.',
+          'Termina de llenar con el zumo de tomate, remueve otra vez con suavidad y decora con la rama de apio.'
+        ],
+        notes: 'Se remueve en vez de agitarse porque el zumo de tomate hace espuma y queda turbio si se shakea; la rama de apio no es solo decoración, sirve para seguir removiendo el trago mientras se bebe.'
+      },
+      {
+        id: uid(), name: 'Cosmopolitan', icon: 'copa-coctel', cat: 'Bebida', glass: 'copa-coctel',
+        diff: 'Media', time: 5, portions: 1,
+        items: [
+          { ing: find('Vodka'), qty: 45, unit: 'ml' },
+          { ing: find('Triple seco'), qty: 15, unit: 'ml' },
+          { ing: find('Zumo de arándano'), qty: 30, unit: 'ml' },
+          { ing: find('Lima'), qty: 0.5, unit: 'ud' }
+        ],
+        steps: [
+          'Llena la coctelera con hielo y añade el vodka, el triple seco, el zumo de arándano y el zumo de media lima.',
+          'Agita con energía unos 10-15 segundos, hasta que la coctelera quede bien fría por fuera.',
+          'Cuela sobre una copa de cóctel previamente enfriada y exprime un twist de piel de naranja por encima.'
+        ],
+        notes: 'El color rosado lo da el zumo de arándano, no el triple seco; enfriar la copa antes de servir marca la diferencia entre un cosmopolitan bien logrado y uno que se entibia en segundos.'
+      },
+      {
+        id: uid(), name: 'Negroni', icon: 'vaso-corto', cat: 'Bebida', glass: 'vaso-corto',
+        diff: 'Fácil', time: 5, portions: 1,
+        items: [
+          { ing: find('Ginebra'), qty: 30, unit: 'ml' },
+          { ing: find('Vermut rojo'), qty: 30, unit: 'ml' },
+          { ing: find('Campari'), qty: 30, unit: 'ml' }
+        ],
+        steps: [
+          'Llena un vaso corto con hielo, a ser posible en cubos grandes que se derritan despacio.',
+          'Vierte la ginebra, el vermut rojo y el Campari en partes exactamente iguales, directo sobre el hielo.',
+          'Remueve con cuchara de bar unos 20-30 segundos para enfriar y diluir sin batir, y remata con un twist de piel de naranja.'
+        ],
+        notes: 'La proporción clásica es siempre a partes iguales, sin excepciones; nació en Florencia cuando el conde Negroni pidió reforzar su Americano cambiando el agua con gas por ginebra.'
+      },
+      {
+        id: uid(), name: 'Pisco sour', icon: 'copa-coctel', cat: 'Bebida', glass: 'copa-coctel',
+        diff: 'Media', time: 8, portions: 1,
+        items: [
+          { ing: find('Pisco'), qty: 90, unit: 'ml' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' },
+          { ing: find('Azúcar'), qty: 20, unit: 'g' },
+          { ing: find('Huevo'), qty: 0.5, unit: 'ud' },
+          { ing: find('Angostura'), qty: null, unit: 'al gusto' },
+          { ing: find('Hielo'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pon en la coctelera el pisco, el zumo de limón colado, el azúcar y la clara de huevo, y agita fuerte SIN hielo unos 15-20 segundos (dry shake) para que la clara empiece a emulsionar.',
+          'Añade el hielo y agita otros 10-15 segundos más, ahora sí con hielo, para enfriar y terminar de montar la espuma.',
+          'Cuela sobre una copa fría para que no pase pulpa ni hielo picado, y si quieres remata con unas gotas de angostura sobre la espuma.'
+        ],
+        notes: 'El truco no está en el pisco sino en el doble agitado: primero en seco para emulsionar la clara y luego con hielo para enfriar; si metes el hielo desde el principio, la espuma nunca coge cuerpo.'
+      },
+      {
+        id: uid(), name: 'Terremoto', icon: 'jarra', cat: 'Bebida', glass: 'jarra',
+        diff: 'Fácil', time: 5, portions: 1,
+        items: [
+          { ing: find('Vino blanco'), qty: 350, unit: 'ml' },
+          { ing: find('Helado de piña'), qty: 2, unit: 'ud' },
+          { ing: find('Granadina'), qty: 15, unit: 'ml' }
+        ],
+        steps: [
+          'Sirve el vino bien frío en la jarra, dejando espacio libre arriba.',
+          'Añade una o dos bochas de helado de piña y deja que floten, sin remover demasiado.',
+          'Termina con un chorrito de granadina, que se hunde despacio y crea el efecto de "marea" que le da nombre al trago.'
+        ],
+        notes: 'Se llama terremoto porque el vino barato (tradicionalmente pipeño) sube directo a la cabeza; si no encuentras pipeño, un vino blanco joven y afrutado cumple bien la función. Es el trago típico de las fondas en Fiestas Patrias.'
+      },
+      {
+        id: uid(), name: 'Agua de jamaica', icon: 'vaso-alto', cat: 'Bebida', glass: 'vaso-alto',
+        diff: 'Fácil', time: 15, portions: 4,
+        items: [
+          { ing: find('Flor de jamaica'), qty: 25, unit: 'g' },
+          { ing: find('Agua'), qty: 1, unit: 'l' },
+          { ing: find('Azúcar'), qty: 100, unit: 'g' },
+          { ing: find('Hielo'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Pon el agua a hervir y, cuando rompa el hervor, añade la flor de jamaica y baja el fuego a medio.',
+          'Deja infusionar unos 8-10 minutos sin que hierva con fuerza, para que no amargue.',
+          'Cuela las flores, disuelve el azúcar mientras la infusión sigue caliente y deja enfriar antes de servir con hielo.'
+        ],
+        notes: 'El azúcar hay que disolverlo en caliente porque en frío cuesta mucho más; las flores coladas no se tiran, se pueden volver a hervir para un segundo lote más suave.'
+      },
+      {
+        id: uid(), name: 'Tinto de verano', icon: 'vaso-alto', cat: 'Bebida', glass: 'vaso-alto',
+        diff: 'Fácil', time: 5, portions: 1,
+        items: [
+          { ing: find('Vino tinto'), qty: 100, unit: 'ml' },
+          { ing: find('Gaseosa de limón'), qty: 100, unit: 'ml' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' },
+          { ing: find('Hielo'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Llena un vaso alto con bastante hielo.',
+          'Vierte el vino tinto y la gaseosa de limón a partes iguales.',
+          'Remueve apenas, sin que pierda burbuja, y decora con una rodaja de limón.'
+        ],
+        notes: 'A diferencia de la sangría, aquí no hay maceración ni fruta troceada: es la versión rápida y del día a día que se pide en cualquier terraza española en verano.'
+      },
+      {
+        id: uid(), name: 'Moscow Mule', icon: 'vaso-alto', cat: 'Bebida', glass: 'vaso-alto',
+        diff: 'Fácil', time: 5, portions: 1,
+        items: [
+          { ing: find('Vodka'), qty: 60, unit: 'ml' },
+          { ing: find('Lima'), qty: 0.5, unit: 'ud' },
+          { ing: find('Cerveza de jengibre'), qty: 120, unit: 'ml' },
+          { ing: find('Hielo'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Llena un vaso alto (o la clásica taza de cobre) con hielo hasta arriba.',
+          'Añade el vodka y el zumo de media lima recién exprimida.',
+          'Termina de llenar con la cerveza de jengibre y remueve con suavidad para no perder la burbuja.'
+        ],
+        notes: 'Usa cerveza de jengibre (ginger beer), que es picante y con más cuerpo, no ginger ale, que es más suave y dulce; la taza de cobre no es solo estética, mantiene el trago frío por fuera más tiempo.'
       }
     ];
     this.data.recipes.forEach(normalizeRecipe);
