@@ -32,13 +32,14 @@ Se usa de dos maneras, **las dos desde el mismo código** (`www/`):
   buscar «lima» dentro de Bebidas y quedarte solo con los cócteles que la llevan. La pestaña
   agrupa por categoría de receta, no por origen: un postre chileno y uno español conviven en
   la misma pestaña «Postres».
-- **Recetario de ejemplo** — una instalación nueva arranca con 86 ingredientes y 58 recetas:
-  36 de cocina (entre comida y postres), entre ellas un buen puñado de platos chilenos (empanadas de pino, pastel de
-  choclo, cazuela de pollo, carbonada, charquicán, porotos granados, humitas, sopaipillas,
-  pebre, mote con huesillo, kuchen de manzana) además de las españolas, mexicanas e
-  italianas ya presentes; 7 salsas y 15 bebidas — una por cada uno de los 9 vasos del
-  directorio de cristalería, más zumos y batidos sin alcohol. Es contenido semilla: solo
-  aparece en `localStorage` vacío, así que no toca instalaciones que ya tengan datos.
+- **Recetario de ejemplo** — una instalación nueva arranca con 87 ingredientes y 58 recetas:
+  28 de comida y 7 postres (entre ellas un buen puñado de platos chilenos — empanadas de
+  pino, pastel de choclo, cazuela de pollo, carbonada, charquicán, porotos granados,
+  humitas, sopaipillas, kuchen de manzana — además de las españolas, mexicanas e italianas
+  ya presentes), 8 salsas (alioli, mayonesa, romesco, pebre entre ellas) y 15 bebidas — una
+  por cada uno de los 9 vasos del directorio de cristalería, más zumos y batidos sin
+  alcohol. Es contenido semilla: solo aparece en `localStorage` vacío, así que no toca
+  instalaciones que ya tengan datos.
 - **Sello** — un «✓» que marcas en una receta cuando la has hecho y te ha salido perfecta,
   distinto de la duda (que marca lo que falta por confirmar). Se pone y se quita con un botón
   en la propia ficha; las recetas con sello se distinguen en el índice con una insignia verde,

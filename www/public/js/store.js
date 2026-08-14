@@ -246,6 +246,7 @@ const Store = {
       ['Licor de limón', 'Otro', 'ml'],
       ['Lima', 'Fruta', 'ud'],
       ['Limón', 'Fruta', 'ud'],
+      ['Maicena', 'Cereal', 'g'],
       ['Mantequilla', 'Lácteo', 'g'],
       ['Manzana', 'Fruta', 'ud'],
       ['Menta', 'Especia', 'hoja'],
@@ -258,7 +259,7 @@ const Store = {
       ['Pan', 'Cereal', 'ud'],
       ['Pan rallado', 'Cereal', 'g'],
       ['Pasas', 'Fruta', 'g'],
-      ['Patata', 'Verdura', 'ud'],
+      ['Papa', 'Verdura', 'ud'],
       ['Pepino', 'Verdura', 'ud'],
       ['Perejil', 'Especia', 'hoja'],
       ['Pimentón', 'Especia', 'cdta'],
@@ -316,20 +317,20 @@ const Store = {
 
       /* ---- cocina ---- */
       {
-        id: uid(), name: 'Tortilla de patatas', icon: 'huevo', cat: 'Principal',
+        id: uid(), name: 'Tortilla de Papas', icon: 'huevo', cat: 'Principal',
         diff: 'Media', time: 45, portions: 4,
         items: [
-          { ing: find('Patata'), qty: 800, unit: 'g' },
+          { ing: find('Papa'), qty: 800, unit: 'g' },
           { ing: find('Huevo'), qty: 6, unit: 'ud' },
           { ing: find('Cebolla'), qty: 1, unit: 'ud' },
           { ing: find('Aceite de oliva'), qty: 300, unit: 'ml' },
           { ing: find('Sal'), qty: null, unit: 'al gusto' }
         ],
         steps: [
-          'Pela las patatas y córtalas en láminas finas; la cebolla en juliana fina.',
+          'Pela las papas y córtalas en láminas finas; la cebolla en juliana fina.',
           'Ponlas a confitar juntas en el aceite a fuego suave, 20-25 minutos, hasta que estén tiernas sin dorarse.',
           'Escurre bien el aceite y resérvalo — te sirve para otra tortilla.',
-          'Bate los huevos con sal y mézclalos con las patatas templadas.',
+          'Bate los huevos con sal y mézclalos con las papas templadas.',
           'Cuaja la mezcla en una sartén antiadherente con un poco del aceite reservado, a fuego medio.',
           'Dale la vuelta con un plato cuando el borde esté cuajado y el centro aún jugoso, y termina de cuajar por el otro lado.'
         ],
@@ -373,14 +374,14 @@ const Store = {
           'Pon el pan a remojo en agua unos 15 minutos y escúrrelo bien.',
           'Tritura las almendras con el ajo hasta conseguir una pasta fina.',
           'Añade el pan escurrido y sigue triturando.',
-          'Incorpora el aceite en hilo, sin dejar de triturar, como si montaras una mahonesa.',
+          'Incorpora el aceite en hilo, sin dejar de triturar, como si montaras una mayonesa.',
           'Añade el vinagre, la sal y el agua necesaria hasta conseguir la textura de una crema ligera.',
           'Cuela si quieres que quede más fino, y enfría en la nevera un mínimo de 2 horas.'
         ],
         notes: 'Se sirve tradicionalmente con unas uvas o taquitos de melón por encima — el contraste dulce es parte de la gracia.'
       },
       {
-        id: uid(), name: 'Pollo al ajillo', icon: 'carne', cat: 'Principal',
+        id: uid(), name: 'Pollo al ajo', icon: 'carne', cat: 'Principal',
         diff: 'Fácil', time: 35, portions: 4,
         items: [
           { ing: find('Pollo'), qty: 800, unit: 'g' },
@@ -643,25 +644,6 @@ const Store = {
         notes: 'Enharinarlas antes de dorarlas ayuda a que la salsa espese sola, sin necesidad de más harina.'
       },
       {
-        id: uid(), name: 'Huevos rotos con jamón', icon: 'huevo', cat: 'Principal',
-        diff: 'Fácil', time: 25, portions: 2,
-        items: [
-          { ing: find('Patata'), qty: 500, unit: 'g' },
-          { ing: find('Huevo'), qty: 4, unit: 'ud' },
-          { ing: find('Jamón'), qty: 100, unit: 'g' },
-          { ing: find('Aceite de oliva'), qty: 300, unit: 'ml' },
-          { ing: find('Sal'), qty: null, unit: 'al gusto' }
-        ],
-        steps: [
-          'Pela las patatas y córtalas en bastones finos, como para patatas fritas.',
-          'Fríelas en abundante aceite a fuego medio hasta que estén doradas y tiernas.',
-          'Escúrrelas bien y colócalas de base en el plato.',
-          'Fríe los huevos con la clara bien cuajada y la yema líquida, y ponlos encima de las patatas.',
-          'Reparte el jamón en tiras por encima y rompe las yemas justo al servir, para que se mezclen con todo.'
-        ],
-        notes: 'Cuanto más caliente el plato, más aguanta la temperatura de las patatas mientras fríes los huevos.'
-      },
-      {
         id: uid(), name: 'Merluza en salsa verde', icon: 'pescado', cat: 'Principal',
         diff: 'Media', time: 30, portions: 4,
         items: [
@@ -743,7 +725,7 @@ const Store = {
           { ing: find('Pollo'), qty: 800, unit: 'g' },
           { ing: find('Zapallo'), qty: 300, unit: 'g' },
           { ing: find('Choclo'), qty: 2, unit: 'ud' },
-          { ing: find('Patata'), qty: 2, unit: 'ud' },
+          { ing: find('Papa'), qty: 2, unit: 'ud' },
           { ing: find('Zanahoria'), qty: 1, unit: 'ud' },
           { ing: find('Arroz'), qty: 50, unit: 'g' },
           { ing: find('Cebolla'), qty: 1, unit: 'ud' },
@@ -753,7 +735,7 @@ const Store = {
         steps: [
           'Pon el pollo troceado en una olla grande con agua, la cebolla y el ajo. Lleva a hervor y cocina 20 minutos, retirando la espuma que suba.',
           'Añade la zanahoria y el zapallo en trozos grandes, y cocina 10 minutos más.',
-          'Incorpora las patatas enteras o en mitades y el trozo de choclo.',
+          'Incorpora las papas enteras o en mitades y el trozo de choclo.',
           'Añade el arroz y cocina otros 15-20 minutos, hasta que todas las verduras estén tiernas.',
           'Sala al gusto y sirve bien caliente, con un trozo de cada verdura en cada plato.'
         ],
@@ -764,7 +746,7 @@ const Store = {
         diff: 'Media', time: 60, portions: 4,
         items: [
           { ing: find('Carne picada'), qty: 400, unit: 'g' },
-          { ing: find('Patata'), qty: 2, unit: 'ud' },
+          { ing: find('Papa'), qty: 2, unit: 'ud' },
           { ing: find('Zanahoria'), qty: 2, unit: 'ud' },
           { ing: find('Zapallo'), qty: 200, unit: 'g' },
           { ing: find('Choclo'), qty: 1, unit: 'ud' },
@@ -780,7 +762,7 @@ const Store = {
           'Dora la carne picada en el aceite junto con la cebolla y el ajo picados.',
           'Añade el pimentón y remueve un momento.',
           'Incorpora el agua y lleva a hervor.',
-          'Añade la patata, la zanahoria y el zapallo en dados pequeños, y el choclo en trozos.',
+          'Añade la papa, la zanahoria y el zapallo en dados pequeños, y el choclo en trozos.',
           'Cuece 25-30 minutos, y añade el arroz los últimos 15 minutos.',
           'Sala al gusto y sirve bien caliente, como una sopa espesa.'
         ],
@@ -811,10 +793,10 @@ const Store = {
         notes: 'El choclo molido es lo que espesa el guiso de forma natural — cuanto más grueso lo dejes, más textura tendrá.'
       },
       {
-        id: uid(), name: 'Patatas bravas', icon: 'plato', cat: 'Guarnición',
+        id: uid(), name: 'Papas bravas', icon: 'plato', cat: 'Guarnición',
         diff: 'Fácil', time: 30, portions: 4,
         items: [
-          { ing: find('Patata'), qty: 800, unit: 'g' },
+          { ing: find('Papa'), qty: 800, unit: 'g' },
           { ing: find('Aceite de oliva'), qty: 200, unit: 'ml' },
           { ing: find('Tomate'), qty: 2, unit: 'ud' },
           { ing: find('Ajo'), qty: 2, unit: 'diente' },
@@ -823,26 +805,26 @@ const Store = {
           { ing: find('Sal'), qty: null, unit: 'al gusto' }
         ],
         steps: [
-          'Pela las patatas y córtalas en dados grandes e irregulares.',
+          'Pela las papas y córtalas en dados grandes e irregulares.',
           'Fríelas en abundante aceite a fuego medio hasta que estén doradas y tiernas por dentro.',
           'Para la salsa: sofríe el ajo picado, añade el tomate triturado y cocina 10 minutos.',
           'Añade el pimentón y la guindilla al gusto, y sala.',
-          'Sirve las patatas recién fritas con la salsa brava por encima.'
+          'Sirve las papas recién fritas con la salsa brava por encima.'
         ],
         notes: 'El pimentón se añade fuera del fuego o con el fuego muy bajo: se quema y amarga enseguida.'
       },
       {
-        id: uid(), name: 'Puré de patatas', icon: 'plato', cat: 'Guarnición',
+        id: uid(), name: 'Puré de papas', icon: 'plato', cat: 'Guarnición',
         diff: 'Fácil', time: 30, portions: 4,
         items: [
-          { ing: find('Patata'), qty: 800, unit: 'g' },
+          { ing: find('Papa'), qty: 800, unit: 'g' },
           { ing: find('Leche'), qty: 150, unit: 'ml' },
           { ing: find('Mantequilla'), qty: 50, unit: 'g' },
           { ing: find('Nuez moscada'), qty: null, unit: 'pizca' },
           { ing: find('Sal'), qty: null, unit: 'al gusto' }
         ],
         steps: [
-          'Cuece las patatas peladas y troceadas en agua con sal hasta que estén muy tiernas.',
+          'Cuece las papas peladas y troceadas en agua con sal hasta que estén muy tiernas.',
           'Escúrrelas bien y cháfalas todavía calientes con un pasapurés o un tenedor.',
           'Calienta la leche con la mantequilla, sin que llegue a hervir.',
           'Incorpora la leche caliente al puré poco a poco, removiendo hasta la textura que te guste.',
@@ -887,7 +869,7 @@ const Store = {
         notes: 'Si la cebolla pica demasiado, déjala 10 minutos en agua fría antes de usarla: suaviza mucho el sabor.'
       },
       {
-        id: uid(), name: 'Champiñones al ajillo', icon: 'seta', cat: 'Guarnición',
+        id: uid(), name: 'Champiñones al ajo', icon: 'seta', cat: 'Guarnición',
         diff: 'Fácil', time: 15, portions: 4,
         items: [
           { ing: find('Champiñones'), qty: 400, unit: 'g' },
@@ -931,7 +913,7 @@ const Store = {
         diff: 'Fácil', time: 45, portions: 4,
         items: [
           { ing: find('Zapallo'), qty: 300, unit: 'g' },
-          { ing: find('Patata'), qty: 400, unit: 'g' },
+          { ing: find('Papa'), qty: 400, unit: 'g' },
           { ing: find('Choclo'), qty: 200, unit: 'g' },
           { ing: find('Carne picada'), qty: 200, unit: 'g' },
           { ing: find('Cebolla'), qty: 1, unit: 'ud' },
@@ -941,13 +923,13 @@ const Store = {
           { ing: find('Sal'), qty: null, unit: 'al gusto' }
         ],
         steps: [
-          'Cuece por separado el zapallo y la patata en agua con sal hasta que estén muy tiernos.',
+          'Cuece por separado el zapallo y la papa en agua con sal hasta que estén muy tiernos.',
           'Mientras, sofríe la cebolla y el ajo en el aceite, añade la carne picada y el pimentón, y cocina hasta que esté hecha.',
-          'Escurre bien el zapallo y la patata, y májalos juntos con un tenedor hasta conseguir un puré grueso, con algo de textura.',
+          'Escurre bien el zapallo y la papa, y májalos juntos con un tenedor hasta conseguir un puré grueso, con algo de textura.',
           'Mezcla el puré con el sofrito de carne y el choclo.',
           'Sirve caliente, tradicionalmente con un huevo frito encima.'
         ],
-        notes: 'No lo tritures demasiado fino: el charquicán se distingue del puré de patatas por conservar tropezones de verdura.'
+        notes: 'No lo tritures demasiado fino: el charquicán se distingue del puré de papas por conservar tropezones de verdura.'
       },
       {
         id: uid(), name: 'Sopaipillas', icon: 'pan', cat: 'Guarnición',
@@ -1008,47 +990,6 @@ const Store = {
         notes: 'Remover a menudo es lo que suelta el almidón y hace que quede cremoso sin necesidad de nata.'
       },
       {
-        id: uid(), name: 'Natillas', icon: 'huevo', cat: 'Postre',
-        diff: 'Fácil', time: 25, portions: 4,
-        items: [
-          { ing: find('Leche'), qty: 500, unit: 'ml' },
-          { ing: find('Huevo'), qty: 3, unit: 'ud' },
-          { ing: find('Azúcar'), qty: 80, unit: 'g' },
-          { ing: find('Canela'), qty: 1, unit: 'rama' },
-          { ing: find('Limón'), qty: 1, unit: 'ud' }
-        ],
-        steps: [
-          'Calienta la leche con la piel del limón y la rama de canela, sin que llegue a hervir.',
-          'Bate los huevos con el azúcar hasta que blanqueen.',
-          'Vierte la leche caliente colada sobre los huevos, poco a poco y sin dejar de remover.',
-          'Vuelve todo al fuego bajo y cocina removiendo sin parar hasta que espese, sin que llegue a hervir.',
-          'Reparte en cuencos y enfría en la nevera un mínimo de 2 horas.'
-        ],
-        notes: 'Si hierve, se corta: en cuanto veas que nape la cuchara (que la cubra como una capa fina), retírala del fuego.'
-      },
-      {
-        id: uid(), name: 'Torrijas', icon: 'pan', cat: 'Postre',
-        diff: 'Fácil', time: 40, portions: 6,
-        items: [
-          { ing: find('Pan'), qty: 1, unit: 'ud' },
-          { ing: find('Leche'), qty: 500, unit: 'ml' },
-          { ing: find('Huevo'), qty: 2, unit: 'ud' },
-          { ing: find('Azúcar'), qty: 100, unit: 'g' },
-          { ing: find('Canela'), qty: 1, unit: 'rama' },
-          { ing: find('Aceite de oliva'), qty: 300, unit: 'ml' },
-          { ing: find('Limón'), qty: 1, unit: 'ud' }
-        ],
-        steps: [
-          'Corta el pan en rebanadas gruesas.',
-          'Calienta la leche con la piel del limón, la canela y una parte del azúcar, sin que hierva. Deja templar.',
-          'Remoja las rebanadas en la leche hasta que se empapen bien, sin que se deshagan.',
-          'Pasa cada rebanada por huevo batido.',
-          'Fríe en aceite bien caliente hasta que doren por ambos lados.',
-          'Escurre sobre papel absorbente y reboza en azúcar con canela molida.'
-        ],
-        notes: 'Cuanto más duro esté el pan, mejor absorbe la leche sin deshacerse — por eso se hacían tradicionalmente con el pan sobrante.'
-      },
-      {
         id: uid(), name: 'Brownie de chocolate', icon: 'pastel', cat: 'Postre',
         diff: 'Media', time: 45, portions: 8,
         items: [
@@ -1089,10 +1030,55 @@ const Store = {
         ],
         notes: 'Los kuchen llegaron con la inmigración alemana al sur de Chile, y hoy son tan chilenos como cualquier otro postre de la lista.'
       },
+      {
+        id: uid(), name: 'Churros con chocolate', icon: 'pastel', cat: 'Postre',
+        diff: 'Media', time: 40, portions: 4,
+        items: [
+          { ing: find('Harina'), qty: 250, unit: 'g' },
+          { ing: find('Agua'), qty: 250, unit: 'ml' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' },
+          { ing: find('Aceite de oliva'), qty: 500, unit: 'ml' },
+          { ing: find('Leche'), qty: 500, unit: 'ml' },
+          { ing: find('Chocolate negro'), qty: 200, unit: 'g' },
+          { ing: find('Azúcar'), qty: 50, unit: 'g' }
+        ],
+        steps: [
+          'Pon el agua con una pizca de sal a calentar hasta que hierva.',
+          'Retira del fuego e incorpora la harina de golpe, mezclando enérgicamente hasta obtener una masa espesa y lisa.',
+          'Deja templar la masa unos minutos y pásala a una manga pastelera con boquilla rizada.',
+          'Da forma a los churros directamente sobre una sartén con aceite bien caliente, cortando con un cuchillo o tijera.',
+          'Fríe hasta que estén dorados y crujientes por fuera, y escúrrelos sobre papel absorbente.',
+          'Para el chocolate, calienta la leche con el chocolate troceado, removiendo hasta que se funda y espese ligeramente.',
+          'Reboza los churros en azúcar si te gustan así, y sírvelos calientes para mojar en el chocolate.'
+        ],
+        notes: 'La masa debe quedar espesa pero manejable: si se desmorona al freír, le falta cocción tras añadir la harina; si no sale bien de la manga, añade un poco más de agua.'
+      },
+      {
+        id: uid(), name: 'Crema catalana', icon: 'huevo', cat: 'Postre',
+        diff: 'Media', time: 40, portions: 6,
+        items: [
+          { ing: find('Leche'), qty: 1, unit: 'l' },
+          { ing: find('Huevo'), qty: 4, unit: 'ud' },
+          { ing: find('Azúcar'), qty: 150, unit: 'g' },
+          { ing: find('Maicena'), qty: 40, unit: 'g' },
+          { ing: find('Canela'), qty: 1, unit: 'rama' },
+          { ing: find('Naranja'), qty: 1, unit: 'ud' },
+          { ing: find('Limón'), qty: 1, unit: 'ud' }
+        ],
+        steps: [
+          'Calienta la leche con la piel de la naranja, la piel del limón y la rama de canela, sin que llegue a hervir. Retira del fuego y deja infusionar 30 minutos.',
+          'Bate las yemas con la mitad del azúcar hasta que blanqueen, y añade la maicena disuelta en un poco de leche fría.',
+          'Cuela la leche infusionada y viértela poco a poco sobre la mezcla de yemas, sin dejar de remover.',
+          'Vuelve todo al fuego bajo y cocina removiendo sin parar hasta que espese, sin que llegue a hervir.',
+          'Reparte en cazuelitas individuales y deja enfriar sin tapar.',
+          'Justo antes de servir, espolvorea con el resto del azúcar y quema la superficie con un soplete de cocina hasta que se caramelice.'
+        ],
+        notes: 'Si no tienes soplete, un momento bajo el grill del horno también carameliza el azúcar — vigílala de cerca, se quema en segundos.'
+      },
 
       /* ---- salsas (además del alioli, arriba) ---- */
       {
-        id: uid(), name: 'Mahonesa', icon: 'huevo', cat: 'Salsa',
+        id: uid(), name: 'Mayonesa', icon: 'huevo', cat: 'Salsa',
         diff: 'Fácil', time: 5, portions: 4,
         items: [
           { ing: find('Huevo'), qty: 1, unit: 'ud' },
@@ -1206,6 +1192,29 @@ const Store = {
           'Deja reposar 10 minutos antes de servir, para que se mezclen los sabores.'
         ],
         notes: 'Se sirve con pan o con sopaipillas — es el condimento que acompaña casi cualquier comida chilena.'
+      },
+      {
+        id: uid(), name: 'Salsa romesco', icon: 'tomate', cat: 'Salsa',
+        diff: 'Media', time: 40, portions: 4,
+        items: [
+          { ing: find('Tomate'), qty: 4, unit: 'ud' },
+          { ing: find('Ajo'), qty: 4, unit: 'diente' },
+          { ing: find('Almendras'), qty: 50, unit: 'g' },
+          { ing: find('Pan'), qty: 1, unit: 'ud' },
+          { ing: find('Aceite de oliva'), qty: 4, unit: 'cda' },
+          { ing: find('Vinagre'), qty: 1, unit: 'cda' },
+          { ing: find('Pimentón'), qty: 1, unit: 'cdta' },
+          { ing: find('Guindilla'), qty: null, unit: 'al gusto' },
+          { ing: find('Sal'), qty: null, unit: 'al gusto' }
+        ],
+        steps: [
+          'Asa los tomates y los ajos con piel en el horno a 200 °C, 15-20 minutos, hasta que estén tiernos.',
+          'Tuesta ligeramente las almendras y el pan en una sartén, hasta que doren.',
+          'Pela los tomates y los ajos ya templados.',
+          'Tritura todo junto: tomate, ajo, almendras, pan, aceite, vinagre, pimentón, guindilla y sal, hasta conseguir una salsa espesa.',
+          'Ajusta de sal y vinagre al gusto.'
+        ],
+        notes: 'La receta tradicional catalana lleva ñoras (pimientos secos); el pimentón es una versión simplificada que funciona muy bien en casa.'
       },
 
       /* ---- bebidas: una receta por cada vaso del directorio de cristalería ---- */

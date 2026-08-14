@@ -343,7 +343,7 @@ function renderEditor() {
       <div class="form-grid" style="margin-bottom:16px">
         <label class="fld" style="grid-column:1/-1">
           <span>Nombre de la receta</span>
-          <input type="text" id="f-name" value="${esc(d.name)}" placeholder="Ej. Tortilla de patatas" maxlength="60">
+          <input type="text" id="f-name" value="${esc(d.name)}" placeholder="Ej. Tortilla de Papas" maxlength="60">
         </label>
         <label class="fld"><span>Categoria</span>
           <select id="f-cat">${options(REC_CATS, d.cat)}</select></label>
