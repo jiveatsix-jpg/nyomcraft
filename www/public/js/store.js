@@ -43,7 +43,7 @@ function normalizeRecipe(rec) {
 
 const Store = {
   KEY: 'nomcraft.v1',
-  data: { ingredients: [], recipes: [], masaOverrides: {} },
+  data: { ingredients: [], recipes: [], masaOverrides: {}, shopping: [] },
 
   load() {
     try {
@@ -55,6 +55,7 @@ const Store = {
         this.data.recipes.forEach(normalizeRecipe);
         this.data.masaOverrides = (parsed.masaOverrides && typeof parsed.masaOverrides === 'object')
           ? parsed.masaOverrides : {};
+        this.data.shopping = Array.isArray(parsed.shopping) ? parsed.shopping : [];
       }
     } catch (e) {
       console.warn('Datos corruptos, empiezo de cero.', e);
@@ -169,6 +170,60 @@ const Store = {
     };
   },
 
+  /* ---- lista de compras ----
+     Un ítem referencia un ingrediente de la despensa (ing) para heredar su
+     categoría/icono, o lleva un name suelto cuando es algo que no está en la
+     despensa (p.ej. "bolsas de basura"). Si ya hay un ítem sin marcar con el
+     mismo ingrediente/nombre y unidad, se suma la cantidad en vez de duplicar
+     la fila — salvo que alguna de las dos sea null (p.ej. "al gusto"), donde
+     sumar no tiene sentido y se deja como estaba. */
+  addShoppingItem({ ing = null, name = '', qty = null, unit = 'ud' } = {}) {
+    const cleanName = (name || '').trim();
+    if (!ing && !cleanName) return null;
+    const num = (qty === null || qty === '' || qty === undefined) ? null : Number(qty);
+    const existing = this.data.shopping.find(s => !s.checked && s.unit === unit &&
+      (ing ? s.ing === ing : (!s.ing && s.name.toLowerCase() === cleanName.toLowerCase())));
+    if (existing) {
+      existing.qty = (existing.qty === null || num === null) ? (existing.qty ?? num) : existing.qty + num;
+      this.save();
+      return existing;
+    }
+    const item = { id: uid(), ing, name: cleanName, qty: num, unit: unit || 'ud', checked: false };
+    this.data.shopping.push(item);
+    this.save();
+    return item;
+  },
+
+  /** Suma todos los ingredientes de una receta a la lista. Devuelve cuántas líneas tocó. */
+  addRecipeToShopping(recipeId) {
+    const rec = this.recipe(recipeId);
+    if (!rec) return 0;
+    rec.items.forEach(it => this.addShoppingItem({ ing: it.ing, qty: it.qty, unit: it.unit }));
+    return rec.items.length;
+  },
+
+  toggleShoppingItem(id) {
+    const it = this.data.shopping.find(s => s.id === id);
+    if (!it) return;
+    it.checked = !it.checked;
+    this.save();
+  },
+
+  removeShoppingItem(id) {
+    this.data.shopping = this.data.shopping.filter(s => s.id !== id);
+    this.save();
+  },
+
+  clearCheckedShopping() {
+    this.data.shopping = this.data.shopping.filter(s => !s.checked);
+    this.save();
+  },
+
+  clearShoppingList() {
+    this.data.shopping = [];
+    this.save();
+  },
+
   /* ---- import / export ---- */
   exportJSON() {
     return JSON.stringify({ app: 'nomcraft', v: 1, ...this.data }, null, 2);
@@ -180,16 +235,20 @@ const Store = {
     const recs = Array.isArray(parsed.recipes) ? parsed.recipes : [];
     const masaOv = (parsed.masaOverrides && typeof parsed.masaOverrides === 'object')
       ? parsed.masaOverrides : {};
+    const shopping = Array.isArray(parsed.shopping) ? parsed.shopping : [];
     if (mode === 'replace') {
       this.data.ingredients = ings;
       this.data.recipes = recs;
       this.data.masaOverrides = masaOv;
+      this.data.shopping = shopping;
     } else {
       const known = new Set(this.data.ingredients.map(i => i.id));
       ings.forEach(i => { if (!known.has(i.id)) this.data.ingredients.push(i); });
       const knownR = new Set(this.data.recipes.map(r => r.id));
       recs.forEach(r => { if (!knownR.has(r.id)) this.data.recipes.push(r); });
       Object.assign(this.data.masaOverrides, masaOv);
+      const knownS = new Set(this.data.shopping.map(s => s.id));
+      shopping.forEach(s => { if (!knownS.has(s.id)) this.data.shopping.push(s); });
     }
     this.data.recipes.forEach(normalizeRecipe);
     this.sortIngredients();

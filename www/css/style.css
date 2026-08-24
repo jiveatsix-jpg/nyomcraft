@@ -14,6 +14,10 @@
   --red:      #ef5f5f;
   --blue:     #56b3f0;
   --pink:     #f28ab8;
+  --tan:      #e8b06a;
+  --orange:   #f2a154;
+  --purple:   #b98af0;
+  --teal:     #5fd6c8;
 
   --px: 4px;
   --pixel: 'Press Start 2P', 'Courier New', monospace;
@@ -562,6 +566,34 @@ ol.steps li.con-duda { padding-left: 10px; }
 .ing-card .nm { display: block; word-break: break-word; }
 .ing-card .mt { color: var(--dim); font-size: 16px; }
 
+/* ---------- lista de compras ---------- */
+
+.recipe-pick {
+  display: flex; flex-direction: column; gap: 6px;
+  max-height: 220px; overflow-y: auto; padding: 4px;
+}
+.recipe-chk { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.recipe-chk input { width: auto; }
+
+.shop-group { margin-bottom: 18px; }
+.shop-cat {
+  font-family: var(--pixel);
+  font-size: 11px;
+  letter-spacing: 1px;
+  margin: 0 0 8px;
+}
+.shop-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; margin-bottom: 6px;
+  background: var(--bg2); border: 2px solid var(--ink);
+}
+.shop-row.done { opacity: .5; }
+.shop-row.done .shop-name { text-decoration: line-through; }
+.shop-chk { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; cursor: pointer; }
+.shop-chk input { width: auto; }
+.shop-name { word-break: break-word; }
+.shop-qty { color: var(--dim); font-size: 16px; white-space: nowrap; }
+
 /* ---------- pie y avisos ---------- */
 
 .statusbar {
@@ -594,7 +626,7 @@ ol.steps li.con-duda { padding-left: 10px; }
     background: #fff; color: #000;
     padding: 0; font-size: 13pt;
   }
-  body::after, .topbar, .statusbar, .sticky-actions, .toolbar, .toast { display: none !important; }
+  body::after, .topbar, .statusbar, .sticky-actions, .toolbar, .toast, .no-print { display: none !important; }
 
   .view { max-width: none; padding: 0; }
   .pbox, .ficha { border: 2px solid #000; box-shadow: none; background: #fff; padding: 0; }
@@ -607,6 +639,12 @@ ol.steps li.con-duda { padding-left: 10px; }
   .tag { background: #eee; color: #000; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   ol.steps li::before { background: #ddd; color: #000; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   .hr { background: #000; height: 1px; }
+
+  /* la lista de compras usa color por categoría sobre fondo oscuro — en
+     papel blanco esos colores claros no se leen, así que se fuerza negro */
+  .shop-cat { color: #000 !important; }
+  .shop-row { background: #fff; border: 2px solid #000; }
+  .shop-qty { color: #333; }
 
   /* las dudas se imprimen: son justo lo que hay que revisar sobre el papel */
   .duda {

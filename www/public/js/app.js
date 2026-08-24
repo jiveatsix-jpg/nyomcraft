@@ -20,6 +20,29 @@ const CAT_COLOR = {
   'Guarnición': 'yellow', Ensalada: 'green', Bebida: 'blue', Salsa: 'red', Otro: 'dim'
 };
 
+// un color distinto por categoría de ingrediente, para los <optgroup> del
+// desplegable de "añadir ingrediente" (ver ingredientOptions() más abajo).
+const ING_CAT_COLOR = {
+  Verdura: 'var(--green)', Fruta: 'var(--pink)', Carne: 'var(--red)',
+  Pescado: 'var(--blue)', 'Lácteo': 'var(--yellow)', Cereal: 'var(--tan)',
+  Legumbre: 'var(--orange)', Especia: 'var(--purple)', Salsa: 'var(--teal)',
+  Otro: 'var(--dim)'
+};
+
+// arma las <option> del selector de ingredientes agrupadas por categoría
+// (orden de ING_CATS), cada <optgroup> coloreado según ING_CAT_COLOR.
+function ingredientOptions(selectedId) {
+  return ING_CATS.map(cat => {
+    const items = Store.data.ingredients.filter(x => x.cat === cat);
+    if (!items.length) return '';
+    const color = ING_CAT_COLOR[cat] || 'var(--dim)';
+    return `<optgroup label="${esc(deacc(cat))}" style="color:${color}">
+      ${items.map(x =>
+        `<option value="${x.id}"${x.id === selectedId ? ' selected' : ''}>${esc(x.name)}</option>`).join('')}
+    </optgroup>`;
+  }).join('');
+}
+
 // agrupación amplia del índice: cada categoría de receta cae en uno de estos
 // cinco cajones. Todo lo que no es ensalada, postre, bebida ni salsa es "Comida".
 const REC_GROUPS = ['Comida', 'Ensaladas', 'Postres', 'Bebidas', 'Salsas'];
@@ -75,7 +98,7 @@ function marcaDuda(o) {
 const TAB_OF = {
   index: 'index', recipe: 'index', edit: 'index',
   masas: 'masas', masa: 'masas', 'masa-edit': 'masas',
-  pantry: 'pantry'
+  pantry: 'pantry', shopping: 'shopping'
 };
 
 function go(tab, opts = {}) {
@@ -88,6 +111,7 @@ function go(tab, opts = {}) {
 
 function render() {
   if (ui.tab === 'pantry') return renderPantry();
+  if (ui.tab === 'shopping') return renderShopping();
   if (ui.tab === 'recipe') return renderRecipe(ui.id);
   if (ui.tab === 'edit') return renderEditor();
   if (ui.tab === 'masas') return renderMasas();
@@ -495,8 +519,7 @@ function drawIngRows() {
       <span class="ic">${iconSVG(ing ? ing.icon : 'plato', 32)}</span>
       <span class="sel">
         <select data-f="ing">
-          ${Store.data.ingredients.map(x =>
-            `<option value="${x.id}"${x.id === it.ing ? ' selected' : ''}>${esc(x.name)}</option>`).join('')}
+          ${ingredientOptions(it.ing)}
           ${ing ? '' : `<option value="${esc(it.ing)}" selected>(borrado)</option>`}
         </select>
       </span>
@@ -715,6 +738,151 @@ function renderPantry() {
   }));
 
   status(`DESPENSA: ${list.length} INGREDIENTES`, `RECETAS: ${Store.data.recipes.length}`);
+}
+
+/* ---------------------------------------------------------------- COMPRAS */
+
+function shoppingRow(s) {
+  const ing = s.ing ? Store.ingredient(s.ing) : null;
+  const name = ing ? ing.name : (s.name || '(sin nombre)');
+  const icon = ing ? ing.icon : 'plato';
+  const qtyTxt = (s.qty !== null && s.qty !== undefined && s.qty !== '') ? `${s.qty} ${s.unit}` : s.unit;
+  return `<div class="shop-row ${s.checked ? 'done' : ''}" data-id="${s.id}">
+    <label class="shop-chk">
+      <input type="checkbox" data-f="check" ${s.checked ? 'checked' : ''}>
+      ${iconSVG(icon, 26)}
+      <span class="shop-name">${esc(name)}</span>
+    </label>
+    <span class="shop-qty">${esc(qtyTxt)}</span>
+    <button class="btn small red no-print" data-f="del" title="Quitar">X</button>
+  </div>`;
+}
+
+function renderShopping() {
+  const list = Store.data.shopping;
+  const pending = list.filter(s => !s.checked);
+  const done = list.filter(s => s.checked);
+
+  // agrupa lo pendiente por categoría de ingrediente — lo que no tiene
+  // ingrediente asociado (ítems sueltos) cae en "Otro", como cualquier
+  // ingrediente sin categoría propia.
+  const grouped = ING_CATS
+    .map(cat => ({
+      cat,
+      color: ING_CAT_COLOR[cat] || 'var(--dim)',
+      items: pending.filter(s => ((s.ing && Store.ingredient(s.ing)?.cat) || 'Otro') === cat)
+    }))
+    .filter(g => g.items.length);
+
+  view.innerHTML = `
+    <div class="toolbar no-print">
+      <div class="grow"></div>
+      <button class="btn" id="sh-pdf" title="Guardar la lista como PDF">Exportar PDF</button>
+    </div>
+
+    <h2 class="sec">Lista de compras — ${pending.length} pendiente${pending.length === 1 ? '' : 's'}</h2>
+
+    <section class="ficha pbox no-print" style="margin-bottom:22px">
+      <h3 class="sub">Añadir desde recetas</h3>
+      <p class="notes" style="margin-top:0">Marca las recetas que vas a cocinar: sus ingredientes se suman a la lista.</p>
+      <div class="recipe-pick">
+        ${Store.data.recipes.map(r => `<label class="recipe-chk">
+          <input type="checkbox" value="${r.id}"> ${esc(r.name || 'Sin nombre')}
+        </label>`).join('') || '<p class="notes">Todavía no hay recetas.</p>'}
+      </div>
+      <button class="btn green" id="sh-from-recipes" style="margin-top:14px">+ Añadir ingredientes de las recetas marcadas</button>
+    </section>
+
+    <section class="ficha pbox no-print" style="margin-bottom:22px">
+      <h3 class="sub">Añadir manual</h3>
+      <div class="form-grid">
+        <label class="fld"><span>Ingrediente de la despensa</span>
+          <select id="sh-ing"><option value="">— elegir —</option>${ingredientOptions()}</select></label>
+        <label class="fld"><span>O algo que no está en la despensa</span>
+          <input type="text" id="sh-name" placeholder="Ej. Bolsas de basura" maxlength="60"></label>
+        <label class="fld"><span>Cantidad</span>
+          <input type="number" id="sh-qty" min="0" step="any" placeholder="cant."></label>
+        <label class="fld"><span>Unidad</span>
+          <select id="sh-unit">${options(UNITS, 'ud')}</select></label>
+      </div>
+      <button class="btn green" id="sh-add" style="margin-top:14px">+ Añadir a la lista</button>
+    </section>
+
+    <h3 class="sub">Por comprar</h3>
+    ${pending.length
+      ? grouped.map(g => `<div class="shop-group">
+          <h4 class="shop-cat" style="color:${g.color}">${esc(deacc(g.cat))}</h4>
+          ${g.items.map(shoppingRow).join('')}
+        </div>`).join('')
+      : '<div class="empty pbox">' + iconSVG('plato', 48) + '<p>No hay nada pendiente.</p></div>'}
+
+    ${done.length ? `
+      <div class="hr no-print"></div>
+      <h3 class="sub no-print">Comprado (${done.length})</h3>
+      <div class="no-print">${done.map(shoppingRow).join('')}</div>
+      <button class="btn small ghost no-print" id="sh-clear-done" style="margin-top:10px">Vaciar comprados</button>
+    ` : ''}
+
+    ${list.length ? `<div class="hr no-print"></div><button class="btn small red no-print" id="sh-clear-all">Vaciar toda la lista</button>` : ''}`;
+
+  // el título del documento es lo que el navegador sugiere como nombre del PDF
+  $('#sh-pdf').addEventListener('click', () => {
+    const prev = document.title;
+    document.title = 'Lista de compras';
+    const restore = () => {
+      document.title = prev;
+      window.removeEventListener('afterprint', restore);
+    };
+    window.addEventListener('afterprint', restore);
+    window.print();
+  });
+
+  $('#sh-from-recipes').addEventListener('click', () => {
+    const ids = $$('.recipe-chk input:checked').map(c => c.value);
+    if (!ids.length) return toast('Marca al menos una receta', true);
+    ids.forEach(id => Store.addRecipeToShopping(id));
+    toast('Ingredientes añadidos a la lista');
+    renderShopping();
+  });
+
+  $('#sh-add').addEventListener('click', () => {
+    const ingId = $('#sh-ing').value;
+    const name = $('#sh-name').value;
+    const qty = $('#sh-qty').value;
+    const unit = $('#sh-unit').value;
+    if (!ingId && !name.trim()) return toast('Elige un ingrediente o escribe un nombre', true);
+    Store.addShoppingItem({ ing: ingId || null, name, qty: qty === '' ? null : Number(qty), unit });
+    toast('Añadido a la lista');
+    renderShopping();
+  });
+
+  $$('.shop-row').forEach(row => {
+    const id = row.dataset.id;
+    row.querySelector('[data-f=check]').addEventListener('change', () => {
+      Store.toggleShoppingItem(id);
+      renderShopping();
+    });
+    row.querySelector('[data-f=del]').addEventListener('click', () => {
+      Store.removeShoppingItem(id);
+      renderShopping();
+    });
+  });
+
+  const clearDone = $('#sh-clear-done');
+  if (clearDone) clearDone.addEventListener('click', () => {
+    if (!confirm('¿Vaciar los ítems ya comprados?')) return;
+    Store.clearCheckedShopping();
+    renderShopping();
+  });
+
+  const clearAll = $('#sh-clear-all');
+  if (clearAll) clearAll.addEventListener('click', () => {
+    if (!confirm('¿Vaciar toda la lista de compras?')) return;
+    Store.clearShoppingList();
+    renderShopping();
+  });
+
+  status(`LISTA DE COMPRAS: ${pending.length} PENDIENTES`, `${done.length} COMPRADOS`);
 }
 
 /* ---------------------------------------------------------------- MASAS */
