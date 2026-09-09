@@ -269,9 +269,13 @@ h3.sub {
 .info-tooltip-box {
   position: fixed; z-index: 300; max-width: 260px;
   padding: 10px 12px; background: var(--bg); color: var(--text);
-  border: var(--px) solid var(--green); box-shadow: 0 var(--px) 0 rgba(0,0,0,.55);
-  font-family: var(--body); font-size: 15px; line-height: 1.4;
+  border: var(--px) solid var(--teal); box-shadow: 4px 4px 0 rgba(0,0,0,.7);
+  font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 13px; line-height: 1.4;
   pointer-events: none;
+}
+.info-tooltip-label {
+  font-weight: bold; color: var(--red);
+  border-bottom: 2px solid var(--teal); margin-bottom: 6px; padding-bottom: 4px;
 }
 .info-tooltip-box[hidden] { display: none; }
 

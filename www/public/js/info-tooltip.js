@@ -42,9 +42,20 @@
   function showFor(el, x, y) {
     const text = el.getAttribute('title');
     if (!text) { hide(); return; }
+    const label = (el.textContent || '').trim().slice(0, 40);
     currentTarget = el;
     const box = ensureBox();
-    box.textContent = text;
+    box.textContent = '';
+    if (label) {
+      const labelEl = document.createElement('div');
+      labelEl.className = 'info-tooltip-label';
+      labelEl.textContent = label;
+      box.appendChild(labelEl);
+    }
+    const textEl = document.createElement('div');
+    textEl.className = 'info-tooltip-text';
+    textEl.textContent = text;
+    box.appendChild(textEl);
     box.hidden = false;
     position(x, y);
   }
