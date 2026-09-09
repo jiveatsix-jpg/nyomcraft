@@ -1392,6 +1392,81 @@ function importAll(file) {
   reader.readAsText(file);
 }
 
+/* ---------------------------------------------------------------- tutorial */
+
+const TUTORIAL_SEEN_KEY = 'nomcraft.tutorial.seen';
+
+const TUTORIAL_STEPS = [
+  {
+    title: 'ÑOMCRAFT',
+    text: 'Bienvenido a tu recetario pixel-art. Todo se guarda en este navegador, sin cuentas ni nube. Cuatro pestañas arriba: Índice, Masas, Despensa y Compras.'
+  },
+  {
+    title: 'ÍNDICE',
+    text: 'Busca por nombre de receta o de ingrediente, filtra por grupo o categoría, y usa "+ Nueva receta" para crear una. El sello verde marca una receta ya probada, y el signo de pregunta indica algo pendiente de confirmar.'
+  },
+  {
+    title: 'FICHA DE RECETA',
+    text: 'Cada receta tiene sus ingredientes con cantidad y unidad, los pasos numerados y notas al final. Desde ahí podés editarla, ponerle el sello, o exportarla a PDF.'
+  },
+  {
+    title: 'MASAS',
+    text: 'Un catálogo de masas y panes por porcentaje de panadero (la harina siempre es el 100 %), con la hidratación calculada sola. Podés personalizar cualquier masa del catálogo y restaurar el original cuando quieras.'
+  },
+  {
+    title: 'DESPENSA',
+    text: 'La biblioteca de ingredientes: cada uno tiene su categoría (con color propio) y un icono que se sugiere solo según el nombre, aunque siempre podés elegir otro.'
+  },
+  {
+    title: 'COMPRAS',
+    text: 'Sumá ingredientes a la lista de compras marcando recetas enteras, o agregá algo suelto a mano. Queda agrupada por categoría y se puede exportar a PDF para llevarla al súper.'
+  }
+];
+
+let tutorialStep = 0;
+
+function renderTutorialStep() {
+  const s = TUTORIAL_STEPS[tutorialStep];
+  $('#tutorial-step-label').textContent = `PASO ${tutorialStep + 1} DE ${TUTORIAL_STEPS.length}`;
+  $('#tutorial-title').textContent = s.title;
+  $('#tutorial-text').textContent = s.text;
+  $('#tutorial-prev').disabled = tutorialStep === 0;
+  $('#tutorial-next').textContent = tutorialStep === TUTORIAL_STEPS.length - 1 ? 'ENTENDIDO' : 'SIGUIENTE';
+  $('#tutorial-dots').innerHTML = TUTORIAL_STEPS
+    .map((_, i) => `<span class="tutorial-dot${i === tutorialStep ? ' on' : ''}"></span>`)
+    .join('');
+}
+
+function openTutorial() {
+  tutorialStep = 0;
+  renderTutorialStep();
+  $('#tutorial-overlay').hidden = false;
+}
+
+function closeTutorial() {
+  $('#tutorial-overlay').hidden = true;
+  localStorage.setItem(TUTORIAL_SEEN_KEY, 'true');
+}
+
+function initTutorial() {
+  $('#help').addEventListener('click', openTutorial);
+  $('#tutorial-close').addEventListener('click', closeTutorial);
+  $('#tutorial-overlay').addEventListener('click', e => {
+    if (e.target.id === 'tutorial-overlay') closeTutorial();
+  });
+  $('#tutorial-prev').addEventListener('click', () => {
+    tutorialStep = Math.max(0, tutorialStep - 1);
+    renderTutorialStep();
+  });
+  $('#tutorial-next').addEventListener('click', () => {
+    if (tutorialStep === TUTORIAL_STEPS.length - 1) { closeTutorial(); return; }
+    tutorialStep = Math.min(TUTORIAL_STEPS.length - 1, tutorialStep + 1);
+    renderTutorialStep();
+  });
+
+  if (!localStorage.getItem(TUTORIAL_SEEN_KEY)) openTutorial();
+}
+
 /* ---------------------------------------------------------------- arranque */
 
 document.addEventListener('keydown', e => {
@@ -1418,3 +1493,4 @@ $('#import-file').addEventListener('change', e => {
 Store.load();
 $('#brand-icon').innerHTML = iconSVG('olla', 36);
 go('index');
+initTutorial();

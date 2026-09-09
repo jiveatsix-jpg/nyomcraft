@@ -231,6 +231,39 @@ h3.sub {
   margin: 22px 0;
 }
 
+/* ---------- tutorial ---------- */
+
+.tutorial-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,.7);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.tutorial-box {
+  position: relative;
+  width: 100%; max-width: 460px;
+  padding: 24px;
+}
+.tutorial-step-label {
+  font-family: var(--pixel); font-size: 9px; letter-spacing: 1px;
+  color: var(--dim); margin: 0 0 10px;
+}
+.tutorial-title {
+  font-family: var(--pixel); font-size: 14px; letter-spacing: 1px;
+  color: var(--text); text-shadow: 2px 2px 0 var(--ink);
+  margin: 0 0 14px; padding-right: 30px;
+}
+.tutorial-text {
+  font-family: var(--body); font-size: 18px; line-height: 1.4;
+  color: var(--text); margin: 0 0 20px; min-height: 90px;
+}
+.tutorial-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.tutorial-dots { display: flex; gap: 6px; }
+.tutorial-dot { width: 9px; height: 9px; background: var(--bg2); border: 2px solid var(--line); }
+.tutorial-dot.on { background: var(--green); border-color: var(--green); }
+.tutorial-nav { display: flex; gap: 8px; }
+.tutorial-nav .btn:disabled { opacity: .35; cursor: not-allowed; }
+
 .empty {
   text-align: center; color: var(--dim); padding: 46px 20px;
 }

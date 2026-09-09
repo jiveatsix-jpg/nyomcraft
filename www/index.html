@@ -31,10 +31,27 @@
     <button class="btn small" id="import"
             title="Cargar un recetario desde un archivo JSON">Importar</button>
     <input type="file" id="import-file" accept="application/json,.json" hidden>
+    <button class="btn small" id="help" title="Ver tutorial">?</button>
   </div>
 </header>
 
 <main id="view" class="view"></main>
+
+<div id="tutorial-overlay" class="tutorial-overlay" hidden>
+  <div class="tutorial-box pbox">
+    <button class="btn small red" id="tutorial-close" style="position:absolute;top:10px;right:10px;padding:4px 8px;">X</button>
+    <p class="tutorial-step-label" id="tutorial-step-label">PASO 1 DE 6</p>
+    <h2 class="tutorial-title" id="tutorial-title"></h2>
+    <p class="tutorial-text" id="tutorial-text"></p>
+    <div class="tutorial-footer">
+      <div class="tutorial-dots" id="tutorial-dots"></div>
+      <div class="tutorial-nav">
+        <button class="btn small ghost" id="tutorial-prev">ATRAS</button>
+        <button class="btn small green" id="tutorial-next">SIGUIENTE</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <footer class="statusbar">
   <span id="status-left">LISTO.</span>
