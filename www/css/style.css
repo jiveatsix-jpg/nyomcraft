@@ -264,6 +264,17 @@ h3.sub {
 .tutorial-nav { display: flex; gap: 8px; }
 .tutorial-nav .btn:disabled { opacity: .35; cursor: not-allowed; }
 
+#info-toggle.active { background: var(--green); color: var(--ink); }
+
+.info-tooltip-box {
+  position: fixed; z-index: 300; max-width: 260px;
+  padding: 10px 12px; background: var(--bg); color: var(--text);
+  border: var(--px) solid var(--green); box-shadow: 0 var(--px) 0 rgba(0,0,0,.55);
+  font-family: var(--body); font-size: 15px; line-height: 1.4;
+  pointer-events: none;
+}
+.info-tooltip-box[hidden] { display: none; }
+
 .empty {
   text-align: center; color: var(--dim); padding: 46px 20px;
 }
