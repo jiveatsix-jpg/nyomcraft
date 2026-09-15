@@ -239,6 +239,7 @@ h3.sub {
   display: flex; align-items: center; justify-content: center;
   padding: 16px;
 }
+.tutorial-overlay[hidden] { display: none; }
 .tutorial-box {
   position: relative;
   width: 100%; max-width: 460px;
